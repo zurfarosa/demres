@@ -49,32 +49,41 @@ def create_pt_features():
     rows) with a column for all variables for logistic regression
     '''
     matching = pd.read_csv('data/pt_data/Matching_File.txt',delimiter='\t')
-    feature_index=['patID','pracID','gender','birthyear','isCase','matchid','case_index','data_start','data_end']
-    features = pd.DataFrame(columns=feature_index)
-    for index,row in matching.iterrows():
-        # first append the case
-        index = len(features)
-        features.loc[index,feature_index[0]]=row[0] #patID
-        features.loc[index,feature_index[1]]=row[1] #pracID
-        features.loc[index,feature_index[2]]=row[2] #gender
-        features.loc[index,feature_index[3]]=row[3] #birthyear
-        features.loc[index,feature_index[4]]=True #isCase
-        features.loc[index,feature_index[5]]=row[6] #matchid
-        features.loc[index,feature_index[6]]=row[4] #case_index
-        features.loc[index,feature_index[7]]=row[10] #data_start
-        features.loc[index,feature_index[8]]=row[11] #data_end
-        # now append the control
-        index = len(features)
-        features.loc[index,feature_index[0]]=row[6] #patID
-        features.loc[index,feature_index[1]]=row[7] #pracID
-        features.loc[index,feature_index[2]]=row[8] #gender
-        features.loc[index,feature_index[3]]=row[9] #birthyear
-        features.loc[index,feature_index[4]]=False #isCase
-        features.loc[index,feature_index[5]]=row[0] #matchid
-        features.loc[index,feature_index[6]]=row[4] #case_index
-        features.loc[index,feature_index[7]]=row[10] #data_start
-        features.loc[index,feature_index[8]]=row[11] #data_end
-        features.to_csv(data/pt_data/pt_features.csv)
+
+    #Create the cases
+    feature1 = matching.copy(deep=True)
+    del(feature1['match'])
+    del(feature1['control_birthyear'])
+    del(feature1['control_pracid'])
+    del(feature1['control_gender'])
+    feature1['isCase']=True
+    feature1.columns=['patID','pracID','gender','birthyear','case_index','matchID','data_start','data_end','isCase']
+
+    #Create the controls
+    feature2 = matching.copy(deep=True)
+    del(feature2['match'])
+    del(feature2['case_pracid'])
+    del(feature2['case_birthyear'])
+    del(feature2['case_gender'])
+    feature2['isCase']=False
+    cols = ['matchID',
+     'case_index',
+     'patID',
+     'pracID',
+     'gender',
+     'birthyear',
+     'data_start',
+     'data_end',
+     'isCase']
+    feature2.columns=cols
+
+    #Merge cases and controls
+    features = pd.concat([feature1,feature2])
+    features=features[['patID','pracID','gender','birthyear','case_index','matchID','data_start','data_end','isCase']]
+
+    features.to_csv('data/pt_data/pt_features.csv',index=False)
+
+
 
 # def get_insomnia_clinentries():
 #     df = pd.read_csv('data/pt_data/proc_insomnia_clinicalentries.csv',delimiter='\t')
