@@ -52,29 +52,29 @@ def create_pt_features():
     feature_index=['patID','pracID','gender','birthyear','isCase','matchid','case_index','data_start','data_end']
     features = pd.DataFrame(columns=feature_index)
     for index,row in matching.iterrows():
-# first append the case
-    index = len(features)
-    features.loc[index,feature_index[0]]=row[0] #patID
-    features.loc[index,feature_index[1]]=row[1] #pracID
-    features.loc[index,feature_index[2]]=row[2] #gender
-    features.loc[index,feature_index[3]]=row[3] #birthyear
-    features.loc[index,feature_index[4]]=True #isCase
-    features.loc[index,feature_index[5]]=row[6] #matchid
-    features.loc[index,feature_index[6]]=row[4] #case_index
-    features.loc[index,feature_index[7]]=row[10] #data_start
-    features.loc[index,feature_index[8]]=row[11] #data_end
-# now append the control
-    index = len(features)
-    features.loc[index,feature_index[0]]=row[6] #patID
-    features.loc[index,feature_index[1]]=row[7] #pracID
-    features.loc[index,feature_index[2]]=row[8] #gender
-    features.loc[index,feature_index[3]]=row[9] #birthyear
-    features.loc[index,feature_index[4]]=False #isCase
-    features.loc[index,feature_index[5]]=row[0] #matchid
-    features.loc[index,feature_index[6]]=row[4] #case_index
-    features.loc[index,feature_index[7]]=row[10] #data_start
-    features.loc[index,feature_index[8]]=row[11] #data_end
-    features.to_csv(data/pt_data/pt_features.csv)    
+        # first append the case
+        index = len(features)
+        features.loc[index,feature_index[0]]=row[0] #patID
+        features.loc[index,feature_index[1]]=row[1] #pracID
+        features.loc[index,feature_index[2]]=row[2] #gender
+        features.loc[index,feature_index[3]]=row[3] #birthyear
+        features.loc[index,feature_index[4]]=True #isCase
+        features.loc[index,feature_index[5]]=row[6] #matchid
+        features.loc[index,feature_index[6]]=row[4] #case_index
+        features.loc[index,feature_index[7]]=row[10] #data_start
+        features.loc[index,feature_index[8]]=row[11] #data_end
+        # now append the control
+        index = len(features)
+        features.loc[index,feature_index[0]]=row[6] #patID
+        features.loc[index,feature_index[1]]=row[7] #pracID
+        features.loc[index,feature_index[2]]=row[8] #gender
+        features.loc[index,feature_index[3]]=row[9] #birthyear
+        features.loc[index,feature_index[4]]=False #isCase
+        features.loc[index,feature_index[5]]=row[0] #matchid
+        features.loc[index,feature_index[6]]=row[4] #case_index
+        features.loc[index,feature_index[7]]=row[10] #data_start
+        features.loc[index,feature_index[8]]=row[11] #data_end
+        features.to_csv(data/pt_data/pt_features.csv)
 
 # def get_insomnia_clinentries():
 #     df = pd.read_csv('data/pt_data/proc_insomnia_clinicalentries.csv',delimiter='\t')
