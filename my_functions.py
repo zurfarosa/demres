@@ -12,8 +12,17 @@ def create_pegmed():
     Creates a cleaned up version of Pegasus Medical dictionary in csv form
     """
     raw_pegmed = pd.read_csv('data/dicts/raw_pegasus_medical.txt',delimiter='\t',skiprows=[0,1,2],header=None)
-    raw_pegmed.columns=['MedCode','ReadCode','col2','col3','col4','col5','Description','Date']
-    raw_pegmed.to_csv('data/dicts/proc_pegasus_medical.csv')
+    raw_pegmed.columns=['medcode','readcode','clinical events','immunisation events','referral events','test events','read term','database build']
+    raw_pegmed.to_csv('data/dicts/proc_pegasus_medical.csv',index=False)
+
+def create_pegprod():
+    """
+    Creates a cleaned up version of Pegasus Products dictionary in csv form
+    """
+    raw_pegprod = pd.read_csv('data/dicts/raw_pegasus_product.txt',delimiter='\t',encoding='latin-1',header=None)
+    raw_pegprod.columns=['product code','XXX code','therapy events','product name','drug substance name','substance strength','formulation','route','BNF code','BNF header','database build','unknown column']
+    raw_pegprod.to_csv('data/dicts/proc_pegasus_prod.csv',index=False)
+
 
 def create_insomnia_medcodes():
     """
@@ -21,7 +30,7 @@ def create_insomnia_medcodes():
     """
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv')
     readcodes = pd.read_csv('data/codelists/insomnia_readcodes.csv',delimiter=',')
-    medcodes=[str(lookup_one_to_one(pegmed,'ReadCode','MedCode',readcode)) for readcode in readcodes]
+    medcodes=[str(lookup_one_to_one(pegmed,'readcode','medcode',readcode)) for readcode in readcodes]
     with open('data/codelists/insomnia_medcodes.csv','w', newline='') as f:
         writer = csv.writer(f,delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(medcodes)
@@ -48,7 +57,10 @@ def create_pt_features():
     Creates csv file containing all patients (cases and controls on separate
     rows) with a column for all variables for logistic regression
     '''
-    matching = pd.read_csv('data/pt_data/Matching_File.txt',delimiter='\t')
+
+    #delete rows where there is no control for the case
+    # matching = matching[matching.]
+
 
     #Create the cases
     feature1 = matching.copy(deep=True)
