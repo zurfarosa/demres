@@ -1,0 +1,40 @@
+.
+├── Adding\ insomnia\ events\ to\ the\ Patient\ Features\ dataframe.ipynb
+├── Overview\ of\ raw\ data.ipynb
+├── Untitled.ipynb
+├── __pycache__
+│   ├── functions.cpython-35.pyc
+│   └── my_functions.cpython-35.pyc
+├── create_files.ipynb
+├── data
+│   ├── codelists
+│   │   ├── insomnia_medcodes.csv
+│   │   └── insomnia_readcodes.csv
+│   ├── dicts
+│   │   ├── proc_pegasus_medical.csv
+│   │   ├── proc_pegasus_prod.csv
+│   │   ├── raw_pegasus_medical.txt
+│   │   └── raw_pegasus_product.txt
+│   └── pt_data
+│       ├── Case_file.txt
+│       ├── Extract_Additional_001.txt
+│       ├── Extract_Clinical_001.txt
+│       ├── Extract_Clinical_002.txt
+│       ├── Extract_Consultation_001.txt
+│       ├── Extract_Consultation_002.txt
+│       ├── Extract_Immunisation_001.txt
+│       ├── Extract_Patient_001.txt
+│       ├── Extract_Practice_001.txt
+│       ├── Extract_Referral_001.txt
+│       ├── Extract_Staff_001.txt
+│       ├── Extract_Test_001.txt
+│       ├── Extract_Test_002.txt
+│       ├── Extract_Therapy_001.txt
+│       ├── Extract_Therapy_002.txt
+│       ├── Matching_File.txt
+│       ├── proc_insomnia_clinicalentries.csv
+│       └── pt_features.csv
+├── my_functions.py
+└── tree.txt
+
+5 directories, 32 files
