@@ -40,18 +40,46 @@ def get_insomnia_medcodes():
     medcodes = pd.read_csv('data/codelists/insomnia_medcodes.csv',delimiter=',')
     return [int(medcode) for medcode in list(medcodes)]
 
-def create_insomnia_clinentries():
+def create_all_clinical_tests_referrals_just_patid_and_dates_csv():
     """
-    Creates csv file containing all Clinical Entries relating to our insomnia medcodes
+    Creates all_clinical_tests_referrals_just_patid_and_dates.csv
+    This is a file containing a dataframe containing simplified data
+    (just patient ID, eventdate, sysdate, and medcode) from the
+    Extract_Clinical_001 and 002 files, Extract_Test_001 and 002 file and Extract_Referral_001 file
+    (but not the Extract_Therapy_001 or 002 files)
     """
-    df = pd.read_csv('data/pt_data/Extract_Clinical_001.txt',delimiter='\t')
-    df['file']='001'
-    df2 = pd.read_csv('data/pt_data/Extract_Clinical_002.txt',delimiter='\t')
-    df2['file']='002'
-    df_joined = pd.concat([df,df2])
+    clin1 = pd.read_csv('data/pt_data/Extract_Clinical_001.txt',delimiter='\t')
+    clin1['file']='001'
+    clin2 = pd.read_csv('data/pt_data/Extract_Clinical_002.txt',delimiter='\t')
+    clin2['file']='002'
+    clinical = pd.concat([clin1,clin2])[['patid','sysdate','eventdate','medcode']]
+    clinical['eventdate'] = pd.to_datetime(clinical['eventdate'], format='%d/%m/%Y', errors='coerce')
+    clinical['sysdate'] = pd.to_datetime(clinical['sysdate'], format='%d/%m/%Y', errors='coerce')
+
+    test1 = pd.read_csv('data/pt_data/Extract_Test_001.txt',delimiter='\t')
+    test1['file']='001'
+    test2 = pd.read_csv('data/pt_data/Extract_Test_002.txt',delimiter='\t')
+    test2['file']='002'
+    test = pd.concat([test1,test2])[['patid','sysdate','eventdate','medcode']]
+    test['eventdate'] = pd.to_datetime(test['eventdate'], format='%d/%m/%Y', errors='coerce')
+    test['sysdate'] = pd.to_datetime(test['sysdate'], format='%d/%m/%Y', errors='coerce')
+
+    referral = pd.read_csv('data/pt_data/Extract_Referral_001.txt',delimiter='\t')
+    referral = referral[['patid','sysdate','eventdate','medcode']]
+    referral['eventdate'] = pd.to_datetime(referral['eventdate'], format='%d/%m/%Y', errors='coerce')
+    referral['sysdate'] = pd.to_datetime(referral['sysdate'], format='%d/%m/%Y', errors='coerce')
+
+    all_clinical_tests_referrals_just_patid_and_dates = pd.concat([clinical,test,referral])
+    all_clinical_tests_referrals_just_patid_and_dates.to_csv('data/pt_data/all_entries_just_patID_medcode_dates.csv',index=False)
+
+def create_insomnia_entries():
+    """
+    Creates csv file containing all entries (tests, referrals, 'clinicals') relating to our insomnia medcodes
+    """
+    df = pd.read_csv('data/pt_data/all_clinical_tests_referrals_just_patid_and_dates.csv',delimiter=',')
     medcodes = get_insomnia_medcodes()
-    relev_clinical = df_joined[df_joined['medcode'].isin(medcodes)]
-    relev_clinical.to_csv('data/pt_data/proc_insomnia_clinicalentries.csv',index=False)
+    relev_clinical = df[df['medcode'].isin(medcodes)]
+    relev_clinical.to_csv('data/pt_data/all_insomnia_entries.csv',index=False)
 
 def clean_matching():
     """
