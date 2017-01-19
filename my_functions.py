@@ -142,57 +142,95 @@ def create_pt_features():
 
     features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def add_sys_start_and_end_dates_plus_length_of_available_data_to_patient_features(all_entries):
+def add_sys_start_and_end_dates_to_pt_features():
     '''
     Needs the dateframe created by create_medcoded_entries() to be passed to it.
     This will need to be rewritten when I know the PROPER way to get the start and end dates for each patient's period of data extraction.
     As it stands, this function looks at all the medcoded_entries, and looks for the first and last 'sysdated' entry.
     '''
+
+    all_entries = pd.read_csv('data/pt_data/all_entries.csv',delimiter=',').sample(100)
+
+    earliest_sysdates = all_entries.sort_values(by='sysdate').groupby('patid').first().reset_index().loc[:,['patid','sysdate']]
+    earliest_sysdates = earliest_sysdates.loc[:,['patid','sysdate']]
+    earliest_sysdates.columns = ['patid','earliest_sysdate']
+
+    latest_sysdates = all_entries.sort_values(by='sysdate',ascending=False).groupby('patid').first().reset_index().loc[:,['patid','sysdate']]
+    latest_sysdates = latest_sysdates.loc[:,['patid','sysdate']]
+    latest_sysdates.columns = ['patid','latest_sysdate']
+
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
-
-    pt_features['sysdate_start'] = pt_features['patid'].map(lambda x: all_entries[all_entries['patid']==x].sort_values(by='sysdate').head(1)['sysdate'].values[0])
-    pt_features['sysdate_start'] = pd.to_datetime(pt_features['sysdate_start'])
-
-    pt_features['sysdate_end'] = pt_features['patid'].map(lambda x: all_entries[all_entries['patid']==x].sort_values(by='sysdate').tail(1)['sysdate'].values[0])
-    pt_features['sysdate_end'] = pd.to_datetime(pt_features['sysdate_end'])
+    pt_features = pd.merge(pt_features,earliest_sysdates,how='left')
+    pt_features = pd.merge(pt_features,latest_sysdates,how='left')
 
     pt_features['index_date'] = pd.to_datetime(pt_features['index_date'])
-
-    pt_features['length_of_data_pre_index_date']=((pt_features['index_date']-pt_features['sysdate_start'])/ np.timedelta64(1, 'D')).astype(int)
-    pt_features['length_of_data_post_index_date']=((pt_features['sysdate_end']-pt_features['index_date'])/ np.timedelta64(1, 'D')).astype(int)
+    pt_features['earliest_sysdate'] = pd.to_datetime(pt_features['earliest_sysdate'])
+    pt_features['latest_sysdate'] = pd.to_datetime(pt_features['latest_sysdate'])
 
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def delete_patients_if_not_enough_data():
+def add_length_of_data_pre_and_post_indexdate_to_pt_features(cases_or_controls='both'):
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
 
-    #delete patients if not enough data prior to index dates
-    removed_pt_features = pt_features[isCase == True & pt_features[length_of_data_pre_index_date]<(Study_Design.total_years_required_pre_index_date*365)]
-    removed_pt_features['reason']='Not enough available data prior to index date'
-    removed_pt_features.to_csv('data/pt_data/removed_pts.csv',index=False)
-    pt_features=pt_features-removed_pt_features
+    pt_features['index_date'] = pd.to_datetime(pt_features['index_date'])
+    pt_features['earliest_sysdate'] = pd.to_datetime(pt_features['earliest_sysdate'])
+    pt_features['latest_sysdate'] = pd.to_datetime(pt_features['latest_sysdate'])
+
+    row_index = pd.notnull(pt_features['earliest_sysdate']) & pd.notnull(pt_features['latest_sysdate'])
+    if cases_or_controls=='cases':
+         row_index = row_index & pt_features['isCase']==True
+    elif cases_or_controls=='controls':
+         row_index = row_index & pt_features['isCase']==False
+
+    pt_features.loc[row_index,'length_of_data_pre_index_date'] = ((pt_features['index_date']-pt_features['earliest_sysdate'])/np.timedelta64(1, 'D'))
+    pt_features.loc[row_index,'length_of_data_post_index_date'] = ((pt_features['latest_sysdate']-pt_features['index_date'])/np.timedelta64(1, 'D'))
+
+    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
+
+
+def delete_patients_if_not_enough_data(cases_or_controls='both'):
+    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
+
+    row_index = (pt_features['length_of_data_pre_index_date']<(Study_Design.total_years_required_pre_index_date*365)) \
+            | (pt_features['isCase']==False & (pt_features['length_of_data_post_index_date']<(Study_Design.years_of_data_after_index_date_required_by_controls*365)))
+    if cases_or_controls=='cases':
+         row_index = row_index & pt_features['isCase']==True
+    elif cases_or_controls=='controls':
+         row_index = row_index & pt_features['isCase']==False
+
+    #delete cases and controls if not enough data prior to index dates
+    pd.options.mode.chained_assignment = None  # default='warn'
+    removed_pts = pt_features.loc[row_index]
+    removed_pts['reason_for_removal']='Not enough available data prior or post index date'
+    removed_pts.to_csv('data/pt_data/removed_pts.csv',mode='a',index=False)
+    pt_features=pt_features.loc[row_index == False]
+
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def match_cases_and_controls():
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
     pt_features['new_match_id']=np.nan
     for index,row in pt_features.iterrows():
-        if pd.isnull(row['new_match_id']):
-            patid = row['patid']
-            print(patid)
-            birthyear = row['birthyear']
-            gender = row['gender']
-            isCase = row['isCase']
-            pracid = row['pracid']
-            matches_birthyear = pt_features['birthyear']==birthyear
-            matches_gender = pt_features['gender']==gender
-            differs_in_caseness = pt_features['isCase'] != isCase
-            matches_practice = pt_features['pracid']==pracid
-            is_not_already_matched = pd.isnull(pt_features['new_match_id'])
-            matching_pt = pt_features[matches_birthyear & matches_gender & matches_practice & differs_in_caseness & is_not_already_matched].head(1)
-            matching_pt['new_match_id']=patid
-            pt_features.loc[index,'new_match_id']=matching_pt['patid'].values[0]
-    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
+        if(row['isCase']==True):
+            print('Matching {0}...'.format(row['patid']))
+            if pd.isnull(row['new_match_id']):
+                patid = row['patid']
+                birthyear = row['birthyear']
+                gender = row['gender']
+                pracid = row['pracid']
+                matches_birthyear = pt_features['birthyear']==birthyear
+                matches_gender = pt_features['gender']==gender
+                is_control = pt_features['isCase'] == False
+                matches_practice = pt_features['pracid']==pracid
+                is_not_already_matched = pd.isnull(pt_features['new_match_id'])
+                matching_pt = pt_features[matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched].head(1)
+                #give both the case and control a unique match ID (for convenience, I've used the iterrows index)
+                pt_features.loc[index,'new_match_id']=index
+                matching_pt['new_match_id']=index
+                print('Matched {0} with {1}.'.format(patid,matching_pt['patid']))
+            else:
+                print('{0} already matched!'.format(row['patid']))
+    pt_features.to_csv('data/pt_data/pt_features_temp.csv',index=False)
 
 def get_insomnia_medcodes():
     medcodes = pd.read_csv('data/codelists/insomnia_medcodes.csv',delimiter=',')
