@@ -119,7 +119,10 @@ def create_pt_features():
     features=features[['patid','pracid','gender','birthyear','index_date','isCase']]
 
     # Add the previously removed patients from ummatched_cases.csv (these were unmatched in the original raw data files)
+    # Note that I don't think these patients have any clinical events at all, and are thus automatically deleted at a later stage!
     ummatched_cases = pd.read_csv('data/pt_data/ummatched_cases.csv',delimiter=',',parse_dates=['index_date'])
+    ummatched_cases['isCase']=True
+
     features = pd.concat([features,ummatched_cases])
 
     # features['index_date']=pd.to_datetime(features['index_date'])
@@ -147,55 +150,56 @@ def add_sys_start_and_end_dates_to_pt_features():
     pt_features = pd.merge(pt_features,earliest_sysdates,how='left')
     pt_features = pd.merge(pt_features,latest_sysdates,how='left')
 
-    # Remove pts without any sysdates - this also seems to remove the unmatched cases from the clean_matching function above
-    pt_features = pt_features[pd.notnull(pt_features['earliest_sysdate'])]
+    # Remove pts without any sysdates
+    pts_without_any_events = pt_features[pd.isnull(pt_features['earliest_sysdate'])]
+    pts_without_any_events['reason_for_removal']='Pt did not have any events'
+    pts_without_any_events.to_csv('data/pt_data/pts_without_any_events.csv',index=False)
 
+    pt_features = pt_features[pd.notnull(pt_features['earliest_sysdate'])]
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def add_length_of_data_pre_and_post_indexdate_to_pt_features(cases_or_controls='both'):
+def add_length_of_data_pre_and_post_indexdate_to_pt_features(isCase):
+    '''
+    Calculats the length of data extracted before and after the index date.
+    Requires isCase (i.e. whether pts are cases or controls) as an argument, because until they've been rematched,
+    controls don't yet have an index date.
+    '''
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',', parse_dates=['index_date','earliest_sysdate','latest_sysdate'])
 
-    row_index = pd.notnull(pt_features['earliest_sysdate']) & pd.notnull(pt_features['latest_sysdate'])
-    if cases_or_controls=='cases':
-         row_index = row_index & pt_features['isCase']==True
-         # Until they've been rematched, there's no point calculating the pre and post index data length for the controls, as they don't yet have an index_date!
-    elif cases_or_controls=='controls':
-         row_index = row_index & pt_features['isCase']==False
+    row_index = pt_features['isCase']==isCase & pd.notnull(pt_features['earliest_sysdate']) & pd.notnull(pt_features['latest_sysdate'])
 
-    pt_features.loc[row_index,'length_of_data_pre_index_date'] = ((pt_features['index_date']-pt_features['earliest_sysdate'])/np.timedelta64(1, 'D'))
-    pt_features.loc[row_index,'length_of_data_post_index_date'] = ((pt_features['latest_sysdate']-pt_features['index_date'])/np.timedelta64(1, 'D'))
+    pt_features.loc[row_index,'days_pre_indexdate'] = ((pt_features['index_date']-pt_features['earliest_sysdate'])/np.timedelta64(1, 'D'))
+    pt_features.loc[row_index,'days_post_indexdate'] = ((pt_features['latest_sysdate']-pt_features['index_date'])/np.timedelta64(1, 'D'))
 
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 
-def delete_patients_if_not_enough_data(cases_or_controls='both'):
+def delete_patients_if_not_enough_data(isCase):
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
 
-    row_index = (pt_features['length_of_data_pre_index_date']<(Study_Design.total_years_required_pre_index_date*365)) \
-            | (pt_features['isCase']==False & (pt_features['length_of_data_post_index_date']<(Study_Design.years_of_data_after_index_date_required_by_controls*365)))
-    if cases_or_controls=='cases':
-         row_index = row_index & pt_features['isCase']==True
-    elif cases_or_controls=='controls':
-         row_index = row_index & pt_features['isCase']==False
+    del_index = (pt_features['days_pre_indexdate']<(Study_Design.total_years_required_pre_index_date*365)) \
+            | (pt_features['days_post_indexdate']<(Study_Design.years_of_data_after_index_date_required_by_controls*365))
+    del_index = del_index & (pt_features['isCase']==isCase)
 
     #delete cases and controls if not enough data prior to index dates
     pd.options.mode.chained_assignment = None  # default='warn'
-    removed_pts = pt_features.loc[row_index]
+    removed_pts = pt_features.loc[del_index]
     removed_pts['reason_for_removal']='Not enough available data prior or post index date'
     removed_pts.to_csv('data/pt_data/removed_pts.csv',mode='a',index=False)
-    pt_features=pt_features.loc[row_index == False]
 
+    pt_features=pt_features.loc[del_index == False]
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def match_cases_and_controls():
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','earliest_sysdate','latest_sysdate'])
 
-    pt_features['new_match_id']=np.nan
+    pt_features['matchid']=np.nan
+    pt_features.sort_values(inplace=True,by='days_pre_indexdate',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
 
     count=0
     for index,row in pt_features.iterrows():
         if(row['isCase']==True):
-            if pd.isnull(row['new_match_id']):
+            if pd.isnull(row['matchid']):
                 patid = row['patid']
                 birthyear = row['birthyear']
                 gender = row['gender']
@@ -206,30 +210,36 @@ def match_cases_and_controls():
                 matches_gender = pt_features['gender']==gender
                 is_control = pt_features['isCase'] == False
                 matches_practice = pt_features['pracid']==pracid
-                is_not_already_matched = pd.isnull(pt_features['new_match_id'])
+                is_not_already_matched = pd.isnull(pt_features['matchid'])
                 enough_data_after_index_date = pt_features['earliest_sysdate'] <= (index_date - timedelta(days=(365*Study_Design.total_years_required_pre_index_date)))
                 enough_data_before_index_date = pt_features['latest_sysdate'] >= (index_date + timedelta(days=(365*Study_Design.years_of_data_after_index_date_required_by_controls)))
-                matching_pt = pt_features[enough_data_before_index_date & enough_data_after_index_date & matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched].head(1)
+                matching_pt = pt_features[enough_data_before_index_date & enough_data_after_index_date & matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched]
+                # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
+                matching_pt['total_available_data']= pt_features['latest_sysdate'] - pt_features['earliest_sysdate']
+                matching_pt = matching_pt.sort_values(by='total_available_data',ascending=True).head(1)
                 if len(matching_pt)>0:
                     #give both the case and control a unique match ID (for convenience, I've used the iterrows index)
-                    matching_pt_id = int(matching_pt['patid'].values[0])
-                    matching_pt_index = pt_features['patid']==matching_pt_id
-                    pt_features.loc[index,'new_match_id']=index
-                    pt_features.loc[matching_pt_index,'new_match_id']=index
-                    pt_features.loc[matching_pt_index,'index_date']=index_date
-                    # print('Matched {0} with {1}.'.format(patid,matching_pt_id))
-                    count += 1
+                    matching_pt_id = matching_pt['patid'].values[0]
+                    if pd.notnull(matching_pt_id):
+                        matching_pt_id = matching_pt['patid'].values[0]
+                        matching_pt_index = pt_features['patid']==matching_pt_id
+                        pt_features.loc[index,'matchid']=index
+                        pt_features.loc[matching_pt_index,'matchid']=index
+                        pt_features.loc[matching_pt_index,'index_date']=index_date
+                        count += 1
+                    #     print('Matched {0} with {1}.'.format(patid,matching_pt_id))
+                    # else:
+                    #     print('No match found for ',patid)
         if count>100:
             pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
-            # print('***WRITING TO FILE***')
             count=0
 
 def delete_unmatched_controls():
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','earliest_sysdate','latest_sysdate'])
-    removed_unmatched_controls = pt_features[pd.isnull(pt_features['new_match_id'])]
+    removed_unmatched_controls = pt_features[pd.isnull(pt_features['matchid'])]
     removed_unmatched_controls.to_csv('data/pt_data/removed_unmatched_controls.csv',index=False)
-    pt_features = pt_features[pd.notnull(pt_features['new_match_id'])]
-    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
+    pt_features = pt_features[pd.notnull(pt_features['matchid'])]
+    pt_features.to_csv('data/pt_data/pt_features_tempy.csv',index=False)
 
 def create_insomnia_medcodes():
     """

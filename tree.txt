@@ -1,13 +1,11 @@
 .
-├── Adding\ insomnia\ events\ to\ the\ Patient\ Features\ dataframe.ipynb
-├── Are\ cases\ and\ controls\ matched\ on\ length\ of\ data\ extracted?.ipynb
+├── Exploring\ the\ data.ipynb
 ├── Overview\ of\ raw\ data.ipynb
-├── Untitled.ipynb
-├── Untitled1.ipynb
 ├── __pycache__
 │   ├── constants.cpython-35.pyc
 │   ├── functions.cpython-35.pyc
 │   └── my_functions.cpython-35.pyc
+├── clinical_codes.py
 ├── constants.py
 ├── create_files.ipynb
 ├── data
@@ -36,15 +34,23 @@
 │       ├── Extract_Therapy_001.txt
 │       ├── Extract_Therapy_002.txt
 │       ├── Matching_File.txt
+│       ├── all_entries.csv
+│       ├── all_insomnia_entries.csv
+│       ├── consultations.csv
 │       ├── matching_unmatched_removed.csv
-│       ├── medcoded_clinical_entries.csv
+│       ├── medcoded_entries.csv
 │       ├── monthly_insom_event_count.csv
-│       ├── proc_insomnia_clinicalentries.csv
 │       ├── pt_features.csv
+│       ├── pts_without_any_events.csv
+│       ├── removed_pts.csv
+│       ├── removed_unmatched_controls.csv
 │       └── ummatched_cases.csv
 ├── my_functions.py
-├── pegasus\ products\ -\ data\ cleaning.ipynb
-├── tree.txt
-└── untitled.txt
+├── old
+│   ├── Adding\ insomnia\ events\ to\ the\ Patient\ Features\ dataframe.ipynb
+│   ├── Are\ cases\ and\ controls\ matched\ on\ length\ of\ data\ extracted?.ipynb
+│   ├── Count\ insomnia\ exposure.ipynb
+│   └── pegasus\ products\ -\ data\ cleaning.ipynb
+└── tree.txt
 
-5 directories, 42 files
+6 directories, 47 files
