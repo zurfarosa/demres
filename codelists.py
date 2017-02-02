@@ -1,0 +1,5 @@
+hypnotics = [
+    'zopiclone',
+    'zolpidem',
+    'zaleplon'
+]
