@@ -41,11 +41,12 @@ def create_prescriptions():
     prescriptions = pd.concat([presc1,presc2])
     pt_list = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')['patid']
     prescriptions = prescriptions[prescriptions['patid'].isin(pt_list)]
-    prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'])
-    prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'])
+    prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'],format='%d/%m/%Y',errors='coerce')
+    prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],format='%d/%m/%Y',errors='coerce')
     prescriptions.to_csv('data/pt_data/prescriptions.csv',index=False)
 
 def create_medcoded_entries():
+    print('calling create_medcoded_entries')
     """
     Creates create_medcoded_entries.csv
     This is a file containing a dataframe containing simplified data
@@ -53,26 +54,47 @@ def create_medcoded_entries():
     Extract_Clinical_001 and 002 files, Extract_Test_001 and 002 file and Extract_Referral_001 file
     (but not the Extract_Therapy_001 or 002 files or Extract_Consultations_001 or 002)
     """
-    clin1 = pd.read_csv('data/pt_data/Extract_Clinical_001.txt',delimiter='\t')
-    clin2 = pd.read_csv('data/pt_data/Extract_Clinical_002.txt',delimiter='\t')
-    clinical = pd.concat([clin1,clin2])[['patid','sysdate','eventdate','medcode']]
-    clinical['eventdate'] = pd.to_datetime(clinical['eventdate'])
-    clinical['sysdate'] = pd.to_datetime(clinical['sysdate'])
+    print('processing clinical')
+    clin1 = pd.read_csv('data/pt_data/Extract_Clinical_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    clin2 = pd.read_csv('data/pt_data/Extract_Clinical_002.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    print('processing clinical - concatentating')
+    clinical = pd.concat([clin1,clin2])
     clinical['type']=Entry_Type.clinical
-    test1 = pd.read_csv('data/pt_data/Extract_Test_001.txt',delimiter='\t')
-    test2 = pd.read_csv('data/pt_data/Extract_Test_002.txt',delimiter='\t')
-    test = pd.concat([test1,test2])[['patid','sysdate','eventdate','medcode']]
-    test['eventdate'] = pd.to_datetime(test['eventdate'])
-    test['sysdate'] = pd.to_datetime(test['sysdate'])
+    print('processing clinical - converting to datetime')
+    clinical['eventdate'] = pd.to_datetime(clinical['eventdate'],format='%d/%m/%Y',errors='coerce')
+    clinical['sysdate'] = pd.to_datetime(clinical['sysdate'],format='%d/%m/%Y',errors='coerce')
+
+    print('processing tests')
+    test1 = pd.read_csv('data/pt_data/Extract_Test_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    test2 = pd.read_csv('data/pt_data/Extract_Test_002.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    print('processing test - concatentating')
+    test = pd.concat([test1,test2])
     test['type']=Entry_Type.test
+    print('processing test - converting to datetime - eventdate')
+    test['eventdate'] = pd.to_datetime(test['eventdate'],format='%d/%m/%Y',errors='coerce')
+    print('processing test - converting to datetime - sysdate')
+    test['sysdate'] = pd.to_datetime(test['sysdate'],format='%d/%m/%Y',errors='coerce')
 
-    referral = pd.read_csv('data/pt_data/Extract_Referral_001.txt',delimiter='\t')
-    referral = referral[['patid','sysdate','eventdate','medcode']]
-    referral['eventdate'] = pd.to_datetime(referral['eventdate'])
-    referral['sysdate'] = pd.to_datetime(referral['sysdate'])
+    print('processing referrals')
+    referral = pd.read_csv('data/pt_data/Extract_Referral_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
     referral['type']=Entry_Type.referral
+    print('processing referrals - converting to datetime - eventdate')
+    referral['eventdate'] = pd.to_datetime(referral['eventdate'],format='%d/%m/%Y',errors='coerce')
+    print('processing referrals - converting to datetime - sysdate')
+    referral['sysdate'] = pd.to_datetime(referral['sysdate'],format='%d/%m/%Y',errors='coerce')
 
-    medcoded_entries = pd.concat([clinical,test,referral])
+    print('processing immunisations')
+    immunisations = pd.read_csv('data/pt_data/Extract_Immunisation_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    immunisations['type']=Entry_Type.immunisation
+    print('processing immunisations - converting to datetime - eventdate')
+    immunisations['eventdate'] = pd.to_datetime(immunisations['eventdate'],format='%d/%m/%Y',errors='coerce')
+    print('processing referrals - converting to datetime - sysdate')
+    immunisations['sysdate'] = pd.to_datetime(immunisations['sysdate'],format='%d/%m/%Y',errors='coerce')
+
+    print('concatenating the different entry types')
+    medcoded_entries = pd.concat([clinical,test,referral,immunisations])
+
+    print('writing to csv')
     medcoded_entries.to_csv('data/pt_data/medcoded_entries.csv',index=False)
 
 def create_consultations():
@@ -89,13 +111,35 @@ def create_consultations():
 
 def create_all_entries():
     """
-    Creates a csv file (all_entries.csv) containing all entries (consultations, plus the medcoded entries - clinicals, tests, referrals)
-    The csv file is only used as  a way of estimating the dates of data extraction (hopefully CPRD will tell me how to do this properly soon)
+    Creates a csv file (all_entries.csv) containing all entries (consultations, prescriptions, clinicals, tests, referrals)
     """
+    print('calling create_all_entries')
     consultations = pd.read_csv('data/pt_data/consultations.csv',delimiter=',')
     medcoded_entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',')
-    all_entries = pd.concat([consultations,medcoded_entries])
+    prescriptions = pd.read_csv('data/pt_data/prescriptions.csv',delimiter=',',usecols=['patid','eventdate','sysdate','prodcode'])
+    prescriptions['type']=Entry_Type.prescription
+    print('converting to datetime - eventdate')
+    prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'],format='%d/%m/%Y',errors='coerce')
+    print('converting to datetime - sysdate')
+    prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],format='%d/%m/%Y',errors='coerce')
+    print('concatenating...')
+    all_entries = pd.concat([consultations,medcoded_entries,prescriptions],ignore_index=True)
+    print('writing to file...')
     all_entries.to_csv('data/pt_data/all_entries.csv',index=False)
+    # print('writing consultations to csv...')
+    # consultations.to_csv('data/pt_data/all_entries.csv',index=False)
+    # print('writing medcoded_entries to csv...')
+    # medcoded_entries.to_csv('data/pt_data/all_entries.csv',mode='a',header=False,index=False)
+    # print('writing prescriptions to csv...')
+    # prescriptions.to_csv('data/pt_data/all_entries.csv',mode='a',header=False,index=False)
+
+def get_patient_history(all_entries,patid):
+    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
+    pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
+    pt_history = all_entries[all_entries['patid']==patid]
+    pt_history_elaborated = pd.merge(pt_history,pegmed[['medcode','read term']],how='left')
+    pt_history_elaborated = pd.merge(pt_history_elaborated,pegprod[['prodcode','drug substance name']],how='left')
+    return pt_history_elaborated
 
 def clean_matching():
     """
