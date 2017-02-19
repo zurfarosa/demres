@@ -21,7 +21,6 @@ def create_pt_features():
     Creates csv file containing all patients (cases and controls on separate rows)
     with a column for all variables to be analysed
     '''
-
     matching = pd.read_csv('data/pt_data/matching_unmatched_removed.csv',delimiter=',')
     del(matching['match'])
     del(matching['control_end'])
@@ -102,14 +101,12 @@ def add_data_start_and_end_dates_to_pt_entries(all_entries):
     logging.debug('add_sys_start_and_end_dates_to_pt_features all_entries.csv')
 
     logging.debug('finding earliest systdates')
-    earliest_sysdates = all_entries.sort_values(by='sysdate').groupby('patid').first().reset_index().loc[:,['patid','sysdate']]
-    earliest_sysdates = earliest_sysdates.loc[:,['patid','sysdate']]
-    earliest_sysdates.columns = ['patid','data_start']
+    earliest_sysdates = all_entries.groupby('patid')['eventdate'].min().reset_index()
+    earliest_sysdates.rename(columns={'eventdate':'data_start'},inplace=True)
 
     logging.debug('finding latest sysdates')
-    latest_sysdates = all_entries.sort_values(by='sysdate',ascending=False).groupby('patid').first().reset_index().loc[:,['patid','sysdate']]
-    latest_sysdates = latest_sysdates.loc[:,['patid','sysdate']]
-    latest_sysdates.columns = ['patid','data_end']
+    earliest_sysdates = all_entries.groupby('patid')['eventdate'].max().reset_index()
+    earliest_sysdates.rename(columns={'eventdate':'data_end'},inplace=True)
 
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
 
@@ -174,7 +171,7 @@ def get_medcodes_from_readcodes(readcodes):
     medcodes=[pegmed.loc[pegmed['readcode']==readcode,'medcode'].iloc[0] for readcode in readcodes]
     return medcodes
 
-def add_insomnia_event_count_to_pt_features():
+def get_insomnia_event_count():
     """
     Calculates count of insomnia-months for each patient, and adds it to pt_features dataframe
     """
@@ -217,7 +214,6 @@ def add_insomnia_event_count_to_pt_features():
     merged_table['insomnia_event_count'] = merged_table['insomnia_event_count'].astype(int)
 
     merged_table.to_csv('data/pt_data/pt_features.csv',index=False)
-
 
 def clean_matching():
     """
@@ -301,7 +297,6 @@ def delete_patients_if_not_enough_data(isCase):
 
     pt_features=pt_features.loc[del_index == False]
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
-
 
 def create_pegmed():
     """
