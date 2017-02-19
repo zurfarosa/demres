@@ -108,7 +108,6 @@ dementia_readcodes = [
 	'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
 	'E004300',	#	Arteriosclerotic dementia with depression
 	'E003.00',	#	Senile dementia with delirium
-	'129B.00',	#	FH: Alzheimer's disease
 	'Eu00112',	#	[X]Senile dementia,Alzheimer's type
 	'E004.00',	#	Arteriosclerotic dementia
 	'E004200',	#	Arteriosclerotic dementia with paranoia
@@ -122,7 +121,6 @@ dementia_readcodes = [
 	'Eu00.00',	#	[X]Dementia in Alzheimer's disease
 	'E004.11',	#	Multi infarct dementia
 	'Eu02000',	#	[X]Dementia in Pick's disease
-	'1281.00',	#	FH: Senile dementia
 	'Eu00113',	#	[X]Primary degen dementia of Alzheimer's type,...
 	'Eu00111',	#	[X]Alzheimer's disease type 1
 	'E00..11',	#	Senile dementia

@@ -1,21 +1,25 @@
 from import_file import *
 
 def get_patient_history(all_entries,patid):
+    '''
+    Returns a dataframe containing all patient entries (prescriptions, consultations, immunisations etc) for a specific patient,
+    annotated with read terms, drug substance names etc.
+    '''
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
     pt_history = all_entries[all_entries['patid']==patid]
     pt_history_elaborated = pd.merge(pt_history,pegmed[['medcode','read term']],how='left')
     pt_history_elaborated = pd.merge(pt_history_elaborated,pegprod[['prodcode','drug substance name']],how='left')
     pt_history_elaborated['description']=pt_history_elaborated['drug substance name'].fillna(pt_history_elaborated['read term'])
-    inv_entry_type = {v: k for k, v in constants.entry_type.items()}
+    inv_entry_type = {v: k for k, v in entry_type.items()}
     pt_history_elaborated['type']=pt_history_elaborated['type'].map(inv_entry_type)
     pt_history_elaborated = pt_history_elaborated[['patid','eventdate','sysdate','type','description']]
     return pt_history_elaborated
 
 def create_pt_features():
     '''
-    Creates csv file containing all patients (cases and controls on separate
-    rows) with a column for all variables for logistic regression
+    Creates csv file containing all patients (cases and controls on separate rows)
+    with a column for all variables to be analysed
     '''
 
     matching = pd.read_csv('data/pt_data/matching_unmatched_removed.csv',delimiter=',')
@@ -55,38 +59,57 @@ def create_pt_features():
     features['index_date']=pd.to_datetime(features['index_date'],dayfirst=True,errors='coerce', infer_datetime_format=True)
     features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def check_whether_case_or_control(all_entries):
-    pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv')
+def correct_index_date_and_caseness_and_add_final_dementia_subtype(all_entries):
+    '''
+    Calculates correct index date and establishes caseness by looking for first dementia diagnoses.
+    Also looks for final dementia diagnosis (e.g. 'vascular dementia'), as this is likely to be our best guess as to the dementia subtype
+    Then deletes the (inaccurate) casesness and index date given to us by CPRD
+    '''
+
+    pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
     medcodes = get_medcodes_from_readcodes(codelists.dementia_readcodes)
     prodcodes = get_prodcodes_from_drug_name(codelists.antidementia_drugs)
-    all_dementia_entries = all_entries[(all_entries['prodcode'].isin(prodcodes))|(all_entries['medcode'].isin(medcodes))]
-    all_dementia_entries_annotated = pd.merge(all_dementia_entries,pegmed,how='left')[['prodcode','medcode','eventdate','type','read term']]
-    all_dementia_entries_annotated = pd.merge(all_dementia_entries_annotated,pegprod,how='left')[['medcode','prodcode','eventdate','type','drug substance name','read term']]
-    # pt_features = pd.read_csv('data/pt_data/pt_features',delimiter=',')
-    # pt_features['last_dementia_diagnosis'] = pt_features['patid'].map(lambda x: all_dementia_entries[all_dementia_entries['patid']==x])
-    # pt_features['isCase_verified'] = pt_features.loc[pd.notnull(pt_features['last_dementia_diagnosis'])]
-    # logging.debug(pt_features)
 
-def add_sys_start_and_end_dates_to_pt_features(all_entries):
+    # from the all_entries df, get just those which contain a dementia dx of an antidementia drug prescription
+    all_dementia_entries = all_entries[(all_entries['prodcode'].isin(prodcodes))|(all_entries['medcode'].isin(medcodes))]
+    # for clarity, look up the Read terms
+    all_dem_labelled = pd.merge(all_dementia_entries,pegmed,how='left')[['patid','prodcode','medcode','sysdate','eventdate','type','read term']]
+    # for clarity, look up the drug names
+    all_dem_labelled = pd.merge(all_dem_labelled,pegprod,how='left')[['patid','medcode','prodcode','sysdate','eventdate','type','drug substance name','read term']]
+    all_dem_labelled.loc[:,'eventdate']=pd.to_datetime(all_dem_labelled.loc[:,'eventdate'])
+    #Get the date of earliest dementia diagnosis / antidementia drug prescription - this will be the revised index date, and will also determine revised caseness
+    earliest_dementia_dates = all_dem_labelled.groupby('patid')['eventdate'].min().reset_index()
+    earliest_dementia_dates.rename(columns={'eventdate':'index_date'},inplace=True)
+    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
+    #Delete the old (CRPD-created) index_date and isCase, because we're about to create more accurate ones
+    pt_features.drop(['isCase','index_date'],axis=1,inplace=True)
+    pt_features = pd.merge(pt_features,earliest_dementia_dates,how='left')
+    pt_features['isCase']=np.where(pd.notnull(pt_features['index_date']),True,False)
+    # Get the final dementia diagnosis
+    just_dementia_diagnoses = all_dem_labelled[pd.isnull(all_dem_labelled['prodcode'])]
+    final_dementia_dx = just_dementia_diagnoses.loc[just_dementia_diagnoses.groupby('patid')['eventdate'].idxmax()][['patid','medcode','read term']]
+    final_dementia_dx.rename(columns={'medcode':'final dementia medcode','read term':'final dementia read term'},inplace=True)
+    pt_features = pd.merge(pt_features,final_dementia_dx,how='left')
+    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
+
+def add_data_start_and_end_dates_to_pt_entries(all_entries):
     '''
     Needs the dateframe created by create_medcoded_entries() to be passed to it.
     This will need to be rewritten when I know the PROPER way to get the start and end dates for each patient's period of data extraction.
-    As it stands, this function looks at all the medcoded_entries, and looks for the first and last 'sysdated' entry.
+    This function looks at all clinical entries (e.g. prescriptions, referrals, consultations), and looks for the first and last 'sysdated' entry.
     '''
-    # logging.debug('reading all_entries.csv')
-    # all_entries = pd.read_csv('data/pt_data/all_entries.csv',delimiter=',')
+    logging.debug('add_sys_start_and_end_dates_to_pt_features all_entries.csv')
 
     logging.debug('finding earliest systdates')
     earliest_sysdates = all_entries.sort_values(by='sysdate').groupby('patid').first().reset_index().loc[:,['patid','sysdate']]
     earliest_sysdates = earliest_sysdates.loc[:,['patid','sysdate']]
-    earliest_sysdates.columns = ['patid','earliest_sysdate']
+    earliest_sysdates.columns = ['patid','data_start']
 
     logging.debug('finding latest sysdates')
     latest_sysdates = all_entries.sort_values(by='sysdate',ascending=False).groupby('patid').first().reset_index().loc[:,['patid','sysdate']]
     latest_sysdates = latest_sysdates.loc[:,['patid','sysdate']]
-    latest_sysdates.columns = ['patid','latest_sysdate']
-
+    latest_sysdates.columns = ['patid','data_end']
 
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
 
@@ -97,13 +120,14 @@ def add_sys_start_and_end_dates_to_pt_features(all_entries):
 
     # Remove pts without any sysdates
     logging.debug('removing patients without any events')
-    pts_without_any_events = pt_features[pd.isnull(pt_features['earliest_sysdate'])]
+    pts_without_any_events = pt_features[pd.isnull(pt_features['data_start'])]
     pts_without_any_events['reason_for_removal']='Pt did not have any events'
     pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
 
-    pt_features = pt_features[pd.notnull(pt_features['earliest_sysdate'])]
     logging.debug('writing all the patients with events to pt_features.csv')
-    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
+    pt_features = pt_features[pd.notnull(pt_features['data_start'])]
+    return pt_features
+    # pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def add_length_of_data_pre_and_post_indexdate_to_pt_features(isCase):
     '''
@@ -111,12 +135,12 @@ def add_length_of_data_pre_and_post_indexdate_to_pt_features(isCase):
     Requires isCase (i.e. whether pts are cases or controls) as an argument, because until they've been rematched,
     controls don't yet have an index date.
     '''
-    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',', parse_dates=['index_date','earliest_sysdate','latest_sysdate'], infer_datetime_format=True)
+    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',', parse_dates=['index_date','data_start','data_end'], infer_datetime_format=True)
 
-    row_index = pt_features['isCase']==isCase & pd.notnull(pt_features['earliest_sysdate']) & pd.notnull(pt_features['latest_sysdate'])
+    row_index = pt_features['isCase']==isCase & pd.notnull(pt_features['data_start']) & pd.notnull(pt_features['data_end'])
 
-    pt_features.loc[row_index,'days_pre_indexdate'] = ((pt_features['index_date']-pt_features['earliest_sysdate'])/np.timedelta64(1, 'D'))
-    pt_features.loc[row_index,'days_post_indexdate'] = ((pt_features['latest_sysdate']-pt_features['index_date'])/np.timedelta64(1, 'D'))
+    pt_features.loc[row_index,'days pre-indexdate'] = ((pt_features['index_date']-pt_features['data_start'])/np.timedelta64(1, 'D'))
+    pt_features.loc[row_index,'days post-indexdate'] = ((pt_features['data_end']-pt_features['index_date'])/np.timedelta64(1, 'D'))
 
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
@@ -210,7 +234,7 @@ def clean_matching():
     unmatched_cases.to_csv('data/pt_data/removed_patients/ummatched_cases.csv',index=False)
 
 def match_cases_and_controls():
-    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','earliest_sysdate','latest_sysdate'])
+    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','data_start','data_end'])
 
     pt_features['matchid']=np.nan
     pt_features.sort_values(inplace=True,by='days_pre_indexdate',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
@@ -230,31 +254,34 @@ def match_cases_and_controls():
                 is_control = pt_features['isCase'] == False
                 matches_practice = pt_features['pracid']==pracid
                 is_not_already_matched = pd.isnull(pt_features['matchid'])
-                enough_data_after_index_date = pt_features['earliest_sysdate'] <= (index_date - timedelta(days=(365*Study_Design.total_years_required_pre_index_date)))
-                enough_data_before_index_date = pt_features['latest_sysdate'] >= (index_date + timedelta(days=(365*Study_Design.years_of_data_after_index_date_required_by_controls)))
+                enough_data_after_index_date = pt_features['data_start'] <= (index_date - timedelta(days=(365*Study_Design.total_years_required_pre_index_date)))
+                enough_data_before_index_date = pt_features['data_end'] >= (index_date + timedelta(days=(365*Study_Design.years_of_data_after_index_date_required_by_controls)))
                 matching_pt = pt_features[enough_data_before_index_date & enough_data_after_index_date & matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched]
                 # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
-                matching_pt['total_available_data']= pt_features['latest_sysdate'] - pt_features['earliest_sysdate']
+                matching_pt['total_available_data']= pt_features['data_end'] - pt_features['data_start']
                 matching_pt = matching_pt.sort_values(by='total_available_data',ascending=True).head(1)
                 if len(matching_pt)>0:
+                    matching_pt = pt_features[pt_features['patid'] == matching_pt['patid'].values[0]]
                     #give both the case and control a unique match ID (for convenience, I've used the iterrows index)
-                    matching_pt_id = matching_pt['patid'].values[0]
-                    if pd.notnull(matching_pt_id):
-                        matching_pt_id = matching_pt['patid'].values[0]
-                        matching_pt_index = pt_features['patid']==matching_pt_id
-                        pt_features.loc[index,'matchid']=index
-                        pt_features.loc[matching_pt_index,'matchid']=index
-                        pt_features.loc[matching_pt_index,'index_date']=index_date
-                        count += 1
-                    #     logging.debug('Matched {0} with {1}.'.format(patid,matching_pt_id))
-                    # else:
-                    #     logging.debug('No match found for ',patid)
+                    # matching_pt_id = matching_pt['patid'].values[0]
+                    # if pd.notnull(matching_pt_id):
+                    row['matchid']=index
+                    # matching_pt_mask = pt_features['patid']==matching_pt_id
+                    # pt_features.loc[index,'matchid']=index
+                    # pt_features.loc[matching_pt_mask,'matchid']=index
+                    # pt_features.loc[matching_pt_mask,'index_date']=index_date
+                    matching_pt['matchid']=index
+                    matching_pt['index_date']=index_date
+                    count += 1
+                    logging.debug('Matched {0} with {1}.'.format(patid,matching_pt['patid']))
+                else:
+                    logging.debug('No match found for ',patid)
         if count>100:
             pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
             count=0
 
 def delete_unmatched_controls():
-    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','earliest_sysdate','latest_sysdate'])
+    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','data_start','data_end'])
     removed_pts = pt_features[pd.isnull(pt_features['matchid'])]
     removed_pts['reason_for_removal']='Sent by CPRD to us unmatched'
     removed_pts.to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
