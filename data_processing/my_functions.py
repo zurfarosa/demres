@@ -21,48 +21,22 @@ def create_pt_features():
     Creates csv file containing all patients (cases and controls on separate rows)
     with a column for all variables to be analysed
     '''
-    matching = pd.read_csv('data/pt_data/matching_unmatched_removed.csv',delimiter=',')
-    del(matching['match'])
-    del(matching['control_end'])
-    del(matching['control_start'])
+    pt_features = pd.read_csv('data/pt_data/raw_data/Extract_Patient_001.txt',delimiter='\t')[['patid','yob','gender','reggap']]
+    # Remove patients with registration gaps of more than one day
+    pts_with_registration_gaps = pt_features.loc[pt_features['reggap']>Study_Design.acceptable_number_of_registration_gap_days]
+    pts_with_registration_gaps.to_csv('data/pt_data/removed_patients/pts_with_registration_gaps.csv',index=False)
+    pt_features = pt_features.loc[pt_features['reggap']==Study_Design.acceptable_number_of_registration_gap_days]
+    pt_features.drop('reggap',axis=1,inplace=True)
 
-    #Create the cases
-    feature1 = matching.copy(deep=True)
-    # reorder the columns
-    feature1=feature1[['case_patid','case_pracid','case_gender','case_birthyear','case_index']]
-    feature1['isCase']=True
-    # rename the columns
-    feature1.columns=['patid','pracid','gender','birthyear','index_date','isCase']
+    pt_features['pracid']=pt_features['patid'].apply(str).str[-3:] #bizarre, but this is how the pracid works!
+    pt_features['yob'] = pt_features['yob']+1800 # ditto!
 
-    #Create the controls
-    feature2 = matching.copy(deep=True)
-    # reorder the columns
-    feature2=feature2[['control_patid','control_pracid','control_gender','control_birthyear','case_index']]
-    feature2['isCase']=False
-    # rename the columns
-    feature2.columns=['patid','pracid','gender','birthyear','index_date','isCase']
-    feature2['index_date']=np.nan
+    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-    #Merge cases and controls
-    features = pd.concat([feature1,feature2])
-    features=features[['patid','pracid','gender','birthyear','index_date','isCase']]
-
-    # Add the previously removed patients from ummatched_cases.csv (these were unmatched in the original raw data files)
-    # Note that I don't think these patients have any clinical events at all, and are thus automatically deleted at a later stage!
-    ummatched_cases = pd.read_csv('data/pt_data/removed_patients/ummatched_cases.csv',delimiter=',')
-    ummatched_cases['isCase']=True
-
-    features = pd.concat([features,ummatched_cases])
-    # features['index_date']= pd.to_datetime(features['index_date'],format='%d/%m/%Y',errors='coerce')
-
-    features['index_date']=pd.to_datetime(features['index_date'],dayfirst=True,errors='coerce', infer_datetime_format=True)
-    features.to_csv('data/pt_data/pt_features.csv',index=False)
-
-def correct_index_date_and_caseness_and_add_final_dementia_subtype(all_entries):
+def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries):
     '''
-    Calculates correct index date and establishes caseness by looking for first dementia diagnoses.
+    Calculates  index date and establishes caseness by looking for first dementia diagnoses.
     Also looks for final dementia diagnosis (e.g. 'vascular dementia'), as this is likely to be our best guess as to the dementia subtype
-    Then deletes the (inaccurate) casesness and index date given to us by CPRD
     '''
 
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
@@ -73,40 +47,39 @@ def correct_index_date_and_caseness_and_add_final_dementia_subtype(all_entries):
     # from the all_entries df, get just those which contain a dementia dx of an antidementia drug prescription
     all_dementia_entries = all_entries[(all_entries['prodcode'].isin(prodcodes))|(all_entries['medcode'].isin(medcodes))]
     # for clarity, look up the Read terms
-    all_dem_labelled = pd.merge(all_dementia_entries,pegmed,how='left')[['patid','prodcode','medcode','sysdate','eventdate','type','read term']]
+    all_dem_labelled = pd.merge(all_dementia_entries,pegmed,how='left')[['patid','prodcode','medcode','sysdate','eventdate','type']]
     # for clarity, look up the drug names
-    all_dem_labelled = pd.merge(all_dem_labelled,pegprod,how='left')[['patid','medcode','prodcode','sysdate','eventdate','type','drug substance name','read term']]
+    all_dem_labelled = pd.merge(all_dem_labelled,pegprod,how='left')[['patid','medcode','prodcode','sysdate','eventdate','type','drug substance name']]
     all_dem_labelled.loc[:,'eventdate']=pd.to_datetime(all_dem_labelled.loc[:,'eventdate'])
     #Get the date of earliest dementia diagnosis / antidementia drug prescription - this will be the revised index date, and will also determine revised caseness
     earliest_dementia_dates = all_dem_labelled.groupby('patid')['eventdate'].min().reset_index()
     earliest_dementia_dates.rename(columns={'eventdate':'index_date'},inplace=True)
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
-    #Delete the old (CRPD-created) index_date and isCase, because we're about to create more accurate ones
-    pt_features.drop(['isCase','index_date'],axis=1,inplace=True)
     pt_features = pd.merge(pt_features,earliest_dementia_dates,how='left')
     pt_features['isCase']=np.where(pd.notnull(pt_features['index_date']),True,False)
     # Get the final dementia diagnosis
     just_dementia_diagnoses = all_dem_labelled[pd.isnull(all_dem_labelled['prodcode'])]
-    final_dementia_dx = just_dementia_diagnoses.loc[just_dementia_diagnoses.groupby('patid')['eventdate'].idxmax()][['patid','medcode','read term']]
-    final_dementia_dx.rename(columns={'medcode':'final dementia medcode','read term':'final dementia read term'},inplace=True)
+    final_dementia_dx = just_dementia_diagnoses.loc[just_dementia_diagnoses.groupby('patid')['eventdate'].idxmax()][['patid','medcode']]
+    final_dementia_dx.rename(columns={'medcode':'final dementia medcode'},inplace=True)
     pt_features = pd.merge(pt_features,final_dementia_dx,how='left')
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def add_data_start_and_end_dates_to_pt_entries(all_entries):
+def add_data_start_and_end_dates(all_entries):
     '''
     Needs the dateframe created by create_medcoded_entries() to be passed to it.
-    This will need to be rewritten when I know the PROPER way to get the start and end dates for each patient's period of data extraction.
     This function looks at all clinical entries (e.g. prescriptions, referrals, consultations), and looks for the first and last 'sysdated' entry.
     '''
     logging.debug('add_sys_start_and_end_dates_to_pt_features all_entries.csv')
 
-    logging.debug('finding earliest systdates')
-    earliest_sysdates = all_entries.groupby('patid')['eventdate'].min().reset_index()
-    earliest_sysdates.rename(columns={'eventdate':'data_start'},inplace=True)
+    logging.debug('finding earliest sysdates')
+    earliest_sysdates = all_entries.groupby('patid')['sysdate'].min().reset_index()
+    earliest_sysdates.rename(columns={'sysdate':'data_start'},inplace=True)
+    logging.debug('earliest_sysdates:\n{0}'.format(earliest_sysdates.head(5)))
 
     logging.debug('finding latest sysdates')
-    earliest_sysdates = all_entries.groupby('patid')['eventdate'].max().reset_index()
-    earliest_sysdates.rename(columns={'eventdate':'data_end'},inplace=True)
+    latest_sysdates = all_entries.groupby('patid')['sysdate'].max().reset_index()
+    latest_sysdates.rename(columns={'sysdate':'data_end'},inplace=True)
+    logging.debug('latest_sysdates:\n{0}'.format(latest_sysdates.head(5)))
 
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
 
@@ -117,28 +90,27 @@ def add_data_start_and_end_dates_to_pt_entries(all_entries):
 
     # Remove pts without any sysdates
     logging.debug('removing patients without any events')
-    pts_without_any_events = pt_features[pd.isnull(pt_features['data_start'])]
-    pts_without_any_events['reason_for_removal']='Pt did not have any events'
+    pd.options.mode.chained_assignment = None  # default='warn'
+    pts_without_any_events = pt_features.loc[pd.isnull(pt_features['data_start'])]
+    pts_without_any_events.loc[:,'reason_for_removal']='Pt did not have any events'
     pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
 
     logging.debug('writing all the patients with events to pt_features.csv')
-    pt_features = pt_features[pd.notnull(pt_features['data_start'])]
-    return pt_features
-    # pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
+    pt_features = pt_features.loc[pd.notnull(pt_features['data_start'])]
+    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def add_length_of_data_pre_and_post_indexdate_to_pt_features(isCase):
+def calculate_amount_of_data_available(isCase):
     '''
-    Calculates the length of data extracted before and after the index date.
+    Calculates the length of data available before and after the index date.
     Requires isCase (i.e. whether pts are cases or controls) as an argument, because until they've been rematched,
     controls don't yet have an index date.
     '''
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',', parse_dates=['index_date','data_start','data_end'], infer_datetime_format=True)
 
-    row_index = pt_features['isCase']==isCase & pd.notnull(pt_features['data_start']) & pd.notnull(pt_features['data_end'])
+    case_mask = pt_features['isCase']==isCase
 
-    pt_features.loc[row_index,'days pre-indexdate'] = ((pt_features['index_date']-pt_features['data_start'])/np.timedelta64(1, 'D'))
-    pt_features.loc[row_index,'days post-indexdate'] = ((pt_features['data_end']-pt_features['index_date'])/np.timedelta64(1, 'D'))
-
+    pt_features.loc[case_mask,'days pre_indexdate'] = ((pt_features['index_date']-pt_features['data_start'])/np.timedelta64(1, 'D'))
+    pt_features.loc[case_mask,'days post_indexdate'] = ((pt_features['data_end']-pt_features['index_date'])/np.timedelta64(1, 'D'))
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def get_prodcodes_from_drug_name(codelist):
@@ -156,8 +128,8 @@ def get_specific_prescription_count_then_add_to_pt_features(drugtype,column_name
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
     prescriptions = pd.merge(prescriptions,pt_features, how='left')[['patid','eventdate','prodcode','index_date']]
     prescriptions['index_date']=pd.to_datetime(prescriptions['index_date'],errors='coerce',format='%Y-%m-%d')
-    too_close_to_dx_period = timedelta(days=365)*Study_Design.years_between_exposure_measurement_and_index_date
-    too_distant_from_dx_period = too_close_to_dx_period + timedelta(days=365)*Study_Design.years_of_exposure_measurement
+    too_close_to_dx_period = timedelta(days=365)*Study_Design.years_between_end_of_exposure_period_and_index_date
+    too_distant_from_dx_period = too_close_to_dx_period + timedelta(days=365)*Study_Design.duration_of_exposure_measurement
     not_too_close_to_dx = prescriptions['eventdate']<(prescriptions['index_date']-too_close_to_dx_period)
     not_before_exposure_period = prescriptions['eventdate']>(prescriptions['index_date']-too_distant_from_dx_period)
     relev_prescriptions = prescriptions[not_too_close_to_dx & not_before_exposure_period]
@@ -176,44 +148,32 @@ def get_insomnia_event_count():
     Calculates count of insomnia-months for each patient, and adds it to pt_features dataframe
     """
     # Create list of all insomnia entries, then group it to calculate each patient's insomnia count, broken down by month
+    medcoded_entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate'],infer_datetime_format=True)
     insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia_readcodes)
-    insom_events = df[df['medcode'].isin(insomnia_medcodes)]
-    insom_events=insom_events[pd.notnull(insom_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
-    insom_events=insom_events[['patid','eventdate']].set_index('eventdate').groupby('patid').resample('M').count()
+    insom_events = medcoded_entries[medcoded_entries['medcode'].isin(insomnia_medcodes)]
+    insom_events = insom_events[pd.notnull(insom_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
+    insom_events = insom_events[['patid','eventdate']].set_index('eventdate').groupby('patid').resample('M').count()
     #convert group_by object back to dataframe
     insom_events = insom_events.add_suffix('_count').reset_index()
     insom_events.columns=['patid','eventdate','insom_count']
     #delete zero counts
-    insom_events=insom_events[insom_events['insom_count']>0]
-
-    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
-
+    insom_events = insom_events[insom_events['insom_count']>0]
     # Remove insomnia events for patients who are no longer in study (e.g. because I've removed them for not having any enough data)
-    insom_events['pat_in_study'] = insom_events['patid'].map(lambda x: x if any(pt_features.patid==x) else np.nan)
-
-    insom_events=insom_events[pd.notnull(insom_events['pat_in_study'])]
-    insom_events['pat_in_study']=insom_events['pat_in_study'].astype(int)
-
-    insom_events['pat_index_date']=np.nan
-    insom_events['pat_index_date'] = insom_events['patid'].map(lambda x: pt_features[pt_features['patid']==x]['index_date'].values[0])
-
+    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date'],infer_datetime_format=True)
+    insom_events = pd.merge(insom_events,pt_features,how='inner')[['patid','eventdate','insom_count','index_date']]
     # Restrict insomnia event counts to those that occur during exposure period
-    too_close_to_dx_period = timedelta(days=365)*Study_Design.years_between_exposure_measurement_and_index_date
-    too_distant_from_dx_period = too_close_to_dx_period + timedelta(days=365)*Study_Design.years_of_exposure_measurement
-    not_too_close_to_dx = insom_events['eventdate']<(insom_events['pat_index_date']-too_close_to_dx_period)
-    not_before_exposure_period = insom_events['eventdate']>(insom_events['pat_index_date']-too_distant_from_dx_period)
-    relev_insom_events = insom_events[not_too_close_to_dx & not_before_exposure_period]
+    interim_period = timedelta(days=365)*Study_Design.years_between_end_of_exposure_period_and_index_date
+    relevant_event_mask = (insom_events['eventdate']<=(insom_events['index_date']-interim_period)) & (insom_events['eventdate']>=(insom_events['index_date']-timedelta(days=365)*Study_Design.total_years_required_pre_index_date))
+    insom_events = insom_events.loc[relevant_event_mask]
+    insom_events = insom_events.groupby('patid')['insom_count'].count().reset_index()
+    # merge pt_features with new insomnia_event dataframe
+    pt_features = pd.merge(pt_features,insom_events,how='left')
 
-    # Convert groupby object into a dataframe, and rename new column
-    relev_insom_events_by_pt = relev_insom_events.groupby(by='patid')['eventdate'].count().reset_index()
-    relev_insom_events_by_pt.columns=['patid','insomnia_event_count']
+    pt_features['insom_count'].fillna(0,inplace=True)
+    pt_features['insom_count'] = pt_features['insom_count'].astype(int)
 
-    # merge pt_features with new relev_insomnia_event dataframe
-    merged_table = pd.merge(pt_features,relev_insom_events_by_pt, on='patid',how='outer')
-    merged_table['insomnia_event_count'].fillna(0,inplace=True)
-    merged_table['insomnia_event_count'] = merged_table['insomnia_event_count'].astype(int)
-
-    merged_table.to_csv('data/pt_data/pt_features.csv',index=False)
+    # return pt_features
+    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def clean_matching():
     """
@@ -221,7 +181,7 @@ def clean_matching():
     then creates a files called 'unmatched_cases' for the lone cases, and a file called
     'matching_unmatched_removed.csv' for the cleaned up matched pairs
     """
-    matching = pd.read_csv('data/pt_data/Matching_File.txt',delimiter='\t',parse_dates=['case_index'],infer_datetime_format=True,dayfirst=True)
+    matching = pd.read_csv('data/pt_data/raw_data/Matching_File.txt',delimiter='\t',parse_dates=['case_index'],infer_datetime_format=True,dayfirst=True)
     matching_unmatched_removed = matching[matching['control_pracid']!='.']
     matching_unmatched_removed.to_csv('data/pt_data/matching_unmatched_removed.csv',index=False)
     unmatched_cases = matching[matching['control_patid']=='.'][['case_patid','case_pracid','case_gender','case_birthyear','case_index']]
@@ -230,12 +190,15 @@ def clean_matching():
     unmatched_cases.to_csv('data/pt_data/removed_patients/ummatched_cases.csv',index=False)
 
 def match_cases_and_controls():
+    '''
+    Matches cases and controls
+    '''
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','data_start','data_end'])
 
     pt_features['matchid']=np.nan
-    pt_features.sort_values(inplace=True,by='days_pre_indexdate',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
+    pt_features.loc[:,'total_available_data']= pt_features.loc[:,'data_end'] - pt_features.loc[:,'data_start']
+    pt_features.sort_values(inplace=True,by='total_available_data',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
 
-    count=0
     for index,row in pt_features.iterrows():
         if(row['isCase']==True):
             if pd.isnull(row['matchid']):
@@ -252,50 +215,47 @@ def match_cases_and_controls():
                 is_not_already_matched = pd.isnull(pt_features['matchid'])
                 enough_data_after_index_date = pt_features['data_start'] <= (index_date - timedelta(days=(365*Study_Design.total_years_required_pre_index_date)))
                 enough_data_before_index_date = pt_features['data_end'] >= (index_date + timedelta(days=(365*Study_Design.years_of_data_after_index_date_required_by_controls)))
-                matching_pt = pt_features[enough_data_before_index_date & enough_data_after_index_date & matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched]
-                # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
-                matching_pt['total_available_data']= pt_features['data_end'] - pt_features['data_start']
-                matching_pt = matching_pt.sort_values(by='total_available_data',ascending=True).head(1)
-                if len(matching_pt)>0:
-                    matching_pt = pt_features[pt_features['patid'] == matching_pt['patid'].values[0]]
+                match_mask = enough_data_before_index_date & enough_data_after_index_date & matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched
+                if len(pt_features[match_mask])>0:
+                    #print(len(pt_features[match_mask]))
+                    best_match_index = pt_features.loc[match_mask,'total_available_data'].idxmin(axis=1) # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
+                    #print(best_match_index)
+                    best_match_id = pt_features.ix[best_match_index]['patid']
+                    logging.debug('Out of a list of {0} matching patients, patid {1} is the best match for {2}'.format(len(pt_features[match_mask]),best_match_id,patid))
                     #give both the case and control a unique match ID (for convenience, I've used the iterrows index)
-                    # matching_pt_id = matching_pt['patid'].values[0]
-                    # if pd.notnull(matching_pt_id):
-                    row['matchid']=index
-                    # matching_pt_mask = pt_features['patid']==matching_pt_id
-                    # pt_features.loc[index,'matchid']=index
-                    # pt_features.loc[matching_pt_mask,'matchid']=index
-                    # pt_features.loc[matching_pt_mask,'index_date']=index_date
-                    matching_pt['matchid']=index
-                    matching_pt['index_date']=index_date
-                    count += 1
-                    logging.debug('Matched {0} with {1}.'.format(patid,matching_pt['patid']))
+                    pt_features.loc[index,'matchid']=index
+                    pt_features.loc[best_match_index,'matchid']=index
+                    pt_features.loc[best_match_index,'index_date']=index_date
                 else:
-                    logging.debug('No match found for ',patid)
-        if count>100:
-            pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
-            count=0
+                    logging.debug('No match found for {0}'.format(patid))
+    pt_features.drop('total_available_data',axis=1,inplace=True)
+    pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
-def delete_unmatched_controls():
+def delete_unmatched_cases_and_controls():
+    '''
+    Removes all unmatched cases and controls
+    '''
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date','data_start','data_end'])
     removed_pts = pt_features[pd.isnull(pt_features['matchid'])]
-    removed_pts['reason_for_removal']='Sent by CPRD to us unmatched'
+    removed_pts.loc[:,'reason_for_removal']='Unmatchable'
     removed_pts.to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
     pt_features = pt_features[pd.notnull(pt_features['matchid'])]
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def delete_patients_if_not_enough_data(isCase):
+    '''
+    Despite requiring user to specify whether patients are cases or controls, this only needs to be called for cases,
+    as controls without enough data are removed by the match_cases_and_controls() function.
+    '''
     pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',')
-    del_index = (pt_features['days_pre_indexdate']<(Study_Design.total_years_required_pre_index_date*365)) \
-            | (pt_features['days_post_indexdate']<(Study_Design.years_of_data_after_index_date_required_by_controls*365))
-    del_index = del_index & (pt_features['isCase']==isCase)
+    delete_mask = (pt_features['days pre_indexdate']<(Study_Design.total_years_required_pre_index_date*365)) \
+            | (pt_features['days post_indexdate']<(Study_Design.years_of_data_after_index_date_required_by_controls*365))
+    delete_mask = delete_mask & (pt_features['isCase']==isCase)
     #delete cases and controls if not enough data prior to index dates
-    pd.options.mode.chained_assignment = None  # default='warn'
-    removed_pts = pt_features.loc[del_index]
+    removed_pts = pt_features.loc[delete_mask]
     removed_pts['reason_for_removal']='Not enough available data prior or post index date'
     removed_pts.to_csv('data/pt_data/removed_patients/removed_pts_with_not_enough_data.csv',mode='a',index=False)
-
-    pt_features=pt_features.loc[del_index == False]
+    pt_features=pt_features.loc[delete_mask == False]
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def create_pegmed():
@@ -422,12 +382,13 @@ def create_all_entries():
     Creates a csv file (all_entries.csv) containing all entries (consultations, prescriptions, clinicals, tests, referrals)
     """
     #logging.debug('reading consultations')
-    consultations = pd.read_csv('data/pt_data/consultations.csv',delimiter=',')
+    consultations = pd.read_csv('data/pt_data/consultations.csv',delimiter=',',parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
     #logging.debug('reading medcoded entries')
-    medcoded_entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',')
+    medcoded_entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
     #logging.debug('reading prescriptions')
-    prescriptions = pd.read_csv('data/pt_data/prescriptions.csv',delimiter=',',usecols=['patid','eventdate','sysdate','prodcode','type'])
+    prescriptions = pd.read_csv('data/pt_data/prescriptions.csv',delimiter=',',usecols=['patid','eventdate','sysdate','prodcode','type'],parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
     #logging.debug('concatenating...')
     all_entries = pd.concat([consultations,medcoded_entries,prescriptions],ignore_index=True)
     #logging.debug('writing to file...')
     all_entries.to_csv('data/pt_data/all_entries.csv',index=False)
+    return all_entries

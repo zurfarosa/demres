@@ -64,7 +64,7 @@ antidementia_drugs = [
     'galantamine'
 ]
 
-insomnia_codes = [
+insomnia_readcodes = [
     'R005200', # [D]Insomnia NOS
     '1B1B.11', # C/O - insomnia
     'E274111', # Insomnia NOS
