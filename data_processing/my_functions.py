@@ -21,7 +21,7 @@ def create_pt_features():
     Creates csv file containing all patients (cases and controls on separate rows)
     with a column for all variables to be analysed
     '''
-    pt_features = pd.read_csv('data/pt_data/raw_data/Extract_Patient_001.txt',delimiter='\t')[['patid','yob','gender','reggap']]
+    pt_features = pd.read_csv('data/pt_data/raw_data/Extract_Patient_001.txt', usecols=['patid','yob','gender','reggap'], delimiter='\t')
     # Remove patients with registration gaps of more than one day
     pts_with_registration_gaps = pt_features.loc[pt_features['reggap']>Study_Design.acceptable_number_of_registration_gap_days]
     pts_with_registration_gaps.to_csv('data/pt_data/removed_patients/pts_with_registration_gaps.csv',index=False)
@@ -143,14 +143,16 @@ def get_medcodes_from_readcodes(readcodes):
     medcodes=[pegmed.loc[pegmed['readcode']==readcode,'medcode'].iloc[0] for readcode in readcodes]
     return medcodes
 
-def get_insomnia_event_count():
+def get_insomnia_event_count(entries=None):
     """
     Calculates count of insomnia-months for each patient, and adds it to pt_features dataframe
+    Can receive an optional all_entries or medcoded_entries dataframe as an argument
     """
     # Create list of all insomnia entries, then group it to calculate each patient's insomnia count, broken down by month
-    medcoded_entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate'],infer_datetime_format=True)
+    if entries is None:
+        entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate'],infer_datetime_format=True)
     insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia_readcodes)
-    insom_events = medcoded_entries[medcoded_entries['medcode'].isin(insomnia_medcodes)]
+    insom_events = entries[entries['medcode'].isin(insomnia_medcodes)]
     insom_events = insom_events[pd.notnull(insom_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
     insom_events = insom_events[['patid','eventdate']].set_index('eventdate').groupby('patid').resample('M').count()
     #convert group_by object back to dataframe
@@ -203,23 +205,21 @@ def match_cases_and_controls():
         if(row['isCase']==True):
             if pd.isnull(row['matchid']):
                 patid = row['patid']
-                birthyear = row['birthyear']
+                yob = row['yob']
                 gender = row['gender']
                 pracid = row['pracid']
                 index_date = row['index_date']
                 # Define matching criteria
-                matches_birthyear = pt_features['birthyear']==birthyear
+                matches_yob = pt_features['yob']==yob
                 matches_gender = pt_features['gender']==gender
                 is_control = pt_features['isCase'] == False
                 matches_practice = pt_features['pracid']==pracid
                 is_not_already_matched = pd.isnull(pt_features['matchid'])
-                enough_data_after_index_date = pt_features['data_start'] <= (index_date - timedelta(days=(365*Study_Design.total_years_required_pre_index_date)))
-                enough_data_before_index_date = pt_features['data_end'] >= (index_date + timedelta(days=(365*Study_Design.years_of_data_after_index_date_required_by_controls)))
-                match_mask = enough_data_before_index_date & enough_data_after_index_date & matches_birthyear & matches_gender & matches_practice & is_control & is_not_already_matched
+                enough_data_after_index_date = pt_features['data_end'] >= (index_date + timedelta(days=(365*Study_Design.years_of_data_after_index_date_required_by_controls)))
+                enough_data_before_index_date = pt_features['data_start'] <= (index_date - timedelta(days=(365*Study_Design.total_years_required_pre_index_date)))
+                match_mask = enough_data_before_index_date & enough_data_after_index_date & matches_yob & matches_gender & matches_practice & is_control & is_not_already_matched
                 if len(pt_features[match_mask])>0:
-                    #print(len(pt_features[match_mask]))
                     best_match_index = pt_features.loc[match_mask,'total_available_data'].idxmin(axis=1) # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
-                    #print(best_match_index)
                     best_match_id = pt_features.ix[best_match_index]['patid']
                     logging.debug('Out of a list of {0} matching patients, patid {1} is the best match for {2}'.format(len(pt_features[match_mask]),best_match_id,patid))
                     #give both the case and control a unique match ID (for convenience, I've used the iterrows index)
@@ -240,6 +240,7 @@ def delete_unmatched_cases_and_controls():
     removed_pts.loc[:,'reason_for_removal']='Unmatchable'
     removed_pts.to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
     pt_features = pt_features[pd.notnull(pt_features['matchid'])]
+    pt_features['matchid']=pt_features.matchid.astype(int)
     pt_features.to_csv('data/pt_data/pt_features.csv',index=False)
 
 def delete_patients_if_not_enough_data(isCase):
