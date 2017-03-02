@@ -67,7 +67,9 @@ antidementia_drugs = [
 insomnia_readcodes = [
     'R005200', # [D]Insomnia NOS
     '1B1B.11', # C/O - insomnia
+    'R005.00', # [D]Sleep disturbances
     'E274111', # Insomnia NOS
+    'Fy00.00',  # Disorders of maintaining and initiating sleep
     '1B1B.00', # Cannot sleep - insomnia
     '663N.00', # Asthma disturbing sleep
     'R005.11', # [D]Insomnia - symptom
