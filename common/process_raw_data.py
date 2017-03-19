@@ -39,7 +39,7 @@ def create_pt_features():
     pt_features['pracid']=pt_features['patid'].apply(str).str[-3:] #bizarre, but this is how the pracid works!
     pt_features['yob'] = pt_features['yob']+1800 # ditto!
 
-    # pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+    # pt_features.to_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',index=False)
     return pt_features
 
 def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_features):
@@ -71,7 +71,7 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
     final_dementia_dx = just_dementia_diagnoses.loc[just_dementia_diagnoses.groupby('patid')['eventdate'].idxmax()][['patid','medcode']]
     final_dementia_dx.rename(columns={'medcode':'final dementia medcode'},inplace=True)
     pt_features = pd.merge(pt_features,final_dementia_dx,how='left')
-    # pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+    # pt_features.to_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',index=False)
     return pt_features
 
 def add_data_start_and_end_dates(all_entries,pt_features):
@@ -105,7 +105,7 @@ def add_data_start_and_end_dates(all_entries,pt_features):
 
     logging.debug('writing all the patients with events to pt_features.csv')
     pt_features = pt_features.loc[pd.notnull(pt_features['data_start'])]
-    pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+    pt_features.to_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',index=False)
     return pt_features
 
 # def calculate_amount_of_data_available(pt_features,isCase):
@@ -117,7 +117,7 @@ def add_data_start_and_end_dates(all_entries,pt_features):
 #     # case_mask = pt_features['isCase']==isCase
 #     pt_features.loc[:,'days pre_indexdate'] = ((pt_features['index_date']-pt_features['data_start'])/np.timedelta64(1, 'D'))
 #     pt_features.loc[case_mask,'days post_indexdate'] = ((pt_features['data_end']-pt_features['index_date'])/np.timedelta64(1, 'D'))
-#     # pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+#     # pt_features.to_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',index=False)
 #     return pt_features
 
 def get_prodcodes_from_drug_name(codelist):
@@ -128,11 +128,11 @@ def get_prodcodes_from_drug_name(codelist):
     return prodcodes
 
 def get_specific_prescription_count_then_add_to_pt_features(drugtype,column_name):
-    all_prescriptions = pd.read_csv(ROOT_DIR + '/data/pt_data/prescriptions.csv',delimiter=',')
+    all_prescriptions = pd.read_csv(ROOT_DIR + '/data/pt_data/processed_data/prescriptions.csv',delimiter=',')
     prodcodes = get_prodcodes_from_drug_name(drugtype)
     prescriptions = all_prescriptions[all_prescriptions['prodcode'].isin(prodcodes)][['patid','eventdate','prodcode']]
     prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'],format='%Y-%m-%d',errors='coerce')
-    pt_features = pd.read_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',delimiter=',')
+    pt_features = pd.read_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',delimiter=',')
     prescriptions = pd.merge(prescriptions,pt_features, how='left')[['patid','eventdate','prodcode','index_date']]
     prescriptions['index_date']=pd.to_datetime(prescriptions['index_date'],errors='coerce',format='%Y-%m-%d')
     too_close_to_dx_period = timedelta(days=365)*Study_Design.years_between_end_of_exposure_period_and_index_date
@@ -143,7 +143,7 @@ def get_specific_prescription_count_then_add_to_pt_features(drugtype,column_name
     relev_prescriptions = relev_prescriptions['prodcode'].groupby(relev_prescriptions['patid']).count().reset_index()
     relev_prescriptions.columns=['patid',column_name]
     pt_features=pd.merge(pt_features,relev_prescriptions,how='left')
-    pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+    pt_features.to_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',index=False)
 
 def get_medcodes_from_readcodes(readcodes):
     pegmed = pd.read_csv(ROOT_DIR + '/data/dicts/proc_pegasus_medical.csv')
@@ -219,7 +219,7 @@ def delete_patients_if_not_enough_data(isCase,pt_features):
     removed_pts['reason_for_removal']='Not enough available data prior or post index date'
     removed_pts.to_csv(ROOT_DIR + '/data/pt_data/removed_patients/removed_pts_with_not_enough_data.csv',mode='a',index=False)
     pt_features=pt_features.loc[delete_mask == False]
-    # pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+    # pt_features.to_csv(ROOT_DIR + '/data/pt_data/processed_data/pt_features.csv',index=False)
     return pt_features
 
 def create_pegmed():
@@ -266,7 +266,7 @@ def create_prescriptions():
     prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],dayfirst=True,errors='coerce', infer_datetime_format=True)
     prescriptions['type']=entry_type['prescription']
     logging.debug('writing to csv')
-    prescriptions.to_csv(ROOT_DIR + '/data/pt_data/prescriptions.csv',index=False)
+    prescriptions.to_csv(ROOT_DIR + '/data/pt_data/processed_data/prescriptions.csv',index=False)
 
 def create_medcoded_entries():
     #logging.debug('calling create_medcoded_entries')
@@ -320,7 +320,7 @@ def create_medcoded_entries():
     medcoded_entries = pd.concat([clinical,test,referral,immunisations])
 
     #logging.debug('writing to csv')
-    medcoded_entries.to_csv(ROOT_DIR + '/data/pt_data/medcoded_entries.csv',index=False)
+    medcoded_entries.to_csv(ROOT_DIR + '/data/pt_data/processed_data/medcoded_entries.csv',index=False)
 
 def create_consultations():
     """
@@ -339,20 +339,20 @@ def create_consultations():
     #logging.debug('adding type column')
     consultations['type']= entry_type['consultation']
     #logging.debug('writing to csv')
-    consultations.to_csv(ROOT_DIR + '/data/pt_data/consultations.csv',index=False)
+    consultations.to_csv(ROOT_DIR + '/data/pt_data/processed_data/consultations.csv',index=False)
 
 def create_all_entries():
     """
     Creates a csv file (all_entries.csv) containing all entries (consultations, prescriptions, clinicals, tests, referrals)
     """
     #logging.debug('reading consultations')
-    consultations = pd.read_csv(ROOT_DIR + '/data/pt_data/consultations.csv',delimiter=',',parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
+    consultations = pd.read_csv(ROOT_DIR + '/data/pt_data/processed_data/consultations.csv',delimiter=',',parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
     #logging.debug('reading medcoded entries')
-    medcoded_entries = pd.read_csv(ROOT_DIR + '/data/pt_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
+    medcoded_entries = pd.read_csv(ROOT_DIR + '/data/pt_data/processed_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
     #logging.debug('reading prescriptions')
-    prescriptions = pd.read_csv(ROOT_DIR + '/data/pt_data/prescriptions.csv',delimiter=',',usecols=['patid','eventdate','sysdate','prodcode','type'],parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
+    prescriptions = pd.read_csv(ROOT_DIR + '/data/pt_data/processed_data/prescriptions.csv',delimiter=',',usecols=['patid','eventdate','sysdate','prodcode','type'],parse_dates=['eventdate','sysdate'],infer_datetime_format=True)
     #logging.debug('concatenating...')
     all_entries = pd.concat([consultations,medcoded_entries,prescriptions],ignore_index=True)
     #logging.debug('writing to file...')
-    all_entries.to_csv(ROOT_DIR + '/data/pt_data/all_entries.csv',index=False)
+    all_entries.to_csv(ROOT_DIR + '/data/pt_data/processed_data/all_entries.csv',index=False)
     return all_entries
