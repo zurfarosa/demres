@@ -22,10 +22,12 @@ sedatives = [
 	'CLOBAZAM',
 	'CLONAZEPAM',
 	'FLURAZEPAM',
+    'Flurazepam hydrochloride',
 	'LOPRAZOLAM',
 	'LORAZEPAM',
 	'LORMETAZEPAM',
 	'MIDAZOLAM',
+    'Midazolam Hydrochloride',
 	'NITRAZEPAM',
 	'OXAZEPAM',
 	'TEMAZEPAM',
@@ -37,6 +39,7 @@ sedatives = [
 	'MEPROBAMATE',
     'ZALEPLON',
     'zopiclone',
+    'zolpidem tartrate',
     'ZOLPIDEM',
     #BNF sedating antihistamines
 	'ALIMEMAZINE TARTRATE',
@@ -47,12 +50,14 @@ sedatives = [
 	'CLEMASTINE',
 	'CYPROHEPTADINE HYDROCHLORIDE',
 	'ERGOTAMINE TARTRATE WITH CAFFEINE HYDRATE AND CYCLIZINE HYDROCHLORIDE',
-	'HYDROXYZINE HYDROXYZINE HYDROCHLORIDE',
+	'HYDROXYZINE HYDROCHLORIDE',
 	'KETOTIFEN',
 	'MORPHINE WITH CYCLIZINE',
 	'PARACETAMOL WITH BUCLIZINE HYDROCHLORIDE AND CODEINE PHOSPHATE',
+    'Buclizine hydrochloride/Paracetamol/Codeine phosphate',
 	'PIZOTIFEN',
 	'PROMETHAZINE TEOCLATE',
+    'PROMETHAZINE hydrochloride',
     #My own additions
 	'CHLORDIAZEPOXIDE'
 ]
