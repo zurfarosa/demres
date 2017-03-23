@@ -3,7 +3,7 @@ import numpy as np
 from datetime import date, timedelta,datetime
 from demres.definitions import ROOT_DIR
 from demres.common.constants import entry_type
-from demres.common import codelists
+from demres.common import codelists,druglists
 from demres.common.process_raw_data import *
 from demres.demins.constants import Study_Design
 from demres.common.logger import logging
@@ -51,7 +51,7 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
     medcodes = get_medcodes_from_readcodes(codelists.dementia_readcodes)
-    prodcodes = get_prodcodes_from_drug_name(codelists.antidementia_drugs)
+    prodcodes = get_prodcodes_from_drug_name(druglists.antidementia_drugs)
 
     # from the all_entries df, get just those which contain a dementia dx of an antidementia drug prescription
     all_dementia_entries = all_entries[(all_entries['prodcode'].isin(prodcodes))|(all_entries['medcode'].isin(medcodes))]
@@ -179,10 +179,10 @@ def match_cases_and_controls(pt_features,years_post_index,years_pre_index):
             matches_yob = controls['yob']==yob
             matches_gender = controls['gender']==gender
             matches_practice = controls['pracid']==pracid
-            is_not_already_matched = pd.isnull(controls['matchid'])
+            # is_not_already_matched = pd.isnull(controls['matchid'])
             enough_data_after_index_date = controls['data_end'] >= (index_date + timedelta(days=(365*years_post_index)))
             enough_data_before_index_date = controls['data_start'] <= (index_date - timedelta(days=(365*years_pre_index)))
-            match_mask =  matches_yob & matches_gender & matches_practice & is_not_already_matched & enough_data_after_index_date & enough_data_before_index_date
+            match_mask =  matches_yob & matches_gender & matches_practice & enough_data_after_index_date & enough_data_before_index_date
             if len(controls[match_mask])>0:
                 best_match_index = controls.loc[match_mask,'total_available_data'].idxmin(axis=1) # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
                 best_match_id = controls.ix[best_match_index]['patid']
@@ -191,6 +191,7 @@ def match_cases_and_controls(pt_features,years_post_index,years_pre_index):
                 pt_features.loc[index,'matchid']=index
                 pt_features.loc[best_match_index,'matchid']=index
                 pt_features.loc[best_match_index,'index_date']=index_date
+                controls.drop(best_match_index,inplace=True) #drop this row from controls dataframe so it cannot be matched again
             else:
                 logging.debug('No match found for {0}'.format(patid))
     pt_features.drop('total_available_data',axis=1,inplace=True)
