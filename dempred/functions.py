@@ -43,24 +43,26 @@ def create_ppd(pt_features,druglist):
     relev_prescriptions = pd.read_hdf('hdf/relev_prescriptions.hdf')
     relev_prescriptions = relev_prescriptions[pd.notnull(relev_prescriptions['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
     prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
     specific_prescriptions = relev_prescriptions.loc[relev_prescriptions['prodcode'].isin([prodcodes])]
+
+    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
     specific_prescriptions = pd.merge(specific_prescriptions,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
-    if druglist['depot']:
-        specific_prescriptions = specific_prescriptions.loc[specific_prescriptions['route'].str.contains('Intramuscular',na=False,case=False)]
-    else:
-        specific_prescriptions = specific_prescriptions.loc[~specific_prescriptions['route'].str.contains('Intramuscular',na=False,case=False)]
-    amount_and_unit = specific_prescriptions['substance strength'].str.extract('([0-9\.]+)(\w+)',expand=True)
+    # if druglist['depot']:
+    for route in druglist['routes']:
+        specific_prescriptions = specific_prescriptions.loc[specific_prescriptions['route'].str.contains(route,na=False,case=False)]
+    # else:
+    #     specific_prescriptions = specific_prescriptions.loc[~specific_prescriptions['route'].str.contains('Intramuscular',na=False,case=False)]
+    amount_and_unit = specific_prescriptions['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
     amount_and_unit.columns=['amount','unit']
     amount_and_unit.amount = amount_and_unit.amount.astype('float')
     prescs = pd.concat([specific_prescriptions,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq','type'],axis=1)
-    for unit,multiplier in zip(['nanogram','microgram','micrograms','gram'],[0.000001,0.001,0.001,1000]):
-        unit_mask = prescs['unit']==unit
-        prescs.loc[unit_mask,'amount']*=multiplier
-        prescs.loc[unit_mask,'unit']='mg'
-        prescs['total_in_mg'] = prescs['qty']*prescs['amount']
+    # for unit,multiplier in zip(['nanogram','microgram','micrograms','gram'],[0.000001,0.001,0.001,1000]):
+    #     unit_mask = prescs['unit']==unit
+    #     prescs.loc[unit_mask,'amount']*=multiplier
+    #     prescs.loc[unit_mask,'unit']='mg'
+    prescs['total_amount'] = prescs['qty']*prescs['amount']
     # print(set(prescs['unit']))
-    assert (len(set(prescs['unit'])))==1 #make sure there aren't any units other than 'mg'
+    # assert (len(set(prescs['unit'])))==1 #make sure there aren't any units other than 'mg'
     pdds = {}
     for drug in druglist['drugs']:
         drug = drug.upper()
@@ -71,8 +73,8 @@ def create_ppd(pt_features,druglist):
             pdd = np.average(drug_amounts,weights=drug_weights)
             pdds[drug]=pdd
             assert pd.notnull(pdd)
-    presc_count = prescs.groupby(by=['patid','drug substance name']).total_in_mg.sum().reset_index()
-    presc_count['pdds']=presc_count['total_in_mg']/presc_count['drug substance name'].map(lambda x: pdds[x.upper()])
+    presc_count = prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
+    presc_count['pdds']=presc_count['total_amount']/presc_count['drug substance name'].map(lambda x: pdds[x.upper()])
     pt_pdds = presc_count.groupby(by='patid').pdds.sum().reset_index() #sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.)
     pt_pdds=pt_pdds.round(decimals=2)
     pt_pdds.columns=['patid',druglist['name']+'_pdds']
@@ -94,3 +96,22 @@ def explore_similar_drug_names(druglist):
     prescs_group = prescs['prodcode'].groupby(prescs['drug substance name']).count().reset_index()
     prescs_group.columns=['drug substance name','count']
     return prescs_group
+
+def get_total_prescriptions(pt_features):
+    relev_prescriptions = pd.read_hdf('hdf/relev_prescriptions.hdf')
+    all_psych_drugnames = [drug for druglist in druglists.psychotropic_list_of_lists for drug in druglist['drugs']]
+    prodcodes = get_prodcodes_from_drug_name(all_psych_drugnames)
+    psych_mask = relev_prescriptions['prodcode'].isin(prodcodes)
+
+    psych_prescriptions = relev_prescriptions[psych_mask]
+    psych_prescriptions = psych_prescriptions.groupby(by='patid').eventdate.count().reset_index()
+    psych_prescriptions.columns=['patid','psych_prescription_count']
+
+    nonpsych_prescriptions = relev_prescriptions[~psych_mask]
+    nonpsych_prescriptions = nonpsych_prescriptions.groupby(by='patid').eventdate.count().reset_index()
+    nonpsych_prescriptions.columns=['patid','nonpsych_prescription_count']
+
+    pt_features = pd.merge(pt_features,psych_prescriptions,how='left')
+    pt_features = pd.merge(pt_features,nonpsych_prescriptions,how='left')
+
+    return pt_features

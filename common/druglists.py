@@ -15,6 +15,7 @@
 #     'ZOLPIDEM'
 # ]
 
+
 mood_stabilisers = {
     #my own list:
     'drugs':[
@@ -28,8 +29,59 @@ mood_stabilisers = {
         'lithium carbonate',
         'Valproate semisodium'
         ],
-    'depot':False,
+    'routes':['oral'],
     'name':'mood_stabilisers'
+}
+
+nsaids_without_aspirin = {
+    'drugs':[
+       # From BNF 2017:
+        'ACECLOFENAC',
+        'ACEMETACIN',
+        # 'ASPIRIN',
+        # 'ASPIRIN WITH CODEINE',
+        # 'ASPIRIN WITH METOCLOPRAMIDE',
+        'BENZYDAMINE HYDROCHLORIDE',
+        'BROMFENAC',
+        'CELECOXIB',
+        'DEXIBUPROFEN',
+        'DEXKETOPROFEN',
+        'DICLOFENAC POTASSIUM',
+        'DICLOFENAC SODIUM',
+        'DICLOFENAC SODIUM WITH MISOPROSTOL',
+        'ETODOLAC',
+        'ETORICOXIB',
+        # 'FELBINAC', - removed as it's just a knee rub
+        'FENOPROFEN',
+        'FLURBIPROFEN',
+        'IBUPROFEN',
+        'INDOMETACIN',
+        'KETOPROFEN',
+        'KETOPROFEN WITH OMEPRAZOLE',
+        'KETOROLAC TROMETAMOL',
+        'MEFENAMIC ACID',
+        'MELOXICAM',
+        'NABUMETONE',
+        'NAPROXEN',
+        'NAPROXEN WITH ESOMEPRAZOLE',
+        'NAPROXEN WITH MISOPROSTOL',
+        'NEPAFENAC',
+        'PARECOXIB',
+        'PIROXICAM',
+        'SULINDAC',
+        'TENOXICAM',
+        'TIAPROFENIC ACID',
+        'TOLFENAMIC ACID',
+        # my own list
+        'Dexketoprofen trometamol',
+        'Fenoprofen calcium',
+        #'Flurbiprofen sodium', - removed because just an eye drop
+        'Ketoprofen/omeprazole',
+        'Naproxen sodium',
+        'Piroxicam betadex'
+    ],
+    'routes':['oral'],
+    'name':'nsaids'
 }
 
 sedatives = {
@@ -79,7 +131,7 @@ sedatives = {
         #My own additions
     	'CHLORDIAZEPOXIDE'
         ],
-    'depot':False,
+    'routes':['oral'],
     'name':'sedatives'
 }
 
@@ -108,8 +160,8 @@ fgas = {
     'Prochlorperazine mesilate',
     'Zuclopenthixol dihydrochloride'
     ],
-    'depot':False,
-    'name':'sedatives'
+    'routes':['oral'],
+    'name':'fgas'
 }
 sgas = {
     'drugs':[
@@ -124,7 +176,7 @@ sgas = {
     'QUETIAPINE',
     'RISPERIDONE'
     ],
-    'depot':False,
+    'routes':['oral'],
     'name':'sgas'
 }
 
@@ -137,7 +189,7 @@ fga_depots = {
     'ZUCLOPENTHIXOL DECANOATE',
     #My own additions:
     ],
-    'depot':True,
+    'routes':['intramuscular'],
     'name':'fga_depots'
 }
 
@@ -151,7 +203,7 @@ sga_depots = {
     #My own additions:
     'Olanzapine embonate monohydrate'
     ],
-    'depot':True,
+    'routes':['intramuscular'],
     'name':'sga_depots'
 }
 
@@ -201,7 +253,7 @@ antidepressants = {
     'Trimipramine maleate',
     'Trimipramine maleate',
     'Venlafaxine Hydrochloride'],
-    'depot':False,
+    'routes':['oral'],
     'name':'antidepressants'
 }
 
@@ -212,4 +264,15 @@ antidementia_drugs = [
     'Memantine hydrochloride',
     'memantine',
     'donepezil'
+]
+
+
+psychotropic_list_of_lists = [
+    mood_stabilisers,
+    sedatives,
+    fgas,
+    sgas,
+    sga_depots,
+    fga_depots,
+    antidepressants
 ]
