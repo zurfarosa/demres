@@ -46,9 +46,9 @@ def create_prescriptions():
     logging.debug('concatenating')
     prescriptions = pd.concat([presc1,presc2])
     logging.debug('converting eventdate to datetime')
-    prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'],format='%d/%m/%Y')
+    prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'],format='%d/%m/%Y',errors='coerce')
     logging.debug('converting sysdate to datetime')
-    prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],format='%d/%m/%Y')
+    prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],format='%d/%m/%Y',errors='coerce')
     prescriptions['type']=entry_type['prescription']
     logging.debug('writing to csv')
     all_entries.to_hdf('hdf/prescriptions.hdf','prescriptions',mode='w')
@@ -70,9 +70,9 @@ def create_medcoded_entries():
     clinical = pd.concat([clin1,clin2])
     clinical['type']=entry_type['clinical']
     #logging.debug('processing clinical - converting to datetime - eventdate')
-    clinical['eventdate'] = pd.to_datetime(clinical['eventdate'])
+    clinical['eventdate'] = pd.to_datetime(clinical['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing clinical - converting to datetime - sysdate')
-    clinical['sysdate'] = pd.to_datetime(clinical['sysdate'],format='%d/%m/%Y')
+    clinical['sysdate'] = pd.to_datetime(clinical['sysdate'],format='%d/%m/%Y',errors='coerce')
 
     #logging.debug('processing tests')
     test1 = pd.read_csv('data/pt_data/raw_data/Extract_Test_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
@@ -81,25 +81,25 @@ def create_medcoded_entries():
     test = pd.concat([test1,test2])
     test['type']=entry_type['test']
     #logging.debug('processing test - converting to datetime - eventdate')
-    test['eventdate'] = pd.to_datetime(test['eventdate'],format='%d/%m/%Y')
+    test['eventdate'] = pd.to_datetime(test['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing test - converting to datetime - sysdate')
-    test['sysdate'] = pd.to_datetime(test['sysdate'],format='%d/%m/%Y')
+    test['sysdate'] = pd.to_datetime(test['sysdate'],format='%d/%m/%Y',errors='coerce')
 
     #logging.debug('processing referrals')
     referral = pd.read_csv('data/pt_data/raw_data/Extract_Referral_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
     referral['type']=entry_type['referral']
     #logging.debug('processing referrals - converting to datetime - eventdate')
-    referral['eventdate'] = pd.to_datetime(referral['eventdate'],format='%d/%m/%Y')
+    referral['eventdate'] = pd.to_datetime(referral['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing referrals - converting to datetime - sysdate')
-    referral['sysdate'] = pd.to_datetime(referral['sysdate'],format='%d/%m/%Y')
+    referral['sysdate'] = pd.to_datetime(referral['sysdate'],format='%d/%m/%Y',errors='coerce')
 
     #logging.debug('processing immunisations')
     immunisations = pd.read_csv('data/pt_data/raw_data/Extract_Immunisation_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
     immunisations['type']=entry_type['immunisation']
     #logging.debug('processing immunisations - converting to datetime - eventdate')
-    immunisations['eventdate'] = pd.to_datetime(immunisations['eventdate'],format='%d/%m/%Y')
+    immunisations['eventdate'] = pd.to_datetime(immunisations['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing  immunisations - converting to datetime - sysdate')
-    immunisations['sysdate'] = pd.to_datetime(immunisations['sysdate'],format='%d/%m/%Y')
+    immunisations['sysdate'] = pd.to_datetime(immunisations['sysdate'],format='%d/%m/%Y',errors='coerce')
 
     #logging.debug('concatenating the different entry types')
     medcoded_entries = pd.concat([clinical,test,referral,immunisations])
@@ -118,9 +118,9 @@ def create_consultations():
     #logging.debug('concatenating')
     consultations = pd.concat([cons1,cons2])[['patid','sysdate','eventdate']]
     #logging.debug('converting to datetime - eventdate')
-    consultations['eventdate'] = pd.to_datetime(consultations['eventdate'],format='%d/%m/%Y')
+    consultations['eventdate'] = pd.to_datetime(consultations['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('converting to datetime - sysdate')
-    consultations['sysdate'] = pd.to_datetime(consultations['sysdate'],format='%d/%m/%Y')
+    consultations['sysdate'] = pd.to_datetime(consultations['sysdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('adding type column')
     consultations['type']= entry_type['consultation']
     #logging.debug('writing to csv')
@@ -133,11 +133,11 @@ def create_all_entries():
     #logging.debug('reading consultations')
     consultations = pd.read_hdf('hdf/consultations.hdf')
     #logging.debug('reading medcoded entries')
-    medcoded_entries = pd.read_hdf('hdf/consultations.hdf')
+    medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
     #logging.debug('reading prescriptions')
     prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
     #logging.debug('concatenating...')
     all_entries = pd.concat([consultations,medcoded_entries,prescriptions],ignore_index=True)
     #logging.debug('writing to file...')
-    all_entries.to_hdf('hdf/all_entries.hdf','all_entries',mode='w')
-    # return all_entries
+    # all_entries.to_hdf('hdf/all_entries.hdf','all_entries',mode='w')
+    return all_entries.loc[:,['eventdate','sysdate','medcode','prodcode','patid','type']]

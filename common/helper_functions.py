@@ -50,7 +50,7 @@ def get_windows():
     windows = []
     for window_num in range(Study_Design.number_of_windows-1,-1,-1): #reverse step ensures that the earliest window is first
         window = {}
-        window['start_latency']= (Study_Design.years_between_last_window_and_index_date + (window_num * Study_Design.window_length_in_years)) * timedelta(days=365)
-        window['end_latency'] = window['start_latency'] + (Study_Design.window_length_in_years * timedelta(days=365))
+        window['start']= (Study_Design.years_between_last_window_and_index_date + (window_num * Study_Design.window_length_in_years)) * timedelta(days=365)
+        window['end'] = window['start'] + (Study_Design.window_length_in_years * timedelta(days=365))
         windows.append(window)
     return windows

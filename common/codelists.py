@@ -19,7 +19,9 @@ insomnia_readcodes = [
     'E274D11', # Restless sleep
     'E274.12', # Insomnia due to nonorganic sleep disorder
     'E274E00', # 'Short-sleeper'
-    '1BX9.00'  # Light sleep
+    '1BX9.00', # Light sleep
+    '1B1Q.00' # Poor sleep pattern
+
 ]
 
 dementia_readcodes = [
