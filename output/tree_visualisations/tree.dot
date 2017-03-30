@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="nonpsych_prescription_count <= 0.5\nsamples = 52111\nvalue = [26029, 26082]\nclass = not dementia", fillcolor="#399de501"] ;
+1 [label="psych_prescription_count <= 0.5\nsamples = 28090\nvalue = [16659, 11431]\nclass = dementia", fillcolor="#e5813950"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="samples = 28048\nvalue = [16650, 11398]\nclass = dementia", fillcolor="#e5813950"] ;
+1 -> 2 ;
+3 [label="psych_prescription_count <= 16.0\nsamples = 42\nvalue = [9, 33]\nclass = not dementia", fillcolor="#399de5b9"] ;
+1 -> 3 ;
+4 [label="samples = 36\nvalue = [9, 27]\nclass = not dementia", fillcolor="#399de5aa"] ;
+3 -> 4 ;
+5 [label="samples = 6\nvalue = [0, 6]\nclass = not dementia", fillcolor="#399de5ff"] ;
+3 -> 5 ;
+6 [label="antidepressants_pdds <= 15.415\nsamples = 24021\nvalue = [9370, 14651]\nclass = not dementia", fillcolor="#399de55c"] ;
+0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+7 [label="sgas_pdds <= 0.025\nsamples = 17197\nvalue = [7577, 9620]\nclass = not dementia", fillcolor="#399de536"] ;
+6 -> 7 ;
+8 [label="samples = 16902\nvalue = [7552, 9350]\nclass = not dementia", fillcolor="#399de531"] ;
+7 -> 8 ;
+9 [label="samples = 295\nvalue = [25, 270]\nclass = not dementia", fillcolor="#399de5e7"] ;
+7 -> 9 ;
+10 [label="sgas_pdds <= 0.015\nsamples = 6824\nvalue = [1793, 5031]\nclass = not dementia", fillcolor="#399de5a4"] ;
+6 -> 10 ;
+11 [label="samples = 6388\nvalue = [1743, 4645]\nclass = not dementia", fillcolor="#399de59f"] ;
+10 -> 11 ;
+12 [label="samples = 436\nvalue = [50, 386]\nclass = not dementia", fillcolor="#399de5de"] ;
+10 -> 12 ;
+}

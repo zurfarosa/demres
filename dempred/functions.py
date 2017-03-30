@@ -79,6 +79,9 @@ def create_ppd(pt_features,druglist):
     pt_pdds=pt_pdds.round(decimals=2)
     pt_pdds.columns=['patid',druglist['name']+'_pdds']
     pt_features = pd.merge(pt_features,pt_pdds,how='left')
+    pt_features.fillna(value=0,inplace=True)
+    pt_features.psych_prescription_count = pt_features.psych_prescription_count.astype(int)
+    pt_features.nonpsych_prescription_count = pt_features.nonpsych_prescription_count.astype(int)
     return pt_features,pdds,prescs
 
 def explore_similar_drug_names(druglist):
@@ -114,4 +117,5 @@ def get_total_prescriptions(pt_features):
     pt_features = pd.merge(pt_features,psych_prescriptions,how='left')
     pt_features = pd.merge(pt_features,nonpsych_prescriptions,how='left')
 
+    pt_features.fillna(value=0,inplace=True)
     return pt_features

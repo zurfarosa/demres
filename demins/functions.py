@@ -1,11 +1,25 @@
-def get_insomnia_event_count(entries=None):
+import os
+import sys
+
+import pandas as pd
+import numpy as np
+from datetime import date, timedelta
+
+import demres
+from demres.common.constants import entry_type
+from demres.common import codelists
+from demres.common.process_raw_data import *
+from demres.dempred.constants import Study_Design
+from demres.common.helper_functions import *
+from dempred.functions import *
+from pprint import pprint
+
+
+def get_insomnia_event_count(pt_features,entries,windows):
     """
     Calculates count of insomnia-months for each patient, and adds it to pt_features dataframe
-    Can receive an optional all_entries or medcoded_entries dataframe as an argument
     """
     # Create list of all insomnia entries, then group it to calculate each patient's insomnia count, broken down by month
-    if entries is None:
-        entries = pd.read_csv('data/pt_data/medcoded_entries.csv',delimiter=',',parse_dates=['eventdate'],infer_datetime_format=True)
     insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia_readcodes)
     insom_events = entries[entries['medcode'].isin(insomnia_medcodes)]
     insom_events = insom_events[pd.notnull(insom_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
@@ -15,18 +29,20 @@ def get_insomnia_event_count(entries=None):
     insom_events.columns=['patid','eventdate','insom_count']
     #delete zero counts
     insom_events = insom_events[insom_events['insom_count']>0]
-    # Remove insomnia events for patients who are no longer in study (e.g. because I've removed them for not having any enough data)
-    pt_features = pd.read_csv('data/pt_data/pt_features.csv',delimiter=',',parse_dates=['index_date'],infer_datetime_format=True)
     insom_events = pd.merge(insom_events,pt_features,how='inner')[['patid','eventdate','insom_count','index_date']]
-    # Restrict insomnia event counts to those that occur during exposure period
-    interim_period = timedelta(days=365)*Study_Design.years_between_end_of_exposure_period_and_index_date
-    relevant_event_mask = (insom_events['eventdate']<=(insom_events['index_date']-interim_period)) & (insom_events['eventdate']>=(insom_events['index_date']-timedelta(days=365)*Study_Design.total_years_required_pre_index_date))
-    insom_events = insom_events.loc[relevant_event_mask]
-    insom_events = insom_events.groupby('patid')['insom_count'].count().reset_index()
-    # merge pt_features with new insomnia_event dataframe
-    pt_features = pd.merge(pt_features,insom_events,how='left')
-    pt_features['insom_count'].fillna(0,inplace=True)
-    pt_features['insom_count'] = pt_features['insom_count'].astype(int)
 
-    # return pt_features
-    pt_features.to_csv(ROOT_DIR + '/data/pt_data/pt_features.csv',index=False)
+    for window_count,window in enumerate(get_windows()):
+        window_insom_events = insom_events
+        window_count = str(window_count)
+        print(window_count)
+        # Restrict insomnia event counts to those that occur during exposure window
+        relevant_event_mask = (window_insom_events['eventdate']<=(window_insom_events['index_date']-window['start_latency'])) & (window_insom_events['eventdate']>=(window_insom_events['index_date']-window['end_latency']))
+        window_insom_events = window_insom_events.loc[relevant_event_mask]
+        window_insom_events = window_insom_events.groupby('patid')['insom_count'].count().reset_index()
+        window_insom_events.columns=['patid','insom_count_window'+window_count]
+    #     merge pt_features with new insomnia_event dataframe
+        pt_features = pd.merge(pt_features,window_insom_events,how='left')
+        pt_features['insom_count_window'+window_count].fillna(0,inplace=True)
+        pt_features['insom_count_window'+window_count] = pt_features['insom_count_window'+window_count].astype(int)
+
+    return pt_windows
