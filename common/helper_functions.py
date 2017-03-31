@@ -48,9 +48,9 @@ def get_windows():
     Returns the list of exposure windows, as defined in Study_Design constants, going from earliest to last
     '''
     windows = []
-    for window_num in range(Study_Design.number_of_windows-1,-1,-1): #reverse step ensures that the earliest window is first
+    for window_num in range(Study_Design.number_of_windows,0,-1): #reverse step ensures that the earliest window is first
         window = {}
         window['start']= (Study_Design.years_between_last_window_and_index_date + (window_num * Study_Design.window_length_in_years)) * timedelta(days=365)
-        window['end'] = window['start'] + (Study_Design.window_length_in_years * timedelta(days=365))
+        window['end'] = window['start'] - (Study_Design.window_length_in_years * timedelta(days=365))
         windows.append(window)
     return windows

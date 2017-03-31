@@ -13,6 +13,10 @@ from demres.dempred.constants import Study_Design
 from dempred.functions import *
 from pprint import pprint
 
+
+
+
+
 def create_relevant_prescriptions_hdf():
     '''
     Creates an HDF file of all prescriptions entered during each patient's exposure period
@@ -35,54 +39,6 @@ def create_pdds(pt_features,druglists):
     for druglist in druglists:
         pt_features,_,_=create_ppd(pt_features,druglist) #note that create_ppd returns a tuple
     return pt_features
-
-def create_ppd(pt_features,druglist):
-    '''
-    Adds a prescribed daily dose (PDD) column for each drug in a druglist to the pt_features dataframe
-    '''
-    relev_prescriptions = pd.read_hdf('hdf/relev_prescriptions.hdf')
-    relev_prescriptions = relev_prescriptions[pd.notnull(relev_prescriptions['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
-    prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-    specific_prescriptions = relev_prescriptions.loc[relev_prescriptions['prodcode'].isin([prodcodes])]
-
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
-    specific_prescriptions = pd.merge(specific_prescriptions,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
-    # if druglist['depot']:
-    for route in druglist['routes']:
-        specific_prescriptions = specific_prescriptions.loc[specific_prescriptions['route'].str.contains(route,na=False,case=False)]
-    # else:
-    #     specific_prescriptions = specific_prescriptions.loc[~specific_prescriptions['route'].str.contains('Intramuscular',na=False,case=False)]
-    amount_and_unit = specific_prescriptions['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
-    amount_and_unit.columns=['amount','unit']
-    amount_and_unit.amount = amount_and_unit.amount.astype('float')
-    prescs = pd.concat([specific_prescriptions,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq','type'],axis=1)
-    # for unit,multiplier in zip(['nanogram','microgram','micrograms','gram'],[0.000001,0.001,0.001,1000]):
-    #     unit_mask = prescs['unit']==unit
-    #     prescs.loc[unit_mask,'amount']*=multiplier
-    #     prescs.loc[unit_mask,'unit']='mg'
-    prescs['total_amount'] = prescs['qty']*prescs['amount']
-    # print(set(prescs['unit']))
-    # assert (len(set(prescs['unit'])))==1 #make sure there aren't any units other than 'mg'
-    pdds = {}
-    for drug in druglist['drugs']:
-        drug = drug.upper()
-        relev_prescs = prescs[prescs['drug substance name'].str.upper()==drug]
-        if(len(relev_prescs))>0:
-            drug_amounts = list(relev_prescs['amount'])
-            drug_weights = list(relev_prescs['qty'])
-            pdd = np.average(drug_amounts,weights=drug_weights)
-            pdds[drug]=pdd
-            assert pd.notnull(pdd)
-    presc_count = prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
-    presc_count['pdds']=presc_count['total_amount']/presc_count['drug substance name'].map(lambda x: pdds[x.upper()])
-    pt_pdds = presc_count.groupby(by='patid').pdds.sum().reset_index() #sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.)
-    pt_pdds=pt_pdds.round(decimals=2)
-    pt_pdds.columns=['patid',druglist['name']+'_pdds']
-    pt_features = pd.merge(pt_features,pt_pdds,how='left')
-    pt_features.fillna(value=0,inplace=True)
-    pt_features.psych_prescription_count = pt_features.psych_prescription_count.astype(int)
-    pt_features.nonpsych_prescription_count = pt_features.nonpsych_prescription_count.astype(int)
-    return pt_features,pdds,prescs
 
 def explore_similar_drug_names(druglist):
     '''
