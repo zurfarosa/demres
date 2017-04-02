@@ -13,6 +13,35 @@ from demres.common.helper_functions import *
 from pprint import pprint
 
 
+def get_condition_status(pt_features,entries,windows,codelist,int_or_boolean):
+    '''
+    Searches a patient's history (i.e. the list of medcoded entries) for any one of a list of related Read codes
+    (e.g. 'clinically significant alcohol use' readcodes) during a given exposure window  (e.g. 5-10 years prior to index date).
+    According to the 'count_or_boolean' parameter, will return either a count of these Readcodes or a simple boolean.
+    '''
+    medcodes = get_medcodes_from_readcodes(codelist['codes'])
+    medcode_events = entries[entries['medcode'].isin(medcodes)]
+    medcode_events = medcode_events[pd.notnull(medcode_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
+    medcode_events = pd.merge(medcode_events[['patid','eventdate']],pt_features[['patid','index_date']],how='inner',on='patid')
+    for window_count,window in enumerate(windows):
+        window_medcode_events = medcode_events
+        window_count = str(window_count)
+        new_colname = codelist['name']+'_window'
+        # Restrict event counts to those that occur during pt's exposure window
+        relevant_event_mask = (window_medcode_events['eventdate']>=(window_medcode_events['index_date']-window['start'])) & (window_medcode_events['eventdate']<=(window_medcode_events['index_date']-window['end']))
+        window_medcode_events = window_medcode_events.loc[relevant_event_mask]
+        window_medcode_event_count = window_medcode_events.groupby('patid')['eventdate'].count().reset_index()
+        window_medcode_event_count.columns=['patid',new_colname]
+        pt_features = pd.merge(pt_features,window_medcode_event_count,how='left')
+        if int_or_boolean=='boolean':
+            pt_features.loc[pd.notnull(pt_features[new_colname]),new_colname] = True
+            pt_features.loc[pd.isnull(pt_features[new_colname]),new_colname] = False
+        else:
+            pt_features[new_colname].fillna(0,inplace=True)
+            pt_features[new_colname] = pt_features[new_colname].astype(int)
+    return pt_features
+
+
 def get_insomnia_event_count(pt_features,entries,windows):
     """
     Calculates count of insomnia-months for each patient, and adds it to pt_features dataframe
@@ -29,7 +58,7 @@ def get_insomnia_event_count(pt_features,entries,windows):
     insom_events = insom_events[insom_events['insom_count']>0]
     insom_events = pd.merge(insom_events,pt_features,how='inner')[['patid','eventdate','insom_count','index_date']]
 
-    for window_count,window in enumerate(get_windows()):
+    for window_count,window in enumerate(windows):
         window_insom_events = insom_events
         window_count = str(window_count)
         # Restrict insomnia event counts to those that occur during exposure window

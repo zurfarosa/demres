@@ -95,3 +95,107 @@ dementia_readcodes = [
 	'Eu00z00',	#	[X]Dementia in Alzheimer's disease, unspecified
 	'Eu01z00'	#	[X]Vascular dementia, unspecified
 ]
+
+clin_sig_alcohol_use = {
+    'name': 'clin_sig_alcohol_use',
+    'codes': [
+    	'1366',		    #Very heavy drinker - >9u/day
+    	'136Q.00',		#Very heavy drinker
+    	'136T.00',		#harmful alcohol use
+    	'1462',		    #h/o: alcoholism
+    	'1B1c.00',		#alcohol induced hallucinations
+    	'66e0.00',		#alcohol abuse monitoring
+    	'7P22100',		#delivery of rehabilitation for alcohol addiction
+    	'8BA8.00',		#alcohol detoxification
+    	'8CAv.00',		#advised to contact primary care alcohol worker
+    	'8G32.00',		#aversion therapy - alcoholism
+    	'8H35.00',		#admitted to alcohol detoxification centre
+    	'8HkG.00',		#referral to specialist alcohol treatment service
+    	'8IAF.00',		#brief intervention for excessive alcohol consumptn declined
+    	'8IAJ.00',		#declined referral to specialist alcohol treatment service
+    	'8IAt.00',		#extended interven for excessive alcohol consumption declined
+    	'9k1B.00',		#extended intervention for excessive alcohol consumptn complt
+    	'9NN2.00',		#under care of community alcohol team
+    	'C150500',		#alcohol-induced pseudo-cushing's syndrome
+    	'E01..00',		#alcoholic psychoses
+    	'E010.00',		#alcohol withdrawal delirium
+    	'E011000',		#korsakov's alcoholic psychosis
+    	'E011100',		#korsakov's alcoholic psychosis with peripheral neuritis
+    	'E011200',		#Wernicke-Korsakov syndrome
+    	'E011z00',		#alcohol amnestic syndrome nos
+    	'E012.00',		#other alcoholic dementia
+    	'E012000',		#chronic alcoholic brain syndrome
+    	'E012.11',		#alcoholic dementia nos
+    	'E013.00',		#alcohol withdrawal hallucinosis
+    	'E014.00',		#pathological alcohol intoxication
+    	'E015.00',		#alcoholic paranoia
+    	'E01y.00',		#other alcoholic psychosis
+    	'E01y000',		#alcohol withdrawal syndrome
+    	'E01yz00',		#other alcoholic psychosis nos
+    	'E01z.00',		#alcoholic psychosis nos
+    	'E23..00',		#alcohol dependence syndrome
+    	'E230.00',		#acute alcoholic intoxication in alcoholism
+    	'E230000',		#acute alcoholic intoxication; unspecified; in alcoholism
+    	'E230100',		#continuous acute alcoholic intoxication in alcoholism
+    	'E230.11',		#alcohol dependence with acute alcoholic intoxication
+    	'E230200',		#episodic acute alcoholic intoxication in alcoholism
+    	'E230300',		#acute alcoholic intoxication in remission; in alcoholism
+    	'E230z00',		#acute alcoholic intoxication in alcoholism nos
+    	'E231.00',		#chronic alcoholism
+    	'E231000',		#unspecified chronic alcoholism
+    	'E23..11',		#alcoholism
+    	'E231100',		#continuous chronic alcoholism
+    	'E231200',		#episodic chronic alcoholism
+    	'E231300',		#chronic alcoholism in remission
+    	'E231z00',		#chronic alcoholism nos
+    	'E23z.00',		#alcohol dependence syndrome nos
+    	'E250300',		#nondependent alcohol abuse in remission
+    	'Eu10.00',		#[x]mental and behavioural disorders due to use of alcohol
+    	'Eu10100',		#[x]mental and behav dis due to use of alcohol: harmful use
+    	'Eu10200',		#[x]mental and behav dis due to use alcohol: dependence syndr
+    	'Eu10211',		#[x]alcohol addiction
+    	'Eu10212',		#[x]chronic alcoholism
+    	'Eu10300',		#[x]mental and behav dis due to use alcohol: withdrawal state
+    	'Eu10400',		#[X]Men & behav dis due alcohl: withdrawl state with delirium
+    	'Eu10411',		#[x]delirium tremens; alcohol induced
+    	'Eu10500',		#[x]mental & behav dis due to use alcohol: psychotic disorder
+    	'Eu10511',		#[x]alcoholic hallucinosis
+    	'Eu10512',		#[x]alcoholic jealousy
+    	'Eu10513',		#[x]alcoholic paranoia
+    	'Eu10514',		#[x]alcoholic psychosis nos
+    	'Eu10600',		#[x]mental and behav dis due to use alcohol: amnesic syndrome
+    	'Eu10611',		#[x]korsakov's psychosis; alcohol induced
+    	'Eu10700',		#[X]Men & behav dis due alcoh: resid & late-onset psychot dis
+    	'Eu10711',		#[x]alcoholic dementia nos
+    	'Eu10712',		#[x]chronic alcoholic brain syndrome
+    	'Eu10800',		#[x]alcohol withdrawal-induced seizure
+    	'Eu10y00',		#[x]men & behav dis due to use alcohol: oth men & behav dis
+    	'Eu10z00',		#[x]ment & behav dis due use alcohol: unsp ment & behav dis
+    	'F11x000',		#cerebral degeneration due to alcoholism
+    	'F11x011',		#alcoholic encephalopathy
+    	'F144000',		#cerebellar ataxia due to alcoholism
+    	'F25B.00',		#alcohol-induced epilepsy
+    	'F375.00',		#alcoholic polyneuropathy
+    	'F394100',		#alcoholic myopathy
+    	'G555.00',		#alcoholic cardiomyopathy
+    	'G852300',		#oesophageal varices in alcoholic cirrhosis of the liver
+    	'J610.00',		#alcoholic fatty liver
+    	'J611.00',		#acute alcoholic hepatitis
+    	'J612.00',		#alcoholic cirrhosis of liver
+    	'J612000',		#alcoholic fibrosis and sclerosis of liver
+    	'J613.00',		#alcoholic liver damage unspecified
+    	'J613000',		#alcoholic hepatic failure
+    	'J617.00',		#alcoholic hepatitis
+    	'J617000',		#chronic alcoholic hepatitis
+    	'J671000',		#alcohol-induced chronic pancreatitis
+    	'SLH3.00',		#alcohol deterrent poisoning
+    	'SM00100',		#denatured alcohol causing toxic effect
+    	'U60H300',		#[x]alcohol deterrents caus adverse effects in therapeut use
+    	'U60H311',		#[x] adverse reaction to alcohol deterrents
+    	'Z191.00',		#alcohol detoxification
+    	'Z191100',		#alcohol withdrawal regime
+    	'Z191211',		#alcohol reduction programme
+    	'ZR1E.11',		#ads - alcohol dependence scale
+    	'ZV11300'		#[v]personal history of alcoholism
+        ]
+}

@@ -1,5 +1,6 @@
 from datetime import datetime,timedelta
 from shutil import copy
+from pprint import pprint
 import os
 import pandas as pd
 
@@ -16,7 +17,11 @@ def get_prodcodes_from_drug_name(codelist):
 
 def get_medcodes_from_readcodes(readcodes):
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv')
-    medcodes=[pegmed.loc[pegmed['readcode']==readcode,'medcode'].iloc[0] for readcode in readcodes]
+    medcodelists = []
+    for readcode in readcodes:
+        medcodelists.append(pegmed.loc[pegmed['readcode'].str.contains('^'+readcode,case=True,regex=True),'medcode'].values.tolist())  #regex required because Read codes contain dot characters as wild cards.
+    medcodes = [item for medcodelist in medcodelists for item in medcodelist]
+    medcodes_explained = pegmed.loc[pegmed['medcode'].isin(medcodes),['readcode','medcode','read term']].values.tolist() #Don't delete - useful for debugging, as Read code to medcode conversion can lead to surprises!
     return medcodes
 
 def backup_file(path,file,additional_suffix=None):
