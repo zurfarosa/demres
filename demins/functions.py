@@ -17,7 +17,7 @@ def get_condition_status(pt_features,entries,windows,codelist,int_or_boolean):
     '''
     Searches a patient's history (i.e. the list of medcoded entries) for any one of a list of related Read codes
     (e.g. 'clinically significant alcohol use' readcodes) during a given exposure window  (e.g. 5-10 years prior to index date).
-    According to the 'count_or_boolean' parameter, will return either a count of these Readcodes or a simple boolean.
+    According to the 'count_or_boolean' parameter, will return either a count of the Read codes or a simple boolean.
     '''
     medcodes = get_medcodes_from_readcodes(codelist['codes'])
     medcode_events = entries[entries['medcode'].isin(medcodes)]
@@ -26,7 +26,7 @@ def get_condition_status(pt_features,entries,windows,codelist,int_or_boolean):
     for window_count,window in enumerate(windows):
         window_medcode_events = medcode_events
         window_count = str(window_count)
-        new_colname = codelist['name']+'_window'
+        new_colname = codelist['name']+'_window'+window_count
         # Restrict event counts to those that occur during pt's exposure window
         relevant_event_mask = (window_medcode_events['eventdate']>=(window_medcode_events['index_date']-window['start'])) & (window_medcode_events['eventdate']<=(window_medcode_events['index_date']-window['end']))
         window_medcode_events = window_medcode_events.loc[relevant_event_mask]

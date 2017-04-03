@@ -39,73 +39,52 @@ def create_specific_prescriptions(all_prescriptions,medlist,csv_name):
 
 def create_prescriptions():
     logging.debug(entry_type['prescription'])
-    logging.debug('reading presc1')
-    presc1 = pd.read_csv('data/pt_data/raw_data/Extract_Therapy_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','prodcode','qty','ndd','numdays','numpacks','packtype','issueseq'])
-    logging.debug('reading presc2')
-    presc2 = pd.read_csv('data/pt_data/raw_data/Extract_Therapy_002.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','prodcode','qty','ndd','numdays','numpacks','packtype','issueseq'])
-    logging.debug('concatenating')
+    # logging.debug('reading presc1')
+    presc1 = pd.read_csv('data/pt_data/raw_data/Extract_Therapy_001.txt',delimiter='\t')
+    # logging.debug('reading presc2')
+    presc2 = pd.read_csv('data/pt_data/raw_data/Extract_Therapy_002.txt',delimiter='\t')
+    # logging.debug('concatenating')
     prescriptions = pd.concat([presc1,presc2])
-    logging.debug('converting eventdate to datetime')
+    # logging.debug('converting eventdate to datetime')
     prescriptions['eventdate'] = pd.to_datetime(prescriptions['eventdate'],format='%d/%m/%Y',errors='coerce')
-    logging.debug('converting sysdate to datetime')
+    # logging.debug('converting sysdate to datetime')
     prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],format='%d/%m/%Y',errors='coerce')
-    prescriptions['type']=entry_type['prescription']
-    logging.debug('writing to csv')
-    all_entries.to_hdf('hdf/prescriptions.hdf','prescriptions',mode='w')
+    # logging.debug('writing to csv')
+    prescriptions.to_hdf('hdf/prescriptions.hdf','prescriptions',mode='w')
 
-def create_medcoded_entries():
-    #logging.debug('calling create_medcoded_entries')
-    """
-    Creates create_medcoded_entries.csv
-    This is a file containing a dataframe containing simplified data
-    (just patient ID, eventdate, sysdate, and medcode) from the
-    Extract_Clinical_001 and 002 files, Extract_Test_001 and 002 file and Extract_Referral_001 file
-    (but not the Extract_Therapy_001 or 002 files or Extract_Consultations_001 or 002)
-    """
+def create_clinicals():
     #logging.debug('processing clinical - reading clin1')
-    clin1 = pd.read_csv('data/pt_data/raw_data/Extract_Clinical_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    clin1 = pd.read_csv('data/pt_data/raw_data/Extract_Clinical_001.txt',delimiter='\t')
     #logging.debug('processing clinical - reading clin2')
-    clin2 = pd.read_csv('data/pt_data/raw_data/Extract_Clinical_002.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    clin2 = pd.read_csv('data/pt_data/raw_data/Extract_Clinical_002.txt',delimiter='\t')
     #logging.debug('processing clinical - concatenating')
-    clinical = pd.concat([clin1,clin2])
-    clinical['type']=entry_type['clinical']
+    clinicals = pd.concat([clin1,clin2])
     #logging.debug('processing clinical - converting to datetime - eventdate')
-    clinical['eventdate'] = pd.to_datetime(clinical['eventdate'],format='%d/%m/%Y',errors='coerce')
+    clinicals['eventdate'] = pd.to_datetime(clinicals['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing clinical - converting to datetime - sysdate')
-    clinical['sysdate'] = pd.to_datetime(clinical['sysdate'],format='%d/%m/%Y',errors='coerce')
+    clinicals['sysdate'] = pd.to_datetime(clinicals['sysdate'],format='%d/%m/%Y',errors='coerce')
+    clinicals.to_hdf('hdf/clinicals.hdf','clinicals',mode='w')
 
+def create_tests():
     #logging.debug('processing tests')
-    test1 = pd.read_csv('data/pt_data/raw_data/Extract_Test_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
-    test2 = pd.read_csv('data/pt_data/raw_data/Extract_Test_002.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
+    test1 = pd.read_csv('data/pt_data/raw_data/Extract_Test_001.txt',delimiter='\t')
+    test2 = pd.read_csv('data/pt_data/raw_data/Extract_Test_002.txt',delimiter='\t')
     #logging.debug('processing test - concatenating')
-    test = pd.concat([test1,test2])
-    test['type']=entry_type['test']
+    tests = pd.concat([test1,test2])
     #logging.debug('processing test - converting to datetime - eventdate')
-    test['eventdate'] = pd.to_datetime(test['eventdate'],format='%d/%m/%Y',errors='coerce')
+    tests['eventdate'] = pd.to_datetime(tests['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing test - converting to datetime - sysdate')
-    test['sysdate'] = pd.to_datetime(test['sysdate'],format='%d/%m/%Y',errors='coerce')
+    tests['sysdate'] = pd.to_datetime(tests['sysdate'],format='%d/%m/%Y',errors='coerce')
+    tests.to_hdf('hdf/tests.hdf','tests',mode='w')
 
+def create_referrals():
     #logging.debug('processing referrals')
-    referral = pd.read_csv('data/pt_data/raw_data/Extract_Referral_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
-    referral['type']=entry_type['referral']
+    referrals = pd.read_csv('data/pt_data/raw_data/Extract_Referral_001.txt',delimiter='\t')
     #logging.debug('processing referrals - converting to datetime - eventdate')
-    referral['eventdate'] = pd.to_datetime(referral['eventdate'],format='%d/%m/%Y',errors='coerce')
+    referrals['eventdate'] = pd.to_datetime(referrals['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing referrals - converting to datetime - sysdate')
-    referral['sysdate'] = pd.to_datetime(referral['sysdate'],format='%d/%m/%Y',errors='coerce')
-
-    #logging.debug('processing immunisations')
-    immunisations = pd.read_csv('data/pt_data/raw_data/Extract_Immunisation_001.txt',delimiter='\t',usecols=['patid','sysdate','eventdate','medcode'])
-    immunisations['type']=entry_type['immunisation']
-    #logging.debug('processing immunisations - converting to datetime - eventdate')
-    immunisations['eventdate'] = pd.to_datetime(immunisations['eventdate'],format='%d/%m/%Y',errors='coerce')
-    #logging.debug('processing  immunisations - converting to datetime - sysdate')
-    immunisations['sysdate'] = pd.to_datetime(immunisations['sysdate'],format='%d/%m/%Y',errors='coerce')
-
-    #logging.debug('concatenating the different entry types')
-    medcoded_entries = pd.concat([clinical,test,referral,immunisations])
-
-    #logging.debug('writing to csv')
-    medcoded_entries.to_hdf('hdf/medcoded_entries.hdf','all_entries',mode='w')
+    referrals['sysdate'] = pd.to_datetime(referrals['sysdate'],format='%d/%m/%Y',errors='coerce')
+    referrals.to_hdf('hdf/referrals.hdf','referrals',mode='w')
 
 def create_consultations():
     """
@@ -116,28 +95,78 @@ def create_consultations():
     #logging.debug('reading Extract_Consultation_002.txt')
     cons2 = pd.read_csv('data/pt_data/raw_data/Extract_Consultation_002.txt',delimiter='\t')
     #logging.debug('concatenating')
-    consultations = pd.concat([cons1,cons2])[['patid','sysdate','eventdate']]
+    consultations = pd.concat([cons1,cons2])
     #logging.debug('converting to datetime - eventdate')
     consultations['eventdate'] = pd.to_datetime(consultations['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('converting to datetime - sysdate')
     consultations['sysdate'] = pd.to_datetime(consultations['sysdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('adding type column')
-    consultations['type']= entry_type['consultation']
     #logging.debug('writing to csv')
     consultations.to_hdf('hdf/consultations.hdf','consultations',mode ='w')
 
-def create_all_entries():
+def create_immunisations():
+    #logging.debug('processing immunisations')
+    immunisations = pd.read_csv('data/pt_data/raw_data/Extract_Immunisation_001.txt',delimiter='\t')
+    #logging.debug('processing immunisations - converting to datetime - eventdate')
+    immunisations['eventdate'] = pd.to_datetime(immunisations['eventdate'],format='%d/%m/%Y',errors='coerce')
+    #logging.debug('processing  immunisations - converting to datetime - sysdate')
+    immunisations['sysdate'] = pd.to_datetime(immunisations['sysdate'],format='%d/%m/%Y',errors='coerce')
+    immunisations.to_hdf('hdf/immunisations.hdf','immunisations',mode='w')
+
+def create_medcoded_entries():
+    #logging.debug('calling create_medcoded_entries')
     """
-    Creates a csv file (all_entries.csv) containing all entries (consultations, prescriptions, clinicals, tests, referrals)
+    Creates simplified hdf files (all_entries and )
+    This is a file containing a dataframe containing simplified data
+    (just patient ID, eventdate, sysdate, and medcode) from the
+    Extract_Clinical_001 and 002 files, Extract_Test_001 and 002 file and Extract_Referral_001 file
+    (but not the Extract_Therapy_001 or 002 files or Extract_Consultations_001 or 002)
     """
-    #logging.debug('reading consultations')
-    consultations = pd.read_hdf('hdf/consultations.hdf')
-    #logging.debug('reading medcoded entries')
+    clinicals = pd.read_hdf('hdf/clinicals.hdf')[['patid','sysdate','eventdate','medcode']]
+    clinicals['type']=entry_type['clinical']
+
+    tests = pd.read_hdf('hdf/tests.hdf')[['patid','sysdate','eventdate','medcode']]
+    tests['type']=entry_type['test']
+
+    referrals = pd.read_hdf('hdf/referrals.hdf')[['patid','sysdate','eventdate','medcode']]
+    referrals['type']=entry_type['referral']
+
+    immunisations = pd.read_hdf('hdf/immunisations.hdf')[['patid','sysdate','eventdate','medcode']]
+    immunisations['type']=entry_type['immunisation']
+
+    medcoded_entries = pd.concat([clinicals,tests,referrals,immunisations],ignore_index=True)
+    medcoded_entries.to_hdf('hdf/medcoded_entries.hdf','medcoded_entries',mode='w')
+
+def get_all_entries():
     medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
-    #logging.debug('reading prescriptions')
-    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
-    #logging.debug('concatenating...')
-    all_entries = pd.concat([consultations,medcoded_entries,prescriptions],ignore_index=True)
-    #logging.debug('writing to file...')
-    # all_entries.to_hdf('hdf/all_entries.hdf','all_entries',mode='w')
-    return all_entries.loc[:,['eventdate','sysdate','medcode','prodcode','patid','type']]
+    medcoded_entries['prodcode']=np.nan
+
+    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')[['patid','sysdate','eventdate','prodcode']]
+    prescriptions['medcode']=np.nan
+    prescriptions['type']=entry_type['prescription']
+
+    consultations = pd.read_hdf('hdf/consultations.hdf')[['patid','sysdate','eventdate']]
+    consultations['medcode']=np.nan
+    consultations['prodcode']=np.nan
+    consultations['type']=entry_type['consultation']
+
+    all_entries = pd.concat([consultations,prescriptions,medcoded_entries],ignore_index=True)
+    return all_entries
+
+
+#
+# def create_all_entries():
+#     """
+#     Creates a csv file (all_entries.csv) containing all entries (consultations, prescriptions, clinicals, tests, referrals)
+#     """
+#     #logging.debug('reading consultations')
+#     consultations = pd.read_hdf('hdf/consultations.hdf')
+#     #logging.debug('reading medcoded entries')
+#     medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
+#     #logging.debug('reading prescriptions')
+#     prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+#     #logging.debug('concatenating...')
+#     all_entries = pd.concat([consultations,medcoded_entries,prescriptions],ignore_index=True)
+#     #logging.debug('writing to file...')
+#     # all_entries.to_hdf('hdf/all_entries.hdf','all_entries',mode='w')
+#     return all_entries.loc[:,['eventdate','sysdate','medcode','prodcode','patid','type']]

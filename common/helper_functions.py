@@ -38,6 +38,7 @@ def get_patient_history(all_entries,patid):
     '''
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
+
     pt_history = all_entries[all_entries['patid']==patid]
     pt_history_elaborated = pd.merge(pt_history,pegmed[['medcode','read term']],how='left')
     pt_history_elaborated = pd.merge(pt_history_elaborated,pegprod[['prodcode','drug substance name']],how='left')
