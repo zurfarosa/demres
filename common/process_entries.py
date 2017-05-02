@@ -137,19 +137,31 @@ def create_medcoded_entries():
     medcoded_entries = pd.concat([clinicals,tests,referrals,immunisations],ignore_index=True)
     medcoded_entries.to_hdf('hdf/medcoded_entries.hdf','medcoded_entries',mode='w')
 
-def get_all_entries():
-    medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
+def get_all_entries(medcoded_entries=None,prescriptions=None):
+    if len(medcoded_entries)==0:
+        print('medocded entries doesnt exist')
+        medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
+    else:
+        print('medcoded entry length: ',len(medcoded_entries))
     medcoded_entries['prodcode']=np.nan
 
-    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')[['patid','sysdate','eventdate','prodcode']]
+    if len(prescriptions)==0:
+        print('prescriptionsdoesnt exist')
+        prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+    else:
+        print('prescription length: ',len(prescriptions))
+
+    prescriptions = prescriptions.loc[:,['patid','sysdate','eventdate','prodcode']]
     prescriptions['medcode']=np.nan
     prescriptions['type']=entry_type['prescription']
 
+    print('adding in consultations...')
     consultations = pd.read_hdf('hdf/consultations.hdf')[['patid','sysdate','eventdate']]
     consultations['medcode']=np.nan
     consultations['prodcode']=np.nan
     consultations['type']=entry_type['consultation']
 
+    print('concatenating')
     all_entries = pd.concat([consultations,prescriptions,medcoded_entries],ignore_index=True)
     return all_entries
 

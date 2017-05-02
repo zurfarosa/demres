@@ -10,95 +10,102 @@ from demres.common.constants import entry_type
 from demres.common import codelists
 from demres.dempred.constants import Study_Design
 from demres.common.helper_functions import *
+import statsmodels.api as sm
 from pprint import pprint
 
 
-def get_condition_status(pt_features,entries,windows,codelist,int_or_boolean):
+def get_univariate_and_multivariate_results(pt_features,training_cols):
+    #first convert booleans to 1 or 0; and do not include columns where the mean value (if continuous) is 0
+    temp = []
+    for col in training_cols:
+        pt_features[col] = pt_features[col].astype(int)
+        if pt_features[col].mean()>0.01: #arbitary number which seems to prevent 'Maximum Likelihood optimization failed to converge' warnings
+            temp.append(col)
+    training_cols = temp
+
+    # get univariate results
+    univariate_results = pd.DataFrame(columns=['odds_ratio','p_value'])
+    for col in training_cols:
+        logit = sm.Logit(pt_features['isCase'], pt_features[col])
+        result = logit.fit(disp=0,maxiter=500)
+        OR = round(np.exp(result.params).astype(float),4)
+        p_value = round(result.pvalues.astype(float),3)
+        univariate_results.loc[col] = [OR.values[0],p_value.values[0]]
+
+    # get multivariate results
+    logit = sm.Logit(pt_features['isCase'], pt_features[training_cols])
+    result = logit.fit()
+    multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
+    multivariate_results.columns=['odds_ratio','p_value']
+
+    return univariate_results, multivariate_results
+
+def get_multiple_condition_statuses(pt_features,entries,windows,conditions):
+    for condition in conditions:
+        print(condition['name'])
+        pt_features = get_condition_status(pt_features,entries,windows,condition)
+    return pt_features
+
+def get_condition_status(pt_features,entries,windows,condition):
     '''
     Searches a patient's history (i.e. the list of medcoded entries) for any one of a list of related Read codes
-    (e.g. 'clinically significant alcohol use' readcodes) during a given exposure window  (e.g. 5-10 years prior to index date).
-    According to the 'count_or_boolean' parameter, will return either a count of the Read codes or a simple boolean.
+    (e.g. 'clinically significant alcohol use', or 'insomnia') during a given exposure window  (e.g. 5-10 years prior to index date).
+    According to the 'count_or_boolean' parameter, will return either a count of the Read codes (i.e. insomnia) or a simple boolean (all other conditions).
     '''
-    medcodes = get_medcodes_from_readcodes(codelist['codes'])
+    medcodes = get_medcodes_from_readcodes(condition['codes'])
     medcode_events = entries[entries['medcode'].isin(medcodes)]
-    medcode_events = medcode_events[pd.notnull(medcode_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
+    medcode_events = medcode_events[pd.notnull(medcode_events['eventdate'])] #drops a small number of rows  with NaN eventdates
+    print('medcode_events: {0}, pt_features: {1}'.format(len(medcode_events),len(pt_features)))
     medcode_events = pd.merge(medcode_events[['patid','eventdate']],pt_features[['patid','index_date']],how='inner',on='patid')
     for window_count,window in enumerate(windows):
-        window_medcode_events = medcode_events
         window_count = str(window_count)
-        new_colname = codelist['name']+'_window'+window_count
+        new_colname = condition['name']+'_window'+window_count
         # Restrict event counts to those that occur during pt's exposure window
-        relevant_event_mask = (window_medcode_events['eventdate']>=(window_medcode_events['index_date']-window['start'])) & (window_medcode_events['eventdate']<=(window_medcode_events['index_date']-window['end']))
-        window_medcode_events = window_medcode_events.loc[relevant_event_mask]
-        window_medcode_event_count = window_medcode_events.groupby('patid')['eventdate'].count().reset_index()
-        window_medcode_event_count.columns=['patid',new_colname]
-        pt_features = pd.merge(pt_features,window_medcode_event_count,how='left')
-        if int_or_boolean=='boolean':
-            pt_features.loc[pd.notnull(pt_features[new_colname]),new_colname] = True
-            pt_features.loc[pd.isnull(pt_features[new_colname]),new_colname] = False
-        else:
+        relevant_event_mask = (medcode_events['eventdate']>=(medcode_events['index_date']-window['start'])) & (medcode_events['eventdate']<=(medcode_events['index_date']-window['end']))
+        window_medcode_events = medcode_events.loc[relevant_event_mask]
+        window_medcode_events = window_medcode_events.groupby('patid')['eventdate'].count().reset_index()
+        window_medcode_events.columns=['patid',new_colname]
+
+        #delete zero counts
+        window_medcode_events = window_medcode_events[window_medcode_events[new_colname]>0]
+
+        pt_features = pd.merge(pt_features,window_medcode_events,how='left')
+        if condition['int_or_boolean']=='boolean':
+            pt_features.loc[pd.notnull(pt_features[new_colname]),new_colname] = 1
+            pt_features.loc[pd.isnull(pt_features[new_colname]),new_colname] = 0
+        else: # e.g. insomnia_count
             pt_features[new_colname].fillna(0,inplace=True)
-            pt_features[new_colname] = pt_features[new_colname].astype(int)
+        pt_features[new_colname] = pt_features[new_colname].astype(int)
     return pt_features
 
 
-def get_insomnia_event_count(pt_features,entries,windows):
-    """
-    Calculates count of insomnia-months for each patient, and adds it to pt_features dataframe
-    """
-    # Create list of all insomnia entries, then group it to calculate each patient's insomnia count, broken down by month
-    insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia_readcodes)
-    insom_events = entries[entries['medcode'].isin(insomnia_medcodes)]
-    insom_events = insom_events[pd.notnull(insom_events['eventdate'])] #drops a small number of rows (only about 64) with NaN eventdates
-    insom_events = insom_events[['patid','eventdate']].set_index('eventdate').groupby('patid').resample('M').count()
-    #convert group_by object back to dataframe
-    insom_events = insom_events.add_suffix('_count').reset_index()
-    insom_events.columns=['patid','eventdate','insom_count']
-    #delete zero counts
-    insom_events = insom_events[insom_events['insom_count']>0]
-    insom_events = pd.merge(insom_events,pt_features,how='inner')[['patid','eventdate','insom_count','index_date']]
+def create_pdds(pt_features,prescriptions,list_of_druglists,windows):
 
-    for window_count,window in enumerate(windows):
-        window_insom_events = insom_events
-        window_count = str(window_count)
-        # Restrict insomnia event counts to those that occur during exposure window
-        relevant_event_mask = (window_insom_events['eventdate']>=(window_insom_events['index_date']-window['start'])) & (window_insom_events['eventdate']<=(window_insom_events['index_date']-window['end']))
-        window_insom_events = window_insom_events.loc[relevant_event_mask]
-        window_insom_events = window_insom_events.groupby('patid')['insom_count'].count().reset_index()
-        window_insom_events.columns=['patid','insom_count_window'+window_count]
-    #     merge pt_features with new insomnia_event dataframe
-        pt_features = pd.merge(pt_features,window_insom_events,how='left')
-        pt_features['insom_count_window'+window_count].fillna(0,inplace=True)
-        pt_features['insom_count_window'+window_count] = pt_features['insom_count_window'+window_count].astype(int)
+    prescs = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
+    prescs = prescs[pd.notnull(prescs['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
+    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
+    prescs = pd.merge(prescs,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
 
+    for druglist in list_of_druglists:
+        pt_features = create_pdd(pt_features,prescs,druglist,windows) #note that create_ppd returns a tuple
     return pt_features
 
-def create_pdds_new(pt_features,druglists,windows):
-    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
-    for druglist in druglists:
-        pt_features = create_ppd_new(pt_features,prescriptions,druglist,windows) #note that create_ppd returns a tuple
-    return pt_features
-
-def create_ppd_new(pt_features,prescriptions,druglist,windows):
+def create_pdd(pt_features,prescriptions,druglist,windows):
     '''
     Adds a prescribed daily dose (PDD) column for each drug in a druglist to the pt_features dataframe
     '''
-    prescs = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
-    prescs = prescs[pd.notnull(prescs['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
-
     prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-    prescs = prescs.loc[prescs['prodcode'].isin([prodcodes])]
+    prescs = prescriptions.loc[prescriptions['prodcode'].isin([prodcodes])]
 
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
-    prescs = pd.merge(prescs,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
-    # if druglist['depot']:
-    for route in druglist['routes']:
-        prescs = prescs.loc[prescs['route'].str.contains(route,na=False,case=False)]
+    # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
+    prescs = prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
 
     amount_and_unit = prescs['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
     amount_and_unit.columns=['amount','unit']
     amount_and_unit.amount = amount_and_unit.amount.astype('float')
-    prescs = pd.concat([prescs,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq','type'],axis=1)
+
+
+    prescs = pd.concat([prescs,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq'],axis=1)
 
     prescs['total_amount'] = prescs['qty']*prescs['amount']
 
@@ -137,7 +144,7 @@ def get_consultation_count(pt_features,all_entries,windows):
     relev_entries = pd.merge(all_entries,pt_features[['patid','index_date']],how='inner')
     # relev_entries['index_date'] = pd.to_datetime(relev_entries['index_date'],errors='coerce',format='%Y-%m-%d')
     # Find all consultations which occur on the same day as an insomnia readcode
-    insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia_readcodes)
+    insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia['codes'])
     insom_dates = relev_entries.loc[relev_entries['medcode'].isin(insomnia_medcodes),['eventdate','patid']]
     insom_dates['insomnia']=True
     marked_consultations = pd.merge(relev_entries,insom_dates,how='left',left_on=['eventdate','patid'],right_on=['eventdate','patid'])

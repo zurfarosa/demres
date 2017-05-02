@@ -1,30 +1,5 @@
-insomnia_readcodes = [
-    'R005200', # [D]Insomnia NOS
-    '1B1B.11', # C/O - insomnia
-    'R005.00', # [D]Sleep disturbances
-    'E274111', # Insomnia NOS
-    'Fy00.00',  # Disorders of maintaining and initiating sleep
-    '1B1B.00', # Cannot sleep - insomnia
-    '663N.00', # Asthma disturbing sleep
-    'R005.11', # [D]Insomnia - symptom
-    '663N200', # Asthma disturbs sleep frequently
-    '663N100', # Asthma disturbs sleep weekly
-    'E274100', # Transient insomnia
-    '1B1B200', # Late insomnia
-    '1B1B000', # Initial insomnia
-    'Eu51000', # [X]Nonorganic insomnia
-    '1BX0.00', # Delayed onset of sleep
-    'E274200', # Persistent insomnia
-    '1B1B100', # Middle insomnia
-    'E274D11', # Restless sleep
-    'E274.12', # Insomnia due to nonorganic sleep disorder
-    'E274E00', # 'Short-sleeper'
-    '1BX9.00', # Light sleep
-    '1B1Q.00' # Poor sleep pattern
 
-]
-
-dementia_readcodes = [
+dementia = [
 	'E001000',	#	Uncomplicated presenile dementia
 	'E001z00',	#	Presenile dementia NOS
 	'E002.00',	#	Senile dementia with depressive or paranoid fe...
@@ -96,8 +71,39 @@ dementia_readcodes = [
 	'Eu01z00'	#	[X]Vascular dementia, unspecified
 ]
 
+insomnia = {
+    'name':'insomnia',
+    'int_or_boolean':'int',
+    'codes':[
+        'R005200', # [D]Insomnia NOS
+        '1B1B.11', # C/O - insomnia
+        'R005.00', # [D]Sleep disturbances
+        'E274111', # Insomnia NOS
+        'Fy00.00',  # Disorders of maintaining and initiating sleep
+        '1B1B.00', # Cannot sleep - insomnia
+        '663N.00', # Asthma disturbing sleep
+        'R005.11', # [D]Insomnia - symptom
+        '663N200', # Asthma disturbs sleep frequently
+        '663N100', # Asthma disturbs sleep weekly
+        'E274100', # Transient insomnia
+        '1B1B200', # Late insomnia
+        '1B1B000', # Initial insomnia
+        'Eu51000', # [X]Nonorganic insomnia
+        '1BX0.00', # Delayed onset of sleep
+        'E274200', # Persistent insomnia
+        '1B1B100', # Middle insomnia
+        'E274D11', # Restless sleep
+        'E274.12', # Insomnia due to nonorganic sleep disorder
+        'E274E00', # 'Short-sleeper'
+        '1BX9.00', # Light sleep
+        '1B1Q.00' # Poor sleep pattern
+    ]
+}
+
+
 clin_sig_alcohol_use = {
     'name': 'clin_sig_alcohol_use',
+    'int_or_boolean':'boolean',
     'codes': [
     	'1366',		    #Very heavy drinker - >9u/day
     	'136Q.00',		#Very heavy drinker
@@ -201,7 +207,8 @@ clin_sig_alcohol_use = {
 }
 
 mental_illness_non_smi = {
-    'name': '',
+    'name': 'mental_illness_non_smi',
+    'int_or_boolean':'boolean',
     'codes':[
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
@@ -729,6 +736,7 @@ mental_illness_non_smi = {
 
 mental_illness_smi = {
     'name': 'mental_illness_smi',
+    'int_or_boolean':'boolean',
     'codes': [
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
@@ -1069,6 +1077,7 @@ mental_illness_smi = {
 
 sleep_apnoea = {
     'name': 'sleep_apnoea',
+    'int_or_boolean':'boolean',
     'codes': [
     	'H5B0.00',		#Obstructive sleep apnoea
     	'R005100',		#[D]Insomnia with sleep apnoea
@@ -1081,3 +1090,630 @@ sleep_apnoea = {
     	'Fy03.00'		#Sleep apnoea
     ]
 }
+
+intellectual_disability = {
+    'name': 'intellectual_disability',
+    'int_or_boolean':'boolean',
+    'codes': [
+    #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/26/
+    	'1JB0.00',		#Suspected Downs syndrome
+    	'6664',		    #Mental handicap problem
+    	'689Z.00',		#Mental/dev.handicap screen NOS
+    	'E3...00',		#Mental retardation
+    	'E30..00',		#Mild mental retardation; IQ in range 50-70
+    	'E31..00',		#Other specified mental retardation
+    	'E310.00',		#Moderate mental retardation; IQ in range 35-49
+    	'E311.00',		#Severe mental retardation; IQ in range 20-34
+    	'E312.00',		#Profound mental retardation with IQ less than 20
+    	'E31z.00',		#Other specified mental retardation NOS
+    	'E3y..00',		#Other specified mental retardation
+    	'E3z..00',		#Mental retardation NOS
+    	'Eu7..00',		#[X]Mental retardation
+    	'Eu70.00',		#[X]Mild mental retardation
+    	'Eu70y00',		#[X]Mild mental retardation; other impairments of behaviour
+    	'Eu70z00',		#[X]Mild mental retardation without mention impairment behav
+    	'Eu71.00',		#[X]Moderate mental retardation
+    	'Eu71z00',		#[X]Mod mental retardation without mention impairment behav
+    	'Eu72.00',		#[X]Severe mental retardation
+    	'Eu72y00',		#[X]Severe mental retardation; other impairments of behaviour
+    	'Eu72z00',		#[X]Sev mental retardation without mention impairment behav
+    	'Eu73.00',		#[X]Profound mental retardation
+    	'Eu73y00',		#[X]Profound mental retardation; other impairments of behavr
+    	'Eu73z00',		#[X]Prfnd mental retardation without mention impairment behav
+    	'Eu7y.00',		#[X]Other mental retardation
+    	'Eu7yy00',		#[X]Other mental retardation; other impairments of behaviour
+    	'Eu7yz00',		#[X]Other mental retardation without mention impairment behav
+    	'Eu7z.00',		#[X]Unspecified mental retardation
+    	'Eu7zz00',		#[X]Unsp mental retardation without mention impairment behav
+    	'Eu84112',		#[X]Mental retardation with autistic features
+    	'Eu84200',		#[X]Rett's syndrome
+    	'ZL1B500',		#Under care of psychiatrist for mental handicap
+    	'ZL5B500',		#Referral to psychiatrist for mental handicap
+    	'ZL9D500',		#Seen by psychiatrist for mental handicap
+    	'ZLD2f00',		#Discharge by psychiatrist for mental handicap
+    	'ZLE9400'		#Discharge from mental handicap psychiatry service
+    ]
+}
+
+
+diabetes = {
+    'name':'diabetes',
+    'int_or_boolean':'boolean',
+    'codes': [
+        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+    	'C10..00',		#Diabetes mellitus
+    	'C109J00',		#Insulin treated Type 2 diabetes mellitus
+    	'C109K00',		#Hyperosmolar non-ketotic state in type 2 diabetes mellitus
+    	'C10C.00',		#Diabetes mellitus autosomal dominant
+    	'C10D.00',		#Diabetes mellitus autosomal dominant type 2
+    	'C10E.00',		#Type 1 diabetes mellitus
+    	'C10E000',		#Type 1 diabetes mellitus with renal complications
+    	'C10E012',		#Insulin-dependent diabetes mellitus with renal complications
+    	'C10E100',		#Type 1 diabetes mellitus with ophthalmic complications
+    	'C10E.11',		#Type I diabetes mellitus
+    	'C10E111',		#Type I diabetes mellitus with ophthalmic complications
+    	'C10E112',		#Insulin-dependent diabetes mellitus with ophthalmic comps
+    	'C10E.12',		#Insulin dependent diabetes mellitus
+    	'C10E200',		#Type 1 diabetes mellitus with neurological complications
+    	'C10E212',		#Insulin-dependent diabetes mellitus with neurological comps
+    	'C10E300',		#Type 1 diabetes mellitus with multiple complications
+    	'C10E311',		#Type I diabetes mellitus with multiple complications
+    	'C10E312',		#Insulin dependent diabetes mellitus with multiple complicat
+    	'C10E400',		#Unstable type 1 diabetes mellitus
+    	'C10E411',		#Unstable type I diabetes mellitus
+    	'C10E412',		#Unstable insulin dependent diabetes mellitus
+    	'C10E500',		#Type 1 diabetes mellitus with ulcer
+    	'C10E511',		#Type I diabetes mellitus with ulcer
+    	'C10E512',		#Insulin dependent diabetes mellitus with ulcer
+    	'C10E600',		#Type 1 diabetes mellitus with gangrene
+    	'C10E611',		#Type I diabetes mellitus with gangrene
+    	'C10E700',		#Type 1 diabetes mellitus with retinopathy
+    	'C10E711',		#Type I diabetes mellitus with retinopathy
+    	'C10E712',		#Insulin dependent diabetes mellitus with retinopathy
+    	'C10E800',		#Type 1 diabetes mellitus - poor control
+    	'C10E812',		#Insulin dependent diabetes mellitus - poor control
+    	'C10E900',		#Type 1 diabetes mellitus maturity onset
+    	'C10E911',		#Type I diabetes mellitus maturity onset
+    	'C10E912',		#Insulin dependent diabetes maturity onset
+    	'C10EA00',		#Type 1 diabetes mellitus without complication
+    	'C10EA11',		#Type I diabetes mellitus without complication
+    	'C10EA12',		#Insulin-dependent diabetes without complication
+    	'C10EB00',		#Type 1 diabetes mellitus with mononeuropathy
+    	'C10EC00',		#Type 1 diabetes mellitus with polyneuropathy
+    	'C10EC11',		#Type I diabetes mellitus with polyneuropathy
+    	'C10EC12',		#Insulin dependent diabetes mellitus with polyneuropathy
+    	'C10ED00',		#Type 1 diabetes mellitus with nephropathy
+    	'C10ED12',		#Insulin dependent diabetes mellitus with nephropathy
+    	'C10EE00',		#Type 1 diabetes mellitus with hypoglycaemic coma
+    	'C10EE12',		#Insulin dependent diabetes mellitus with hypoglycaemic coma
+    	'C10EF00',		#Type 1 diabetes mellitus with diabetic cataract
+    	'C10EF12',		#Insulin dependent diabetes mellitus with diabetic cataract
+    	'C10EG00',		#Type 1 diabetes mellitus with peripheral angiopathy
+    	'C10EH00',		#Type 1 diabetes mellitus with arthropathy
+    	'C10EJ00',		#Type 1 diabetes mellitus with neuropathic arthropathy
+    	'C10EK00',		#Type 1 diabetes mellitus with persistent proteinuria
+    	'C10EL00',		#Type 1 diabetes mellitus with persistent microalbuminuria
+    	'C10EL11',		#Type I diabetes mellitus with persistent microalbuminuria
+    	'C10EM00',		#Type 1 diabetes mellitus with ketoacidosis
+    	'C10EM11',		#Type I diabetes mellitus with ketoacidosis
+    	'C10EN00',		#Type 1 diabetes mellitus with ketoacidotic coma
+    	'C10EN11',		#Type I diabetes mellitus with ketoacidotic coma
+    	'C10EP00',		#Type 1 diabetes mellitus with exudative maculopathy
+    	'C10EP11',		#Type I diabetes mellitus with exudative maculopathy
+    	'C10EQ00',		#Type 1 diabetes mellitus with gastroparesis
+    	'C10ER00',		#Latent autoimmune diabetes mellitus in adult
+    	'C10F.00',		#Type 2 diabetes mellitus
+    	'C10F000',		#Type 2 diabetes mellitus with renal complications
+    	'C10F011',		#Type II diabetes mellitus with renal complications
+    	'C10F100',		#Type 2 diabetes mellitus with ophthalmic complications
+    	'C10F.11',		#Type II diabetes mellitus
+    	'C10F111',		#Type II diabetes mellitus with ophthalmic complications
+    	'C10F200',		#Type 2 diabetes mellitus with neurological complications
+    	'C10F211',		#Type II diabetes mellitus with neurological complications
+    	'C10F300',		#Type 2 diabetes mellitus with multiple complications
+    	'C10F311',		#Type II diabetes mellitus with multiple complications
+    	'C10F400',		#Type 2 diabetes mellitus with ulcer
+    	'C10F411',		#Type II diabetes mellitus with ulcer
+    	'C10F500',		#Type 2 diabetes mellitus with gangrene
+    	'C10F511',		#Type II diabetes mellitus with gangrene
+    	'C10F600',		#Type 2 diabetes mellitus with retinopathy
+    	'C10F611',		#Type II diabetes mellitus with retinopathy
+    	'C10F700',		#Type 2 diabetes mellitus - poor control
+    	'C10F711',		#Type II diabetes mellitus - poor control
+    	'C10F800',		#Reaven's syndrome
+    	'C10F811',		#Metabolic syndrome X
+    	'C10F900',		#Type 2 diabetes mellitus without complication
+    	'C10F911',		#Type II diabetes mellitus without complication
+    	'C10FA00',		#Type 2 diabetes mellitus with mononeuropathy
+    	'C10FA11',		#Type II diabetes mellitus with mononeuropathy
+    	'C10FB00',		#Type 2 diabetes mellitus with polyneuropathy
+    	'C10FB11',		#Type II diabetes mellitus with polyneuropathy
+    	'C10FC00',		#Type 2 diabetes mellitus with nephropathy
+    	'C10FC11',		#Type II diabetes mellitus with nephropathy
+    	'C10FD00',		#Type 2 diabetes mellitus with hypoglycaemic coma
+    	'C10FD11',		#Type II diabetes mellitus with hypoglycaemic coma
+    	'C10FE00',		#Type 2 diabetes mellitus with diabetic cataract
+    	'C10FE11',		#Type II diabetes mellitus with diabetic cataract
+    	'C10FF00',		#Type 2 diabetes mellitus with peripheral angiopathy
+    	'C10FG00',		#Type 2 diabetes mellitus with arthropathy
+    	'C10FG11',		#Type II diabetes mellitus with arthropathy
+    	'C10FH00',		#Type 2 diabetes mellitus with neuropathic arthropathy
+    	'C10FJ00',		#Insulin treated Type 2 diabetes mellitus
+    	'C10FJ11',		#Insulin treated Type II diabetes mellitus
+    	'C10FK00',		#Hyperosmolar non-ketotic state in type 2 diabetes mellitus
+    	'C10FL00',		#Type 2 diabetes mellitus with persistent proteinuria
+    	'C10FL11',		#Type II diabetes mellitus with persistent proteinuria
+    	'C10FM00',		#Type 2 diabetes mellitus with persistent microalbuminuria
+    	'C10FM11',		#Type II diabetes mellitus with persistent microalbuminuria
+    	'C10FN00',		#Type 2 diabetes mellitus with ketoacidosis
+    	'C10FP00',		#Type 2 diabetes mellitus with ketoacidotic coma
+    	'C10FQ00',		#Type 2 diabetes mellitus with exudative maculopathy
+    	'C10FR00',		#Type 2 diabetes mellitus with gastroparesis
+    	'C10FS00',		#Maternally inherited diabetes mellitus
+    	'C10G.00',		#Secondary pancreatic diabetes mellitus
+    	'C10G000',		#Secondary pancreatic diabetes mellitus without complication
+    	'C10H.00',		#Diabetes mellitus induced by non-steroid drugs
+    	'C10H000',		#DM induced by non-steroid drugs without complication
+    	'C10M.00',		#Lipoatrophic diabetes mellitus
+    	'C10N.00',		#Secondary diabetes mellitus
+    	'C10N000',		#Secondary diabetes mellitus without complication
+    	'C10N100'		#Cystic fibrosis related diabetes mellitus
+    ]
+}
+
+
+hypertension = {
+    'name':'hypertension',
+    'int_or_boolean':'boolean',
+    'codes': [
+        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+    	'G2...00',		#Hypertensive disease
+    	'G20..00',		#Essential hypertension
+    	'G200.00',		#Malignant essential hypertension
+    	'G201.00',		#Benign essential hypertension
+    	'G20..11',		#High blood pressure
+    	'G202.00',		#Systolic hypertension
+    	'G203.00',		#Diastolic hypertension
+    	'G20z.00',		#Essential hypertension NOS
+    	'G20z.11',		#Hypertension NOS
+    	'G24..00',		#Secondary hypertension
+    	'G240.00',		#Secondary malignant hypertension
+    	'G240000',		#Secondary malignant renovascular hypertension
+    	'G240z00',		#Secondary malignant hypertension NOS
+    	'G241.00',		#Secondary benign hypertension
+    	'G241000',		#Secondary benign renovascular hypertension
+    	'G241z00',		#Secondary benign hypertension NOS
+    	'G244.00',		#Hypertension secondary to endocrine disorders
+    	'G24z.00',		#Secondary hypertension NOS
+    	'G24z000',		#Secondary renovascular hypertension NOS
+    	'G24z100',		#Hypertension secondary to drug
+    	'G24zz00',		#Secondary hypertension NOS
+    	'G2y..00',		#Other specified hypertensive disease
+    	'G2z..00',		#Hypertensive disease NOS
+    	'Gyu2.00',		#[X]Hypertensive diseases
+    	'Gyu2000'		#[X]Other secondary hypertension
+    ]
+}
+
+
+CHD_heart_failure_and_peripheral_vascular_disease = {
+    'name':'CHD_heart_failure_and_peripheral_vascular_disease',
+    'int_or_boolean':'boolean',
+    'codes': [
+        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+        #CHD
+		'G3...00',		#Ischaemic heart disease
+		'G30..00',		#Acute myocardial infarction
+		'G300.00',		#Acute anterolateral infarction
+		'G301.00',		#Other specified anterior myocardial infarction
+		'G301000',		#Acute anteroapical infarction
+		'G30..11',		#Attack - heart
+		'G301100',		#Acute anteroseptal infarction
+		'G30..12',		#Coronary thrombosis
+		'G30..13',		#Cardiac rupture following myocardial infarction (MI)
+		'G30..14',		#Heart attack
+		'G30..15',		#MI - acute myocardial infarction
+		'G30..16',		#Thrombosis - coronary
+		'G30..17',		#Silent myocardial infarction
+		'G301z00',		#Anterior myocardial infarction NOS
+		'G302.00',		#Acute inferolateral infarction
+		'G303.00',		#Acute inferoposterior infarction
+		'G304.00',		#Posterior myocardial infarction NOS
+		'G305.00',		#Lateral myocardial infarction NOS
+		'G306.00',		#True posterior myocardial infarction
+		'G307.00',		#Acute subendocardial infarction
+		'G307000',		#Acute non-Q wave infarction
+		'G307100',		#Acute non-ST segment elevation myocardial infarction
+		'G308.00',		#Inferior myocardial infarction NOS
+		'G309.00',		#Acute Q-wave infarct
+		'G30B.00',		#Acute posterolateral myocardial infarction
+		'G30X.00',		#Acute transmural myocardial infarction of unspecif site
+		'G30X000',		#Acute ST segment elevation myocardial infarction
+		'G30y.00',		#Other acute myocardial infarction
+		'G30y000',		#Acute atrial infarction
+		'G30y100',		#Acute papillary muscle infarction
+		'G30y200',		#Acute septal infarction
+		'G30yz00',		#Other acute myocardial infarction NOS
+		'G30z.00',		#Acute myocardial infarction NOS
+		'G31..00',		#Other acute and subacute ischaemic heart disease
+		'G310.00',		#Postmyocardial infarction syndrome
+		'G310.11',		#Dressler's syndrome
+		'G3...11',		#Arteriosclerotic heart disease
+		'G311.00',		#Preinfarction syndrome
+		'G311000',		#Myocardial infarction aborted
+		'G311011',		#MI - myocardial infarction aborted
+		'G311100',		#Unstable angina
+		'G311.11',		#Crescendo angina
+		'G311.12',		#Impending infarction
+		'G311.13',		#Unstable angina
+		'G311.14',		#Angina at rest
+		'G311200',		#Angina at rest
+		'G311300',		#Refractory angina
+		'G311400',		#Worsening angina
+		'G311500',		#Acute coronary syndrome
+		'G311z00',		#Preinfarction syndrome NOS
+		'G3...12',		#Atherosclerotic heart disease
+		'G312.00',		#Coronary thrombosis not resulting in myocardial infarction
+		'G3...13',		#IHD - Ischaemic heart disease
+		'G31y.00',		#Other acute and subacute ischaemic heart disease
+		'G31y000',		#Acute coronary insufficiency
+		'G31y100',		#Microinfarction of heart
+		'G31y200',		#Subendocardial ischaemia
+		'G31y300',		#Transient myocardial ischaemia
+		'G31yz00',		#Other acute and subacute ischaemic heart disease NOS
+		'G32..00',		#Old myocardial infarction
+		'G32..11',		#Healed myocardial infarction
+		'G32..12',		#Personal history of myocardial infarction
+		'G33..00',		#Angina pectoris
+		'G330.00',		#Angina decubitus
+		'G330000',		#Nocturnal angina
+		'G330z00',		#Angina decubitus NOS
+		'G33z.00',		#Angina pectoris NOS
+		'G33z000',		#Status anginosus
+		'G33z100',		#Stenocardia
+		'G33z200',		#Syncope anginosa
+		'G33z300',		#Angina on effort
+		'G33z400',		#Ischaemic chest pain
+		'G33z500',		#Post infarct angina
+		'G33z600',		#New onset angina
+		'G33z700',		#Stable angina
+		'G33zz00',		#Angina pectoris NOS
+		'G34..00',		#Other chronic ischaemic heart disease
+		'G340.00',		#Coronary atherosclerosis
+		'G340000',		#Single coronary vessel disease
+		'G340100',		#Double coronary vessel disease
+		'G340.11',		#Triple vessel disease of the heart
+		'G340.12',		#Coronary artery disease
+		'G342.00',		#Atherosclerotic cardiovascular disease
+		'G343.00',		#Ischaemic cardiomyopathy
+		'G344.00',		#Silent myocardial ischaemia
+		'G34y.00',		#Other specified chronic ischaemic heart disease
+		'G34y000',		#Chronic coronary insufficiency
+		'G34y100',		#Chronic myocardial ischaemia
+		'G34yz00',		#Other specified chronic ischaemic heart disease NOS
+		'G34z.00',		#Other chronic ischaemic heart disease NOS
+		'G34z000',		#Asymptomatic coronary heart disease
+		'G35..00',		#Subsequent myocardial infarction
+		'G350.00',		#Subsequent myocardial infarction of anterior wall
+		'G351.00',		#Subsequent myocardial infarction of inferior wall
+		'G353.00',		#Subsequent myocardial infarction of other sites
+		'G35X.00',		#Subsequent myocardial infarction of unspecified site
+		'G36..00',		#Certain current complication follow acute myocardial infarct
+		'G360.00',		#Haemopericardium/current comp folow acut myocard infarct
+		'G361.00',		#Atrial septal defect/curr comp folow acut myocardal infarct
+		'G362.00',		#Ventric septal defect/curr comp fol acut myocardal infarctn
+		'G363.00',		#Ruptur cardiac wall w'out haemopericard/cur comp fol ac MI
+		'G364.00',		#Ruptur chordae tendinae/curr comp fol acute myocard infarct
+		'G365.00',		#Rupture papillary muscle/curr comp fol acute myocard infarct
+		'G38..00',		#Postoperative myocardial infarction
+		'G380.00',		#Postoperative transmural myocardial infarction anterior wall
+		'G381.00',		#Postoperative transmural myocardial infarction inferior wall
+		'G384.00',		#Postoperative subendocardial myocardial infarction
+		'G38z.00',		#Postoperative myocardial infarction; unspecified
+		'G3y..00',		#Other specified ischaemic heart disease
+		'G3z..00',		#Ischaemic heart disease NOS
+		'Gyu3.00',		#[X]Ischaemic heart diseases
+		'Gyu3000',		#[X]Other forms of angina pectoris
+		'Gyu3200',		#[X]Other forms of acute ischaemic heart disease
+		'Gyu3300',		#[X]Other forms of chronic ischaemic heart disease
+		'Gyu3400',		#[X]Acute transmural myocardial infarction of unspecif site
+		'Gyu3600',		#[X]Subsequent myocardial infarction of unspecified site
+        #HEART FAILURE
+		'662f.00',		#New York Heart Association classification - class I
+		'662F.00',		#Hypertension treatm. started
+		'662g.00',		#New York Heart Association classification - class II
+		'662G.00',		#Hypertensive treatm.changed
+		'662h.00',		#New York Heart Association classification - class III
+		'662H.00',		#Hypertension treatm.stopped
+		'662i.00',		#New York Heart Association classification - class IV
+		'G1yz100',		#Rheumatic left ventricular failure
+		'G58..00',		#Heart failure
+		'G580.00',		#Congestive heart failure
+		'G580000',		#Acute congestive heart failure
+		'G580100',		#Chronic congestive heart failure
+		'G580.11',		#Congestive cardiac failure
+		'G580.12',		#Right heart failure
+		'G580.13',		#Right ventricular failure
+		'G580.14',		#Biventricular failure
+		'G580200',		#Decompensated cardiac failure
+		'G580300',		#Compensated cardiac failure
+		'G580400',		#Congestive heart failure due to valvular disease
+		'G581.00',		#Left ventricular failure
+		'G581000',		#Acute left ventricular failure
+		'G58..11',		#Cardiac failure
+		'G581.11',		#Asthma - cardiac
+		'G581.12',		#Pulmonary oedema - acute
+		'G581.13',		#Impaired left ventricular function
+		'G582.00',		#Acute heart failure
+		'G583.00',		#Heart failure with normal ejection fraction
+		'G583.11',		#HFNEF - heart failure with normal ejection fraction
+		'G584.00',		#Right ventricular failure
+		'G58z.00',		#Heart failure NOS
+		'G58z.11',		#Weak heart
+		'G58z.12',		#Cardiac failure NOS
+        #PERIPHERAL VASCULAR DISEASE
+    	'G73..00',		#Other peripheral vascular disease
+    	'G73z.00',		#Peripheral vascular disease NOS
+    	'G73z000',		#Intermittent claudication
+    	'G73zz00',		#Peripheral vascular disease NOS
+    	'Gyu7400'		#[X]Other specified peripheral vascular diseases
+    ]
+}
+
+stroke = {
+    'name':'stroke',
+    'int_or_boolean':'boolean',
+    'codes': [
+        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+		'G61..00',		#Intracerebral haemorrhage
+		'G610.00',		#Cortical haemorrhage
+		'G611.00',		#Internal capsule haemorrhage
+		'G61..11',		#CVA - cerebrovascular accid due to intracerebral haemorrhage
+		'G61..12',		#Stroke due to intracerebral haemorrhage
+		'G612.00',		#Basal nucleus haemorrhage
+		'G613.00',		#Cerebellar haemorrhage
+		'G614.00',		#Pontine haemorrhage
+		'G615.00',		#Bulbar haemorrhage
+		'G616.00',		#External capsule haemorrhage
+		'G617.00',		#Intracerebral haemorrhage; intraventricular
+		'G618.00',		#Intracerebral haemorrhage; multiple localized
+		'G61X.00',		#Intracerebral haemorrhage in hemisphere; unspecified
+		'G61X000',		#Left sided intracerebral haemorrhage; unspecified
+		'G61X100',		#Right sided intracerebral haemorrhage; unspecified
+		'G61z.00',		#Intracerebral haemorrhage NOS
+		'G63y000',		#Cerebral infarct due to thrombosis of precerebral arteries
+		'G63y100',		#Cerebral infarction due to embolism of precerebral arteries
+		'G64..00',		#Cerebral arterial occlusion
+		'G640.00',		#Cerebral thrombosis
+		'G640000',		#Cerebral infarction due to thrombosis of cerebral arteries
+		'G641.00',		#Cerebral embolism
+		'G641000',		#Cerebral infarction due to embolism of cerebral arteries
+		'G64..11',		#CVA - cerebral artery occlusion
+		'G641.11',		#Cerebral embolus
+		'G64..12',		#Infarction - cerebral
+		'G64..13',		#Stroke due to cerebral arterial occlusion
+		'G64z.00',		#Cerebral infarction NOS
+		'G64z000',		#Brainstem infarction
+		'G64z100',		#Wallenberg syndrome
+		'G64z.11',		#Brainstem infarction NOS
+		'G64z111',		#Lateral medullary syndrome
+		'G64z.12',		#Cerebellar infarction
+		'G64z200',		#Left sided cerebral infarction
+		'G64z300',		#Right sided cerebral infarction
+		'G64z400',		#Infarction of basal ganglia
+		'G65..00',		#Transient cerebral ischaemia
+		'G650.00',		#Basilar artery syndrome
+		'G650.11',		#Insufficiency - basilar artery
+		'G651.00',		#Vertebral artery syndrome
+		'G651000',		#Vertebro-basilar artery syndrome
+		'G65..11',		#Drop attack
+		'G65..12',		#Transient ischaemic attack
+		'G65..13',		#Vertebro-basilar insufficiency
+		'G652.00',		#Subclavian steal syndrome
+		'G653.00',		#Carotid artery syndrome hemispheric
+		'G654.00',		#Multiple and bilateral precerebral artery syndromes
+		'G656.00',		#Vertebrobasilar insufficiency
+		'G65y.00',		#Other transient cerebral ischaemia
+		'G65z.00',		#Transient cerebral ischaemia NOS
+		'G65z000',		#Impending cerebral ischaemia
+		'G65z100',		#Intermittent cerebral ischaemia
+		'G65zz00',		#Transient cerebral ischaemia NOS
+		'G66..00',		#Stroke and cerebrovascular accident unspecified
+		'G660.00',		#Middle cerebral artery syndrome
+		'G661.00',		#Anterior cerebral artery syndrome
+		'G66..11',		#CVA unspecified
+		'G66..12',		#Stroke unspecified
+		'G66..13',		#CVA - Cerebrovascular accident unspecified
+		'G662.00',		#Posterior cerebral artery syndrome
+		'G663.00',		#Brain stem stroke syndrome
+		'G664.00',		#Cerebellar stroke syndrome
+		'G665.00',		#Pure motor lacunar syndrome
+		'G666.00',		#Pure sensory lacunar syndrome
+		'G667.00',		#Left sided CVA
+		'G668.00',		#Right sided CVA
+		'G669.00',		#Cerebral palsy; not congenital or infantile; acute
+		'G676000',		#Cereb infarct due cerebral venous thrombosis; nonpyogenic
+		'G6W..00',		#Cereb infarct due unsp occlus/stenos precerebr arteries
+		'G6X..00',		#Cerebrl infarctn due/unspcf occlusn or sten/cerebrl artrs
+		'Gyu6300',		#[X]Cerebrl infarctn due/unspcf occlusn or sten/cerebrl artrs
+		'Gyu6400',		#[X]Other cerebral infarction
+		'Gyu6500',		#[X]Occlusion and stenosis of other precerebral arteries
+		'Gyu6600',		#[X]Occlusion and stenosis of other cerebral arteries
+		'Gyu6F00',		#[X]Intracerebral haemorrhage in hemisphere; unspecified
+		'Gyu6G00',		#[X]Cereb infarct due unsp occlus/stenos precerebr arteries
+		'ZV12D00'		#[V]Personal history of transient ischaemic attack
+    ]
+}
+
+current_smoker = {
+    'name':'current_smoker',
+    'int_or_boolean':'boolean',
+    'codes': [
+        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
+		'137..11',		#Smoker - amount smoked
+		'1372',		#Trivial smoker - < 1 cig/day
+		'1372.11',		#Occasional smoker
+		'1373',		#Light smoker - 1-9 cigs/day
+		'1374',		#Moderate smoker - 10-19 cigs/d
+		'1375',		#Heavy smoker - 20-39 cigs/day
+		'1376',		#Very heavy smoker - 40+cigs/d
+		'137b.00',		#Ready to stop smoking
+		'137c.00',		#Thinking about stopping smoking
+		'137C.00',		#Keeps trying to stop smoking
+		'137D.00',		#Admitted tobacco cons untrue ?
+		'137e.00',		#Smoking restarted
+		'137G.00',		#Trying to give up smoking
+		'137h.00',		#Minutes from waking to first tobacco consumption
+		'137H.00',		#Pipe smoker
+		'137J.00',		#Cigar smoker
+		'137m.00',		#Failed attempt to stop smoking
+		'137M.00',		#Rolls own cigarettes
+		'137P.00',		#Cigarette smoker
+		'137P.11',		#Smoker
+		'137Q.00',		#Smoking started
+		'137Q.11',		#Smoking restarted
+		'137R.00',		#Current smoker
+		'137V.00',		#Smoking reduced
+		'137X.00',		#Cigarette consumption
+		'137Y.00',		#Cigar consumption
+		'137Z.00'		#Tobacco consumption NOS
+    ]
+}
+
+CKD = {
+    'name':'CKD',
+    'int_or_boolean':'boolean',
+    'codes': [
+        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
+		'1Z13.00',		#Chronic kidney disease stage 4
+		'1Z14.00',		#Chronic kidney disease stage 5
+		'1Z16.00',		#Chronic kidney disease stage 3B
+		'1Z1F.00',		#Chronic kidney disease stage 3B with proteinuria
+		'1Z1F.11',		#CKD stage 3B with proteinuria
+		'1Z1G.00',		#Chronic kidney disease stage 3B without proteinuria
+		'1Z1G.11',		#CKD stage 3B without proteinuria
+		'1Z1H.00',		#Chronic kidney disease stage 4 with proteinuria
+		'1Z1H.11',		#CKD stage 4 with proteinuria
+		'1Z1J.00',		#Chronic kidney disease stage 4 without proteinuria
+		'1Z1J.11',		#CKD stage 4 without proteinuria
+		'1Z1K.00',		#Chronic kidney disease stage 5 with proteinuria
+		'1Z1K.11',		#CKD stage 5 with proteinuria
+		'1Z1L.00',		#Chronic kidney disease stage 5 without proteinuria
+		'1Z1L.11'		#CKD stage 5 without proteinuria
+    ]
+}
+
+COPD = {
+    'name':'COPD',
+    'int_or_boolean':'boolean',
+    'codes':[
+        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+		'H3...00',		#Chronic obstructive pulmonary disease
+		'H31..00',		#Chronic bronchitis
+		'H310.00',		#Simple chronic bronchitis
+		'H310000',		#Chronic catarrhal bronchitis
+		'H310100',		#Smokers' cough
+		'H310z00',		#Simple chronic bronchitis NOS
+		'H311.00',		#Mucopurulent chronic bronchitis
+		'H311000',		#Purulent chronic bronchitis
+		'H311100',		#Fetid chronic bronchitis
+		'H311z00',		#Mucopurulent chronic bronchitis NOS
+		'H312.00',		#Obstructive chronic bronchitis
+		'H312000',		#Chronic asthmatic bronchitis
+		'H312011',		#Chronic wheezy bronchitis
+		'H312100',		#Emphysematous bronchitis
+		'H312200',		#Acute exacerbation of chronic obstructive airways disease
+		'H312300',		#Bronchiolitis obliterans
+		'H312z00',		#Obstructive chronic bronchitis NOS
+		'H313.00',		#Mixed simple and mucopurulent chronic bronchitis
+		'H31y.00',		#Other chronic bronchitis
+		'H31y000',		#Chronic tracheitis
+		'H31y100',		#Chronic tracheobronchitis
+		'H31yz00',		#Other chronic bronchitis NOS
+		'H31z.00',		#Chronic bronchitis NOS
+		'H32..00',		#Emphysema
+		'H320.00',		#Chronic bullous emphysema
+		'H320000',		#Segmental bullous emphysema
+		'H320100',		#Zonal bullous emphysema
+		'H320200',		#Giant bullous emphysema
+		'H320300',		#Bullous emphysema with collapse
+		'H320311',		#Tension pneumatocoele
+		'H320z00',		#Chronic bullous emphysema NOS
+		'H321.00',		#Panlobular emphysema
+		'H322.00',		#Centrilobular emphysema
+		'H32y.00',		#Other emphysema
+		'H32y000',		#Acute vesicular emphysema
+		'H32y100',		#Atrophic (senile) emphysema
+		'H32y111',		#Acute interstitial emphysema
+		'H32y200',		#MacLeod's unilateral emphysema
+		'H32yz00',		#Other emphysema NOS
+		'H32z.00',		#Emphysema NOS
+		'H36..00',		#Mild chronic obstructive pulmonary disease
+		'H37..00',		#Moderate chronic obstructive pulmonary disease
+		'H38..00',		#Severe chronic obstructive pulmonary disease
+		'H39..00',		#Very severe chronic obstructive pulmonary disease
+		'H3A..00',		#End stage chronic obstructive airways disease
+		'H3y..00',		#Other specified chronic obstructive airways disease
+		'H3y0.00',		#Chronic obstruct pulmonary dis with acute lower resp infectn
+		'H3y1.00',		#Chron obstruct pulmonary dis wth acute exacerbation; unspec
+		'H3y..11',		#Other specified chronic obstructive pulmonary disease
+		'H3z..00'		#Chronic obstructive airways disease NOS
+    ]
+}
+
+asthma = {
+    'name':'asthma',
+    'int_or_boolean':'boolean',
+    'codes':[
+        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+		'H312000',		#Chronic asthmatic bronchitis
+		'H33..00',		#Asthma
+		'H330.00',		#Extrinsic (atopic) asthma
+		'H330000',		#Extrinsic asthma without status asthmaticus
+		'H330011',		#Hay fever with asthma
+		'H330100',		#Extrinsic asthma with status asthmaticus
+		'H330.11',		#Allergic asthma
+		'H330111',		#Extrinsic asthma with asthma attack
+		'H330.12',		#Childhood asthma
+		'H330.13',		#Hay fever with asthma
+		'H330.14',		#Pollen asthma
+		'H330z00',		#Extrinsic asthma NOS
+		'H331.00',		#Intrinsic asthma
+		'H331000',		#Intrinsic asthma without status asthmaticus
+		'H33..11',		#Bronchial asthma
+		'H331100',		#Intrinsic asthma with status asthmaticus
+		'H331.11',		#Late onset asthma
+		'H331111',		#Intrinsic asthma with asthma attack
+		'H331z00',		#Intrinsic asthma NOS
+		'H332.00',		#Mixed asthma
+		'H333.00',		#Acute exacerbation of asthma
+		'H334.00',		#Brittle asthma
+		'H33z.00',		#Asthma unspecified
+		'H33z000',		#Status asthmaticus NOS
+		'H33z011',		#Severe asthma attack
+		'H33z100',		#Asthma attack
+		'H33z.11',		#Hyperreactive airways disease
+		'H33z111',		#Asthma attack NOS
+		'H33z200',		#Late-onset asthma
+		'H33zz00',		#Asthma NOS
+		'H33zz11',		#Exercise induced asthma
+		'H33zz12',		#Allergic asthma NEC
+		'H33zz13'		#Allergic bronchitis NEC
+    ]
+}
+
+codelist_list_of_lists = [
+    stroke,
+    CHD_heart_failure_and_peripheral_vascular_disease,
+    hypertension,
+    diabetes,
+    clin_sig_alcohol_use,
+    mental_illness_non_smi,
+    mental_illness_smi,
+    sleep_apnoea,
+    intellectual_disability,
+    current_smoker,
+    asthma,
+    COPD,
+    CKD
+]

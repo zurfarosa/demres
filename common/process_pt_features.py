@@ -33,7 +33,7 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
 
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
-    medcodes = get_medcodes_from_readcodes(codelists.dementia_readcodes)
+    medcodes = get_medcodes_from_readcodes(codelists.dementia)
     prodcodes = get_prodcodes_from_drug_name(druglists.antidementia_drugs)
 
     # from the all_entries df, get just those which contain a dementia dx of an antidementia drug prescription
@@ -65,12 +65,12 @@ def add_data_start_and_end_dates(all_entries,pt_features):
 
     logging.debug('finding earliest sysdates')
     earliest_sysdates = all_entries.groupby('patid')['sysdate'].min().reset_index()
-    earliest_sysdates.rename(columns={'sysdate':'data_start'},inplace=True)
+    earliest_sysdates = earliest_sysdates.rename(columns={'sysdate':'data_start'})
     logging.debug('earliest_sysdates:\n{0}'.format(earliest_sysdates.head(5)))
 
     logging.debug('finding latest sysdates')
     latest_sysdates = all_entries.groupby('patid')['sysdate'].max().reset_index()
-    latest_sysdates.rename(columns={'sysdate':'data_end'},inplace=True)
+    latest_sysdates = latest_sysdates.rename(columns={'sysdate':'data_end'})
     logging.debug('latest_sysdates:\n{0}'.format(latest_sysdates.head(5)))
 
     logging.debug('merging pt_features with earliest sysdates')
@@ -166,7 +166,7 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,req_yrs_pre_index):
                 pt_features.loc[index,'matchid']=index
                 pt_features.loc[best_match_index,'matchid']=index
                 pt_features.loc[best_match_index,'index_date']=index_date
-                controls.drop(best_match_index,inplace=True) #drop this row from controls dataframe so it cannot be matched again
+                controls = controls.drop(best_match_index) #drop this row from controls dataframe so it cannot be matched again
             else:
                 logging.debug('No match found for {0}'.format(patid))
     pt_features.drop('total_available_data',axis=1,inplace=True)

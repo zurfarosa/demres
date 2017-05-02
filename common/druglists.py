@@ -1,19 +1,3 @@
-# hypnotics = [
-# 	'CHLORAL HYDRATE',
-# 	'CLOMETHIAZOLE',
-# 	'DEXMEDETOMIDINE',
-# 	'MELATONIN',
-# 	'MEPROBAMATE',
-#     'ZALEPLON',
-#     'zopiclone',
-#     'ZOLPIDEM'
-# ]
-#
-# zdrugs = [
-#     'ZALEPLON',
-#     'zopiclone',
-#     'ZOLPIDEM'
-# ]
 
 
 mood_stabilisers = {
@@ -29,7 +13,7 @@ mood_stabilisers = {
         'lithium carbonate',
         'Valproate semisodium'
         ],
-    'routes':['oral'],
+    'route':'oral',
     'name':'mood_stabilisers'
 }
 
@@ -80,7 +64,7 @@ nsaids_without_aspirin = {
         'Naproxen sodium',
         'Piroxicam betadex'
     ],
-    'routes':['oral'],
+    'route':'oral',
     'name':'nsaids'
 }
 
@@ -131,7 +115,7 @@ sedatives = {
         #My own additions
     	'CHLORDIAZEPOXIDE'
         ],
-    'routes':['oral'],
+    'route':'oral',
     'name':'sedatives'
 }
 
@@ -160,7 +144,7 @@ fgas = {
     'Prochlorperazine mesilate',
     'Zuclopenthixol dihydrochloride'
     ],
-    'routes':['oral'],
+    'route':'oral',
     'name':'fgas'
 }
 sgas = {
@@ -176,7 +160,7 @@ sgas = {
     'QUETIAPINE',
     'RISPERIDONE'
     ],
-    'routes':['oral'],
+    'route':'oral',
     'name':'sgas'
 }
 
@@ -189,7 +173,7 @@ fga_depots = {
     'ZUCLOPENTHIXOL DECANOATE',
     #My own additions:
     ],
-    'routes':['intramuscular'],
+    'route':'intramuscular',
     'name':'fga_depots'
 }
 
@@ -203,7 +187,7 @@ sga_depots = {
     #My own additions:
     'Olanzapine embonate monohydrate'
     ],
-    'routes':['intramuscular'],
+    'route':'intramuscular',
     'name':'sga_depots'
 }
 
@@ -253,7 +237,7 @@ antidepressants = {
     'Trimipramine maleate',
     'Trimipramine maleate',
     'Venlafaxine Hydrochloride'],
-    'routes':['oral'],
+    'route':'oral',
     'name':'antidepressants'
 }
 
