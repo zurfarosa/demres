@@ -37,8 +37,9 @@ def get_univariate_and_multivariate_results(pt_features,training_cols):
     result = logit.fit()
     multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
     multivariate_results.columns=['odds_ratio','p_value']
+    multivariate_summary = result.summary()
 
-    return univariate_results, multivariate_results
+    return univariate_results, multivariate_results, multivariate_summary
 
 def get_multiple_condition_statuses(pt_features,entries,windows,conditions):
     for condition in conditions:
@@ -55,16 +56,23 @@ def get_condition_status(pt_features,entries,windows,condition):
     medcodes = get_medcodes_from_readcodes(condition['codes'])
     medcode_events = entries[entries['medcode'].isin(medcodes)]
     medcode_events = medcode_events[pd.notnull(medcode_events['eventdate'])] #drops a small number of rows  with NaN eventdates
-    print('medcode_events: {0}, pt_features: {1}'.format(len(medcode_events),len(pt_features)))
+    print('\tTotal medcode_events: {0}'.format(len(medcode_events)))
     medcode_events = pd.merge(medcode_events[['patid','eventdate']],pt_features[['patid','index_date']],how='inner',on='patid')
+
+    if condition['use_all_pt_history']:
+        windows = [{'end': timedelta(0), 'start': timedelta(36500)}]
+
     for window_count,window in enumerate(windows):
-        window_count = str(window_count)
-        new_colname = condition['name']+'_window'+window_count
+        if len(windows) >1:
+            new_colname = condition['name']+'_window'+str(window_count)
+        else:
+            new_colname = condition['name']
         # Restrict event counts to those that occur during pt's exposure window
         relevant_event_mask = (medcode_events['eventdate']>=(medcode_events['index_date']-window['start'])) & (medcode_events['eventdate']<=(medcode_events['index_date']-window['end']))
         window_medcode_events = medcode_events.loc[relevant_event_mask]
         window_medcode_events = window_medcode_events.groupby('patid')['eventdate'].count().reset_index()
         window_medcode_events.columns=['patid',new_colname]
+        print('\t{0} events: {1}'.format(new_colname,len(window_medcode_events)))
 
         #delete zero counts
         window_medcode_events = window_medcode_events[window_medcode_events[new_colname]>0]

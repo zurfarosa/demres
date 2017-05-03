@@ -74,6 +74,7 @@ dementia = [
 insomnia = {
     'name':'insomnia',
     'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes':[
         'R005200', # [D]Insomnia NOS
         '1B1B.11', # C/O - insomnia
@@ -103,7 +104,8 @@ insomnia = {
 
 clin_sig_alcohol_use = {
     'name': 'clin_sig_alcohol_use',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
     	'1366',		    #Very heavy drinker - >9u/day
     	'136Q.00',		#Very heavy drinker
@@ -208,7 +210,8 @@ clin_sig_alcohol_use = {
 
 mental_illness_non_smi = {
     'name': 'mental_illness_non_smi',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes':[
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
@@ -736,7 +739,8 @@ mental_illness_non_smi = {
 
 mental_illness_smi = {
     'name': 'mental_illness_smi',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':True,
     'codes': [
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
@@ -1077,7 +1081,8 @@ mental_illness_smi = {
 
 sleep_apnoea = {
     'name': 'sleep_apnoea',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
     	'H5B0.00',		#Obstructive sleep apnoea
     	'R005100',		#[D]Insomnia with sleep apnoea
@@ -1093,7 +1098,8 @@ sleep_apnoea = {
 
 intellectual_disability = {
     'name': 'intellectual_disability',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':True,
     'codes': [
     #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/26/
     	'1JB0.00',		#Suspected Downs syndrome
@@ -1138,7 +1144,8 @@ intellectual_disability = {
 
 diabetes = {
     'name':'diabetes',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
     	'C10..00',		#Diabetes mellitus
@@ -1264,7 +1271,8 @@ diabetes = {
 
 hypertension = {
     'name':'hypertension',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
     	'G2...00',		#Hypertensive disease
@@ -1298,7 +1306,8 @@ hypertension = {
 
 CHD_heart_failure_and_peripheral_vascular_disease = {
     'name':'CHD_heart_failure_and_peripheral_vascular_disease',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
         #CHD
@@ -1462,7 +1471,8 @@ CHD_heart_failure_and_peripheral_vascular_disease = {
 
 stroke = {
     'name':'stroke',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
 		'G61..00',		#Intracerebral haemorrhage
@@ -1547,7 +1557,8 @@ stroke = {
 
 current_smoker = {
     'name':'current_smoker',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
 		'137..11',		#Smoker - amount smoked
@@ -1582,7 +1593,8 @@ current_smoker = {
 
 CKD = {
     'name':'CKD',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
 		'1Z13.00',		#Chronic kidney disease stage 4
@@ -1605,7 +1617,8 @@ CKD = {
 
 COPD = {
     'name':'COPD',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':True,
     'codes':[
         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
 		'H3...00',		#Chronic obstructive pulmonary disease
@@ -1663,7 +1676,8 @@ COPD = {
 
 asthma = {
     'name':'asthma',
-    'int_or_boolean':'boolean',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
     'codes':[
         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
 		'H312000',		#Chronic asthmatic bronchitis
@@ -1704,6 +1718,7 @@ asthma = {
 
 codelist_list_of_lists = [
     stroke,
+    intellectual_disability,
     CHD_heart_failure_and_peripheral_vascular_disease,
     hypertension,
     diabetes,
@@ -1711,9 +1726,9 @@ codelist_list_of_lists = [
     mental_illness_non_smi,
     mental_illness_smi,
     sleep_apnoea,
-    intellectual_disability,
     current_smoker,
     asthma,
     COPD,
-    CKD
+    CKD,
+    insomnia
 ]

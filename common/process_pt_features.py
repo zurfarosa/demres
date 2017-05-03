@@ -20,7 +20,9 @@ def create_pt_features():
     pt_features.drop('reggap',axis=1,inplace=True)
 
     pt_features['pracid']=pt_features['patid'].apply(str).str[-3:] #bizarre, but this is how the pracid works!
-    pt_features['yob'] = pt_features['yob']+1800 # ditto!
+    pt_features['gender']-=1
+    # pt_features['yob'] = pt_features['yob']+1800 # ditto!
+    pt_features['yob'] = pt_features['yob'].astype(str).str[1:]
 
     # pt_features.to_csv('data/pt_data/processed_data/pt_features.csv',index=False)
     return pt_features
