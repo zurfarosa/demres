@@ -1,4 +1,3 @@
-
 dementia = [
 	'E001000',	#	Uncomplicated presenile dementia
 	'E001z00',	#	Presenile dementia NOS
@@ -71,9 +70,44 @@ dementia = [
 	'Eu01z00'	#	[X]Vascular dementia, unspecified
 ]
 
+vascular = [
+	'E004000',	#	Uncomplicated arteriosclerotic dementia
+	'Eu01100',	#	[X]Multi-infarct dementia
+	'Eu01.00',	#	[X]Vascular dementia
+	'E004100',	#	Arteriosclerotic dementia with delirium
+	'E004300',	#	Arteriosclerotic dementia with depression
+	'E004.00',	#	Arteriosclerotic dementia
+	'E004200',	#	Arteriosclerotic dementia with paranoia
+	'E004z00',	#	Arteriosclerotic dementia NOS
+	'Eu01.11',	#	[X]Arteriosclerotic dementia
+	'Eu01000',	#	[X]Vascular dementia of acute onset
+	'E004.11',	#	Multi infarct dementia
+	'Eu01300',	#	[X]Mixed cortical and subcortical vascular dem...
+	'Eu01y00',	#	[X]Other vascular dementia
+	'Eu01200',	#	[X]Subcortical vascular dementia
+	'Eu01z00'	#	[X]Vascular dementia, unspecified
+]
+
+alzheimers = [
+	'Eu00012',	#	[X]Primary degen dementia, Alzheimer's type, p...
+	'Eu00013',	#	[X]Alzheimer's disease type 2
+	'Eu00011',	#	[X]Presenile dementia,Alzheimer's type
+	'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
+	'Eu00112',	#	[X]Senile dementia,Alzheimer's type
+	'Eu00100',	#	[X]Dementia in Alzheimer's disease with late o...
+	'Eu00113',	#	[X]Primary degen dementia of Alzheimer's type,...
+	'Eu00111',	#	[X]Alzheimer's disease type 1
+	'F110000',	#	Alzheimer's disease with early onset
+	'Eu00z11',	#	[X]Alzheimer's dementia unspec
+	'F110100',	#	Alzheimer's disease with late onset
+	'F110.00',	#	Alzheimer's disease
+	'Fyu3000',	#	[X]Other Alzheimer's disease
+	'Eu00z00',	#	[X]Dementia in Alzheimer's disease, unspecified
+]
+
 insomnia = {
     'name':'insomnia',
-    'int_or_boolean':'int',
+    'int_or_boolean':'both',
 	'use_all_pt_history':False,
     'codes':[
         'R005200', # [D]Insomnia NOS
@@ -101,6 +135,220 @@ insomnia = {
     ]
 }
 
+chronic_pulmonary_disease = {
+    'name': 'clin_sig_alcohol_use',
+    'int_or_boolean':'int',
+	'use_all_pt_history':False,
+    'codes': [
+    # From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-chronic-pulmonary-disease/
+        '114 PF',
+        '14B4.00',
+        '173A.00',
+        '173c.00',
+        '1761',
+        '1780',
+        '1O2..00',
+        '466 BC',
+        '466 D',
+        '490',
+        '490 T',
+        '491',
+        '491 AC',
+        '491 BS',
+        '491 BT',
+        '491 E',
+        '491 R',
+        '492',
+        '493',
+        '493 A',
+        '493 AA',
+        '493 AB',
+        '493 AC',
+        '493 AD',
+        '493 AI',
+        '493 AJ',
+        '493 BD',
+        '493 BG',
+        '493 BI',
+        '493 BR',
+        '493 D',
+        '493 EA',
+        '493 EB',
+        '493 EP',
+        '493 GR',
+        '493 GS',
+        '493 HR',
+        '493 HT',
+        '493 JC',
+        '493 KA',
+        '493 KB',
+        '493 NA',
+        '5151',
+        '5152',
+        '5161F',
+        '518',
+        '5192BY',
+        '5192CM',
+        '5199CL',
+        '663e.00',
+        '663e000',
+        '663e100',
+        '663f.00',
+        '663h.00',
+        '663N.00',
+        '663N000',
+        '663N100',
+        '663p.00',
+        '663P.00',
+        '663q.00',
+        '663r.00',
+        '663s.00',
+        '663t.00',
+        '663u.00',
+        '663v.00',
+        '663V000',
+        '663V100',
+        '663V200',
+        '663V300',
+        '663w.00',
+        '663W.00',
+        '66YC.00',
+        '66YP.00',
+        '691 TM',
+        '7832AB',
+        '8H2P.00',
+        '9OJ1.00',
+        '9OJA.11',
+        'H30..00',
+        'H300.00',
+        'H30..11',
+        'H30z.00',
+        'H31..00',
+        'H310.00',
+        'H310000',
+        'H310100',
+        'H310z00',
+        'H311.00',
+        'H311000',
+        'H311100',
+        'H311z00',
+        'H312.00',
+        'H312000',
+        'H312011',
+        'H312100',
+        'H312z00',
+        'H313.00',
+        'H31y.00',
+        'H31y100',
+        'H31yz00',
+        'H31z.00',
+        'H32..00',
+        'H320.00',
+        'H320000',
+        'H320200',
+        'H320z00',
+        'H321.00',
+        'H322.00',
+        'H32y.00',
+        'H32y000',
+        'H32y100',
+        'H32y200',
+        'H32yz00',
+        'H32z.00',
+        'H33..00',
+        'H330.00',
+        'H330000',
+        'H330011',
+        'H330111',
+        'H330.12',
+        'H330.13',
+        'H330.14',
+        'H330z00',
+        'H331.00',
+        'H331000',
+        'H33..11',
+        'H331100',
+        'H331.11',
+        'H331111',
+        'H331z00',
+        'H332.00',
+        'H333.00',
+        'H334.00',
+        'H33z.00',
+        'H33z000',
+        'H33z011',
+        'h33z100',
+        'H33z111',
+        'H33z200',
+        'H33zz11',
+        'H33zz12',
+        'H33zz13',
+        'H34..00',
+        'H340.00',
+        'H341.00',
+        'H34z.00',
+        'H35..00',
+        'H350.00',
+        'H351.00',
+        'H352.00',
+        'H352000',
+        'H352100',
+        'H352z00',
+        'H353.00',
+        'H354.00',
+        'H355.00',
+        'H356.00',
+        'H35y.00',
+        'H35y300',
+        'H35y500',
+        'H35y600',
+        'H35y700',
+        'H35yz00',
+        'H35z.00',
+        'H35z100',
+        'H35zz00',
+        'H3z..11',
+        'H40..00',
+        'H41..00',
+        'H410.00',
+        'H41z.00',
+        'H42..00',
+        'H420.00',
+        'H423.00',
+        'H42z.00',
+        'H43..00',
+        'H430.00',
+        'H431.00',
+        'H432.00',
+        'H434.00',
+        'H435.00',
+        'H43z.00',
+        'H440.00',
+        'H441.00',
+        'H442.00',
+        'H45..00',
+        'H460.00',
+        'H460z00',
+        'H464000',
+        'H464100',
+        'H464200',
+        'H47y000',
+        'H4y1000',
+        'H4z..00',
+        'H57y.00',
+        'H57yz00',
+        'H581.00',
+        'H582.00',
+        'Hyu3000',
+        'Hyu4000',
+        'Hyu4100',
+        'Hyu4300',
+        'K3441B',
+        'L4930LO',
+        'L5161B',
+        'SK07.00'
+    ]
+}
 
 clin_sig_alcohol_use = {
     'name': 'clin_sig_alcohol_use',
@@ -1614,109 +1862,110 @@ CKD = {
 		'1Z1L.11'		#CKD stage 5 without proteinuria
     ]
 }
-
-COPD = {
-    'name':'COPD',
-    'int_or_boolean':'int',
-	'use_all_pt_history':True,
-    'codes':[
-        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
-		'H3...00',		#Chronic obstructive pulmonary disease
-		'H31..00',		#Chronic bronchitis
-		'H310.00',		#Simple chronic bronchitis
-		'H310000',		#Chronic catarrhal bronchitis
-		'H310100',		#Smokers' cough
-		'H310z00',		#Simple chronic bronchitis NOS
-		'H311.00',		#Mucopurulent chronic bronchitis
-		'H311000',		#Purulent chronic bronchitis
-		'H311100',		#Fetid chronic bronchitis
-		'H311z00',		#Mucopurulent chronic bronchitis NOS
-		'H312.00',		#Obstructive chronic bronchitis
-		'H312000',		#Chronic asthmatic bronchitis
-		'H312011',		#Chronic wheezy bronchitis
-		'H312100',		#Emphysematous bronchitis
-		'H312200',		#Acute exacerbation of chronic obstructive airways disease
-		'H312300',		#Bronchiolitis obliterans
-		'H312z00',		#Obstructive chronic bronchitis NOS
-		'H313.00',		#Mixed simple and mucopurulent chronic bronchitis
-		'H31y.00',		#Other chronic bronchitis
-		'H31y000',		#Chronic tracheitis
-		'H31y100',		#Chronic tracheobronchitis
-		'H31yz00',		#Other chronic bronchitis NOS
-		'H31z.00',		#Chronic bronchitis NOS
-		'H32..00',		#Emphysema
-		'H320.00',		#Chronic bullous emphysema
-		'H320000',		#Segmental bullous emphysema
-		'H320100',		#Zonal bullous emphysema
-		'H320200',		#Giant bullous emphysema
-		'H320300',		#Bullous emphysema with collapse
-		'H320311',		#Tension pneumatocoele
-		'H320z00',		#Chronic bullous emphysema NOS
-		'H321.00',		#Panlobular emphysema
-		'H322.00',		#Centrilobular emphysema
-		'H32y.00',		#Other emphysema
-		'H32y000',		#Acute vesicular emphysema
-		'H32y100',		#Atrophic (senile) emphysema
-		'H32y111',		#Acute interstitial emphysema
-		'H32y200',		#MacLeod's unilateral emphysema
-		'H32yz00',		#Other emphysema NOS
-		'H32z.00',		#Emphysema NOS
-		'H36..00',		#Mild chronic obstructive pulmonary disease
-		'H37..00',		#Moderate chronic obstructive pulmonary disease
-		'H38..00',		#Severe chronic obstructive pulmonary disease
-		'H39..00',		#Very severe chronic obstructive pulmonary disease
-		'H3A..00',		#End stage chronic obstructive airways disease
-		'H3y..00',		#Other specified chronic obstructive airways disease
-		'H3y0.00',		#Chronic obstruct pulmonary dis with acute lower resp infectn
-		'H3y1.00',		#Chron obstruct pulmonary dis wth acute exacerbation; unspec
-		'H3y..11',		#Other specified chronic obstructive pulmonary disease
-		'H3z..00'		#Chronic obstructive airways disease NOS
-    ]
-}
-
-asthma = {
-    'name':'asthma',
-    'int_or_boolean':'int',
-	'use_all_pt_history':False,
-    'codes':[
-        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
-		'H312000',		#Chronic asthmatic bronchitis
-		'H33..00',		#Asthma
-		'H330.00',		#Extrinsic (atopic) asthma
-		'H330000',		#Extrinsic asthma without status asthmaticus
-		'H330011',		#Hay fever with asthma
-		'H330100',		#Extrinsic asthma with status asthmaticus
-		'H330.11',		#Allergic asthma
-		'H330111',		#Extrinsic asthma with asthma attack
-		'H330.12',		#Childhood asthma
-		'H330.13',		#Hay fever with asthma
-		'H330.14',		#Pollen asthma
-		'H330z00',		#Extrinsic asthma NOS
-		'H331.00',		#Intrinsic asthma
-		'H331000',		#Intrinsic asthma without status asthmaticus
-		'H33..11',		#Bronchial asthma
-		'H331100',		#Intrinsic asthma with status asthmaticus
-		'H331.11',		#Late onset asthma
-		'H331111',		#Intrinsic asthma with asthma attack
-		'H331z00',		#Intrinsic asthma NOS
-		'H332.00',		#Mixed asthma
-		'H333.00',		#Acute exacerbation of asthma
-		'H334.00',		#Brittle asthma
-		'H33z.00',		#Asthma unspecified
-		'H33z000',		#Status asthmaticus NOS
-		'H33z011',		#Severe asthma attack
-		'H33z100',		#Asthma attack
-		'H33z.11',		#Hyperreactive airways disease
-		'H33z111',		#Asthma attack NOS
-		'H33z200',		#Late-onset asthma
-		'H33zz00',		#Asthma NOS
-		'H33zz11',		#Exercise induced asthma
-		'H33zz12',		#Allergic asthma NEC
-		'H33zz13'		#Allergic bronchitis NEC
-    ]
-}
+#
+# COPD = {
+#     'name':'COPD',
+#     'int_or_boolean':'int',
+# 	'use_all_pt_history':True,
+#     'codes':[
+#         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+# 		'H3...00',		#Chronic obstructive pulmonary disease
+# 		'H31..00',		#Chronic bronchitis
+# 		'H310.00',		#Simple chronic bronchitis
+# 		'H310000',		#Chronic catarrhal bronchitis
+# 		'H310100',		#Smokers' cough
+# 		'H310z00',		#Simple chronic bronchitis NOS
+# 		'H311.00',		#Mucopurulent chronic bronchitis
+# 		'H311000',		#Purulent chronic bronchitis
+# 		'H311100',		#Fetid chronic bronchitis
+# 		'H311z00',		#Mucopurulent chronic bronchitis NOS
+# 		'H312.00',		#Obstructive chronic bronchitis
+# 		'H312000',		#Chronic asthmatic bronchitis
+# 		'H312011',		#Chronic wheezy bronchitis
+# 		'H312100',		#Emphysematous bronchitis
+# 		'H312200',		#Acute exacerbation of chronic obstructive airways disease
+# 		'H312300',		#Bronchiolitis obliterans
+# 		'H312z00',		#Obstructive chronic bronchitis NOS
+# 		'H313.00',		#Mixed simple and mucopurulent chronic bronchitis
+# 		'H31y.00',		#Other chronic bronchitis
+# 		'H31y000',		#Chronic tracheitis
+# 		'H31y100',		#Chronic tracheobronchitis
+# 		'H31yz00',		#Other chronic bronchitis NOS
+# 		'H31z.00',		#Chronic bronchitis NOS
+# 		'H32..00',		#Emphysema
+# 		'H320.00',		#Chronic bullous emphysema
+# 		'H320000',		#Segmental bullous emphysema
+# 		'H320100',		#Zonal bullous emphysema
+# 		'H320200',		#Giant bullous emphysema
+# 		'H320300',		#Bullous emphysema with collapse
+# 		'H320311',		#Tension pneumatocoele
+# 		'H320z00',		#Chronic bullous emphysema NOS
+# 		'H321.00',		#Panlobular emphysema
+# 		'H322.00',		#Centrilobular emphysema
+# 		'H32y.00',		#Other emphysema
+# 		'H32y000',		#Acute vesicular emphysema
+# 		'H32y100',		#Atrophic (senile) emphysema
+# 		'H32y111',		#Acute interstitial emphysema
+# 		'H32y200',		#MacLeod's unilateral emphysema
+# 		'H32yz00',		#Other emphysema NOS
+# 		'H32z.00',		#Emphysema NOS
+# 		'H36..00',		#Mild chronic obstructive pulmonary disease
+# 		'H37..00',		#Moderate chronic obstructive pulmonary disease
+# 		'H38..00',		#Severe chronic obstructive pulmonary disease
+# 		'H39..00',		#Very severe chronic obstructive pulmonary disease
+# 		'H3A..00',		#End stage chronic obstructive airways disease
+# 		'H3y..00',		#Other specified chronic obstructive airways disease
+# 		'H3y0.00',		#Chronic obstruct pulmonary dis with acute lower resp infectn
+# 		'H3y1.00',		#Chron obstruct pulmonary dis wth acute exacerbation; unspec
+# 		'H3y..11',		#Other specified chronic obstructive pulmonary disease
+# 		'H3z..00'		#Chronic obstructive airways disease NOS
+#     ]
+# }
+#
+# asthma = {
+#     'name':'asthma',
+#     'int_or_boolean':'int',
+# 	'use_all_pt_history':False,
+#     'codes':[
+#         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+# 		'H312000',		#Chronic asthmatic bronchitis
+# 		'H33..00',		#Asthma
+# 		'H330.00',		#Extrinsic (atopic) asthma
+# 		'H330000',		#Extrinsic asthma without status asthmaticus
+# 		'H330011',		#Hay fever with asthma
+# 		'H330100',		#Extrinsic asthma with status asthmaticus
+# 		'H330.11',		#Allergic asthma
+# 		'H330111',		#Extrinsic asthma with asthma attack
+# 		'H330.12',		#Childhood asthma
+# 		'H330.13',		#Hay fever with asthma
+# 		'H330.14',		#Pollen asthma
+# 		'H330z00',		#Extrinsic asthma NOS
+# 		'H331.00',		#Intrinsic asthma
+# 		'H331000',		#Intrinsic asthma without status asthmaticus
+# 		'H33..11',		#Bronchial asthma
+# 		'H331100',		#Intrinsic asthma with status asthmaticus
+# 		'H331.11',		#Late onset asthma
+# 		'H331111',		#Intrinsic asthma with asthma attack
+# 		'H331z00',		#Intrinsic asthma NOS
+# 		'H332.00',		#Mixed asthma
+# 		'H333.00',		#Acute exacerbation of asthma
+# 		'H334.00',		#Brittle asthma
+# 		'H33z.00',		#Asthma unspecified
+# 		'H33z000',		#Status asthmaticus NOS
+# 		'H33z011',		#Severe asthma attack
+# 		'H33z100',		#Asthma attack
+# 		'H33z.11',		#Hyperreactive airways disease
+# 		'H33z111',		#Asthma attack NOS
+# 		'H33z200',		#Late-onset asthma
+# 		'H33zz00',		#Asthma NOS
+# 		'H33zz11',		#Exercise induced asthma
+# 		'H33zz12',		#Allergic asthma NEC
+# 		'H33zz13'		#Allergic bronchitis NEC
+#     ]
+# }
 
 codelist_list_of_lists = [
+    insomnia,
     stroke,
     intellectual_disability,
     CHD_heart_failure_and_peripheral_vascular_disease,
@@ -1727,8 +1976,6 @@ codelist_list_of_lists = [
     mental_illness_smi,
     sleep_apnoea,
     current_smoker,
-    asthma,
-    COPD,
-    CKD,
-    insomnia
+    chronic_pulmonary_disease,
+    CKD
 ]

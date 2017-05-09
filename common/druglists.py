@@ -17,58 +17,9 @@ mood_stabilisers = {
     'name':'mood_stabilisers'
 }
 
-nsaids_without_aspirin = {
-    'drugs':[
-       # From BNF 2017:
-        'ACECLOFENAC',
-        'ACEMETACIN',
-        # 'ASPIRIN',
-        # 'ASPIRIN WITH CODEINE',
-        # 'ASPIRIN WITH METOCLOPRAMIDE',
-        'BENZYDAMINE HYDROCHLORIDE',
-        'BROMFENAC',
-        'CELECOXIB',
-        'DEXIBUPROFEN',
-        'DEXKETOPROFEN',
-        'DICLOFENAC POTASSIUM',
-        'DICLOFENAC SODIUM',
-        'DICLOFENAC SODIUM WITH MISOPROSTOL',
-        'ETODOLAC',
-        'ETORICOXIB',
-        # 'FELBINAC', - removed as it's just a knee rub
-        'FENOPROFEN',
-        'FLURBIPROFEN',
-        'IBUPROFEN',
-        'INDOMETACIN',
-        'KETOPROFEN',
-        'KETOPROFEN WITH OMEPRAZOLE',
-        'KETOROLAC TROMETAMOL',
-        'MEFENAMIC ACID',
-        'MELOXICAM',
-        'NABUMETONE',
-        'NAPROXEN',
-        'NAPROXEN WITH ESOMEPRAZOLE',
-        'NAPROXEN WITH MISOPROSTOL',
-        'NEPAFENAC',
-        'PARECOXIB',
-        'PIROXICAM',
-        'SULINDAC',
-        'TENOXICAM',
-        'TIAPROFENIC ACID',
-        'TOLFENAMIC ACID',
-        # my own list
-        'Dexketoprofen trometamol',
-        'Fenoprofen calcium',
-        #'Flurbiprofen sodium', - removed because just an eye drop
-        'Ketoprofen/omeprazole',
-        'Naproxen sodium',
-        'Piroxicam betadex'
-    ],
-    'route':'oral',
-    'name':'nsaids'
-}
 
-sedatives = {
+
+benzo_and_z_drugs = {
     'drugs':[
         # BNF benzodiazepines:
     	'ALPRAZOLAM',
@@ -85,16 +36,26 @@ sedatives = {
     	'NITRAZEPAM',
     	'OXAZEPAM',
     	'TEMAZEPAM',
+        'ZALEPLON',
+        'zopiclone',
+        'zolpidem tartrate',
+        'ZOLPIDEM',
+        #My own additions
+    	'CHLORDIAZEPOXIDE'
+        ],
+    'route':'oral',
+    'name':'benzo_and_z_drugs'
+}
+
+other_sedatives = {
+    'drugs':[
         # BNF Non-benzodiazepine hypnotics and sedatives
     	'CHLORAL HYDRATE',
     	'CLOMETHIAZOLE',
     	'DEXMEDETOMIDINE',
     	'MELATONIN',
     	'MEPROBAMATE',
-        'ZALEPLON',
-        'zopiclone',
-        'zolpidem tartrate',
-        'ZOLPIDEM',
+
         #BNF sedating antihistamines
     	'ALIMEMAZINE TARTRATE',
     	'ANTAZOLINE WITH XYLOMETAZOLINE',
@@ -112,11 +73,9 @@ sedatives = {
     	'PIZOTIFEN',
     	'PROMETHAZINE TEOCLATE',
         'PROMETHAZINE hydrochloride',
-        #My own additions
-    	'CHLORDIAZEPOXIDE'
-        ],
+    ],
     'route':'oral',
-    'name':'sedatives'
+    'name':'other_sedatives'
 }
 
 fgas = {
@@ -253,7 +212,8 @@ antidementia_drugs = [
 
 psychotropic_list_of_lists = [
     mood_stabilisers,
-    sedatives,
+    benzo_and_z_drugs,
+    other_sedatives,
     fgas,
     sgas,
     sga_depots,
