@@ -6,9 +6,9 @@ class Study_Design:
     window_length_in_years = 5
 
     exposure_windows = [
-        # {'name':'12_to_7','start_year':-12},
-        {'name':'10_to_5','start_year':-10}
-        # {'name':'8_to_3','start_year':-8}
+        {'name':'12_to_7','start_year':-12},
+        {'name':'10_to_5','start_year':-10},
+        {'name':'8_to_3','start_year':-8}
     ]
     #
     # exposure_start_in_years_before_index_date = -5

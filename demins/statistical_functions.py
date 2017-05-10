@@ -18,7 +18,7 @@ def get_univariate_and_multivariate_results(pt_features,training_cols):
     temp = []
     for col in training_cols:
         pt_features[col] = pt_features[col].astype(int)
-        if pt_features[col].mean()>0.03: #arbitary number which seems to prevent 'Maximum Likelihood optimization failed to converge' warnings
+        if pt_features[col].mean()>0.02: #arbitary number which seems to prevent 'Maximum Likelihood optimization failed to converge' warnings
             temp.append(col)
             # print(col, pt_features[col].mean())
     training_cols = temp

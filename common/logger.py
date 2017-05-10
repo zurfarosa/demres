@@ -5,3 +5,4 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 fhandler.setFormatter(formatter)
 logger.addHandler(fhandler)
 logger.setLevel(logging.DEBUG)
+logging.Logger.disabled=True

@@ -35,7 +35,7 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
 
     pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
-    medcodes = get_medcodes_from_readcodes(codelists.dementia)
+    medcodes = get_medcodes_from_readcodes(codelists.all_dementia)
     prodcodes = get_prodcodes_from_drug_name(druglists.antidementia_drugs)
 
     # from the all_entries df, get just those which contain a dementia dx of an antidementia drug prescription
@@ -80,12 +80,12 @@ def add_data_start_and_end_dates(all_entries,pt_features):
 
     logging.debug('finding earliest sysdates')
     earliest_sysdates = all_entries.groupby('patid')['sysdate'].min().reset_index()
-    earliest_sysdates = earliest_sysdates.rename(columns={'sysdate':'data_start'})
+    earliest_sysdates = earliest_sysdates.rename(columns={'sysdate':'data_start'},copy=False)
     logging.debug('earliest_sysdates:\n{0}'.format(earliest_sysdates.head(5)))
 
     logging.debug('finding latest sysdates')
     latest_sysdates = all_entries.groupby('patid')['sysdate'].max().reset_index()
-    latest_sysdates = latest_sysdates.rename(columns={'sysdate':'data_end'})
+    latest_sysdates = latest_sysdates.rename(columns={'sysdate':'data_end'},copy=False)
     logging.debug('latest_sysdates:\n{0}'.format(latest_sysdates.head(5)))
 
     logging.debug('merging pt_features with earliest sysdates')
@@ -97,7 +97,7 @@ def add_data_start_and_end_dates(all_entries,pt_features):
     logging.debug('removing patients without any events')
     # pd.options.mode.chained_assignment = None  # default='warn'
     pts_without_any_events = pt_features.loc[pd.isnull(pt_features['data_start'])]
-    logging.debug('There are {0} patients without any events. They will now be removed.'.format(len(pts_without_any_events)))
+    logging.debug('There are {0} patients without any events'.format(len(pts_without_any_events)))
     if len(pts_without_any_events)>0:
         pts_without_any_events.loc[:,'reason_for_removal']='Pt did not have any events'
         pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
@@ -112,15 +112,15 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
     Matches cases and controls. Will not match cases to controls who do not have enough years of data
     '''
     pt_features['matchid']=np.nan
-    pt_features['data_end'] = pd.to_datetime(pt_features['data_end'],errors='coerce', format='%Y-%m-%d')
-    pt_features['data_start'] = pd.to_datetime(pt_features['data_start'],errors='coerce', format='%Y-%m-%d')
-    pt_features['index_date'] = pd.to_datetime(pt_features['index_date'],errors='coerce', format='%Y-%m-%d')
+    # pt_features['data_end'] = pd.to_datetime(pt_features['data_end'],errors='coerce', format='%Y-%m-%d')
+    # pt_features['data_start'] = pd.to_datetime(pt_features['data_start'],errors='coerce', format='%Y-%m-%d')
+    # pt_features['index_date'] = pd.to_datetime(pt_features['index_date'],errors='coerce', format='%Y-%m-%d')
     pt_features.loc[:,'total_available_data']= pt_features.loc[:,'data_end'] - pt_features.loc[:,'data_start']
     pt_features.sort_values(inplace=True,by='total_available_data',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
 
     cases_mask = (pt_features['isCase']==True) & \
                 (pt_features['data_start'] <= (pt_features['index_date'] - timedelta(days=(365*start_year))))
-    suitable_cases = pt_features[cases_mask]
+    suitable_cases = pt_features.loc[cases_mask]
     controls = pt_features.loc[pt_features['isCase']==False]
     for index,row in suitable_cases.iterrows():
         if pd.isnull(row['matchid']):
@@ -148,11 +148,10 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
                 controls = controls.drop(best_match_index) #drop this row from controls dataframe so it cannot be matched again
             else:
                 logging.debug('No match found for {0}'.format(patid))
-    pt_features.drop('total_available_data',axis=1,inplace=True)
+    pt_features = pt_features.drop('total_available_data',axis=1)
 
     #Now that we ha ve an index date for both cases and controls, finally calculate age at index date
     pt_features['age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - ('19' + pt_features['yob'].astype(str)).astype(int)
-
 
     return pt_features
 
@@ -226,9 +225,9 @@ def get_condition_status(pt_features,entries,window,condition):
 
     if condition['int_or_boolean']=='both': # e.g. insomnia - we want both a boolean variable and a count (the former seems to be more useful in our model)
         #Rename and keep the 'count' column
-        pt_features[new_colname+'_count']= pt_features[new_colname]
-        pt_features[new_colname+'_count'].fillna(0,inplace=True)
-        pt_features[new_colname+'_count'] = pt_features[new_colname+'_count'].astype(int)
+        pt_features[new_colname+'_consultations']= pt_features[new_colname]
+        pt_features[new_colname+'_consultations'].fillna(0,inplace=True)
+        pt_features[new_colname+'_consultations'] = pt_features[new_colname+'_consultations'].astype(int)
 
     #Convert the original count column to a boolean column
     pt_features.loc[pd.notnull(pt_features[new_colname]),new_colname] = 1
@@ -311,13 +310,13 @@ def divide_benzo_pdd_into_quantiles(pt_features,column_to_change):
     pt_features.loc[mask,'benzo_and_z_drugs_1_to_100pdds']=1
     pt_features['benzo_and_z_drugs_1_to_100pdds'].fillna(value=0,inplace=True)
 
-    mask = (pt_features[column_to_change]>1) & (pt_features[column_to_change]<=2)
-    pt_features.loc[mask,'benzo_and_z_drugs_101_to_200pdds']=1
-    pt_features['benzo_and_z_drugs_101_to_200pdds'].fillna(value=0,inplace=True)
+    mask = (pt_features[column_to_change]>1) & (pt_features[column_to_change]<=10)
+    pt_features.loc[mask,'benzo_and_z_drugs_101_to_1000pdds']=1
+    pt_features['benzo_and_z_drugs_101_to_1000pdds'].fillna(value=0,inplace=True)
 
-    mask = pt_features[column_to_change]>2
-    pt_features.loc[mask,'benzo_and_z_drugs_more_than_200pdds']=1
-    pt_features['benzo_and_z_drugs_more_than_200pdds'].fillna(value=0,inplace=True)
+    mask = pt_features[column_to_change]>10
+    pt_features.loc[mask,'benzo_and_z_drugs_more_than_1000pdds']=1
+    pt_features['benzo_and_z_drugs_more_than_1000pdds'].fillna(value=0,inplace=True)
 
     # pt_features.drop([column_to_change],axis=1,inplace=True)
 
@@ -330,6 +329,7 @@ def get_consultation_count(pt_features,all_entries,window):
     Counts the number of non-insomnia-related consultations with the GP during the exposure window
     '''
     relev_entries = pd.merge(all_entries,pt_features[['patid','index_date']],how='inner')
+    new_colname = 'non_insomnia_GP_consultations'
 
     # Find all consultations which occur on the same day as an insomnia readcode
     insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia['codes'])
@@ -343,9 +343,9 @@ def get_consultation_count(pt_features,all_entries,window):
     window_mask = (non_insom_cons['eventdate']>=(non_insom_cons['index_date']-start_year)) & (non_insom_cons['eventdate']<=(non_insom_cons['index_date']-timedelta(days=(365*sd.window_length_in_years))))
     non_insom_cons = non_insom_cons[window_mask]
     non_insom_cons = non_insom_cons.groupby('patid')['eventdate'].count().reset_index()
-    non_insom_cons.columns=['patid','consultation_count_window']
+    non_insom_cons.columns=['patid',new_colname]
 
     pt_features = pd.merge(pt_features,non_insom_cons,how='left')
-    pt_features['consultation_count_window'].fillna(0,inplace=True)
-    pt_features['consultation_count_window'] = pt_features['consultation_count_window'].astype(int)
+    pt_features[new_colname].fillna(0,inplace=True)
+    pt_features[new_colname] = pt_features[new_colname].astype(int)
     return pt_features
