@@ -120,8 +120,8 @@ insomnia = {
         '1B1B.00', # Cannot sleep - insomnia
         '663N.00', # Asthma disturbing sleep
         'R005.11', # [D]Insomnia - symptom
-        '663N200', # Asthma disturbs sleep frequently
-        '663N100', # Asthma disturbs sleep weekly
+        # '663N200', # Asthma disturbs sleep frequently
+        # '663N100', # Asthma disturbs sleep weekly
         'E274100', # Transient insomnia
         '1B1B200', # Late insomnia
         '1B1B000', # Initial insomnia
@@ -466,8 +466,8 @@ mental_illness_non_smi = {
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
         # anxiety disorder
-    	'2258',		#O/E - anxious
-    	'225J.00',		#O/E - panic attack
+    	# '2258',		#O/E - anxious
+    	# '225J.00',		#O/E - panic attack
     	'8G52.00',		#Antiphobic therapy
     	'8G94.00',		#Anxiety management training
     	'8HHp.00',		#Referral for guided self-help for anxiety
@@ -530,7 +530,7 @@ mental_illness_non_smi = {
     	'E203z00',		#Obsessive-compulsive disorder NOS
     	'E205.00',		#Neurasthenia - nervous debility
     	'E205.11',		#Nervous exhaustion
-    	'E205.12',		#Tired all the time
+    	# 'E205.12',		#Tired all the time
     	'E206.00',		#Depersonalisation syndrome
     	'E207.00',		#Hypochondriasis
     	'E20y.00',		#Other neurotic disorders
@@ -585,21 +585,21 @@ mental_illness_non_smi = {
     	'E26z.00',		#Psychosomatic disorder NOS
     	'E278.00',		#Psychalgia
     	'E278000',		#Psychogenic pain unspecified
-    	'E278100',		#Tension headache
-    	'E278111',		#Muscular headache
+    	# 'E278100',		#Tension headache
+    	# 'E278111',		#Muscular headache
     	'E278200',		#Psychogenic backache
     	'E278z00',		#Psychalgia NOS
-    	'E28..00',		#Acute reaction to stress
+    	# 'E28..00',		#Acute reaction to stress
     	'E280.00',		#Acute panic state due to acute stress reaction
     	'E281.00',		#Acute fugue state due to acute stress reaction
     	'E28..11',		#Combat fatigue
     	'E282.00',		#Acute stupor state due to acute stress reaction
-    	'E283.00',		#Other acute stress reactions
+    	# 'E283.00',		#Other acute stress reactions
     	'E283000',		#Acute situational disturbance
     	'E283100',		#Acute posttrauma stress state
-    	'E283z00',		#Other acute stress reaction NOS
+    	# 'E283z00',		#Other acute stress reaction NOS
     	'E284.00',		#Stress reaction causing mixed disturbance of emotion/conduct
-    	'E28z.00',		#Acute stress reaction NOS
+    	# 'E28z.00',		#Acute stress reaction NOS
     	'E28z.11',		#Examination fear
     	'E28z.12',		#Flying phobia
     	'E28z.13',		#Stage fright
@@ -753,7 +753,7 @@ mental_illness_non_smi = {
     	'Eu45y12',		#[X]Globus hystericus
     	'Eu45y13',		#[X]Psychogenic pruritis
     	'Eu45y14',		#[X]Psychogenic torticollis
-    	'Eu45y15',		#[X]Teeth-grinding
+    	# 'Eu45y15',		#[X]Teeth-grinding
     	'Eu45z00',		#[X]Somatoform disorder; unspecified
     	'Eu45z11',		#[X]Psychosomatic disorder NOS
     	'Eu46.00',		#[X]Other neurotic disorders
@@ -899,7 +899,7 @@ mental_illness_non_smi = {
 
         #DEPRESSION - non-severe (severe depression codes go in the mental_illness_SMI dict)
     	'1B17.00',		#Depressed
-    	'2257',		    #O/E - depressed
+    	# '2257',		    #O/E - depressed
     	'62T1.00',		#Puerperal depression
     	'9kQ..00',		#On full dose long term treatment depression - enh serv admin
     	'E001300',		#Presenile dementia with depression
@@ -1846,22 +1846,191 @@ CKD = {
     'int_or_boolean':'boolean',
 	'use_all_pt_history':False,
     'codes': [
-        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
-		'1Z13.00',		#Chronic kidney disease stage 4
-		'1Z14.00',		#Chronic kidney disease stage 5
-		'1Z16.00',		#Chronic kidney disease stage 3B
-		'1Z1F.00',		#Chronic kidney disease stage 3B with proteinuria
-		'1Z1F.11',		#CKD stage 3B with proteinuria
-		'1Z1G.00',		#Chronic kidney disease stage 3B without proteinuria
-		'1Z1G.11',		#CKD stage 3B without proteinuria
-		'1Z1H.00',		#Chronic kidney disease stage 4 with proteinuria
-		'1Z1H.11',		#CKD stage 4 with proteinuria
-		'1Z1J.00',		#Chronic kidney disease stage 4 without proteinuria
-		'1Z1J.11',		#CKD stage 4 without proteinuria
-		'1Z1K.00',		#Chronic kidney disease stage 5 with proteinuria
-		'1Z1K.11',		#CKD stage 5 with proteinuria
-		'1Z1L.00',		#Chronic kidney disease stage 5 without proteinuria
-		'1Z1L.11'		#CKD stage 5 without proteinuria
+        # From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-renal-disease/
+        '14D1.00',		#H/O: nephritis
+        '1Z10.00',		#Chronic kidney disease stage 1
+        '1Z11.00',		#Chronic kidney disease stage 2
+        '1Z12.00',		#Chronic kidney disease stage 3
+        '1Z13.00',		#Chronic kidney disease stage 4
+        '1Z14.00',		#Chronic kidney disease stage 5
+        '582 N',		#CHRONIC NEPHRITIS
+        '583 A',		#NEPHRITIS
+        '583 GC',		#GLOMERULONEPHRITIS CHRONIC
+        '583 MA',		#MESANGIOCAPILLARY GLOMERULONEPHRITIS
+        '583 MN',		#NEPHROPATHY MEMBRANOUS
+        '583 MP',		#MEMBRANOPROLIFERATIVE GLOMERULONEPHRITIS
+        '5930A',		#OSTEODYSTROPHY AZOTAEMIC
+        '5930AR',		#OSTEODYSTROPHY URAEMIC
+        '5930R',		#OSTEODYSTROPHY RENAL
+        '5932A',		#RENAL DISEASE
+        '5932E',		#RENAL FAILURE
+        '5932EC',		#CHRONIC RENAL FAILURE
+        '5932KH',		#NEPHROPATHY HYPOKALAEMIC
+        '5932MN',		#RENAL MEDULLARY NECROSIS
+        '7598A',		#NEPHRITIS HEREDITARY
+        'K0...00',		#Nephritis; nephrosis and nephrotic syndrome
+        'K001.00',		#Acute nephritis with lesions of necrotising glomerulitis
+        'K012.00',		#Nephrotic syndrome??????? glomerulonephritis
+        'K019.00',		#Nephrotic syn;diffuse mesangiocapillary glomerulonephritis
+        'K02..00',		#Chronic glomerulonephritis
+        'K021.00',		#Chronic membranous glomerulonephritis
+        'K02..11',		#Nephritis - chronic
+        'K02..12',		#Nephropathy - chronic
+        'K022.00',		#Chronic membranoproliferative glomerulonephritis
+        'K023.00',		#Chronic rapidly progressive glomerulonephritis
+        'K02y000',		#Chronic glomerulonephritis  diseases EC
+        'K02y200',		#Chronic focal glomerulonephritis
+        'K02y300',		#Chronic diffuse glomerulonephritis
+        'K02yz00',		#Other chronic glomerulonephritis NOS
+        'K02z.00',		#Chronic glomerulonephritis NOS
+        'K03..00',		#Nephritis and nephropathy unspecified
+        'K03..11',		#Nephritis and nephropathy unspecified
+        'K032.00',		#Membranoproliferative nephritis unspecified
+        'K032000',		#Focal membranoproliferative glomerulonephritis
+        'K032y00',		#Nephritis unsp membranoprolif glomerulonephritis lesion
+        'K032y13',		#Mesangioproliferative glomerulonephritis NEC
+        'K032y14',		#Mesangiocapillary glomerulonephritis NEC
+        'K032z00',		#Nephritis unsp????? glomerulonephritis lesion NOS
+        'K034.00',		#Renal cortical necrosis unspecified
+        'K035.00',		#Renal medullary necrosis unspecified
+        'K041.00',		#Acute renal cortical necrosis
+        'K042.00',		#Acute renal medullary necrosis
+        'K04y.00',		#Other acute renal failure
+        'K04z.00',		#Acute renal failure NOS
+        'K05..00',		#Chronic renal failure
+        'K050.00',		#End stage renal failure
+        'K06..00',		#Renal failure unspecified
+        'K060.11',		#Impaired renal function
+        'K080.00',		#Renal osteodystrophy
+        'K080000',		#Phosphate-losing tubular disorders
+        'K080100',		#Renal dwarfism
+        'K080200',		#Renal infantilism
+        'K080300',		#Renal rickets
+        'K080z00',		#Renal osteodystrophy NOS
+        'K081.00',		#Nephrogenic diabetes insipidus
+        'K08y000',		#Hypokalaemic nephropathy
+        'K08yz00',		#Other impaired renal function disorder NOS
+        'K08z.00',		#Impaired renal function disorder NOS
+        'K0A3200',		#Chron nephritic syndrom difuse membranous glomerulonephritis
+        'K0A3300',		#Chron neph syn difus mesangial prolifrtiv glomerulonephritis
+        'K0A3400',		#Chron neph syn difuse endocap prolifrativ glomerulonephritis
+        'K0A3500',		#Chronic neph syn difus mesangiocapillary glomerulonephritis
+        'K0A3700',		#Chronic nephritic syn diffuse crescentic glomerulonephritis
+        'K0A5500',		#[X]Heredtry nephrpthy NEC difus mesangiocapilry glomneph
+        'K100000',		#Chronic pyelonephritis without medullary necrosis
+        'K100100',		#Chronic pyelonephritis with medullary necrosis
+        'K101000',		#Acute pyelonephritis without medullary necrosis
+        'K101100',		#Acute pyelonephritis with medullary necrosis
+        'Kyu2.00',		#[X]Renal failure
+        'Kyu2000',		#[X]Other acute renal failure
+        'Kyu2100'		#[X]Other chronic renal failure
+
+    ]
+}
+
+epilepsy = {
+    'name':'epilepsy',
+    'int_or_boolean':'boolean',
+	'use_all_pt_history':False,
+    'codes': [
+        # https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/55/codelist/res55-epilepsy/
+        '1473',		#H/O: epilepsy
+        '1B1W.00',		#Transient epileptic amnesia
+        '1O30.00',		#Epilepsy confirmed
+        '2823',		#O/E - petit mal fit
+        '2824',		#O/E - focal (Jacksonian) fit
+        '2824.11',		#O/E - Jacksonian fit
+        '2825',		#O/E - psychomotor fit
+        '2828',		#Absence seizure
+        '667B.00',		#Nocturnal epilepsy
+        '667N.00',		#Epilepsy severity
+        'Eu05212',		#[X]Schizophrenia-like psychosis in epilepsy
+        'Eu05y11',		#[X]Epileptic psychosis NOS
+        'Eu06013',		#[X]Limbic epilepsy personality
+         'Eu80300',		#[X]Acquired aphasia with epilepsy [Landau - Kleffner]
+         'F132100',		#Progressive myoclonic epilepsy
+        'F132200',		#Myoclonic encephalopathy
+        'F25..00',		#Epilepsy
+        'F250.00',		#Generalised nonconvulsive epilepsy
+        'F250000',		#Petit mal (minor) epilepsy
+        'F250011',		#Epileptic absences
+        'F250100',		#pykno-epilepsy
+        'F250200',		#Epileptic seizures - atonic
+        'F250300',		#Epileptic seizures - akinetic
+        'F250400',		#Juvenile absence epilepsy
+        'F250500',		#Lennox-Gastaut syndrome
+         'F250y00',		#Other specified generalised nonconvulsive epilepsy
+         'F250z00',		#Generalised nonconvulsive epilepsy NOS
+         'F251.00',		#Generalised convulsive epilepsy
+        'F251000',		#Grand mal (major) epilepsy
+         'F251011',		#Tonic-clonic epilepsy
+         'F251100',		#Neonatal myoclonic epilepsy
+        'F251111',		#Otohara syndrome
+        'F251200',		#Epileptic seizures - clonic
+        'F251300',		#Epileptic seizures - myoclonic
+        'F251400',		#Epileptic seizures - tonic
+        'F251500',		#Tonic-clonic epilepsy
+        'F251600',		#Grand mal seizure
+         'F251y00',		#Other specified generalised convulsive epilepsy
+         'F251z00',		#Generalised convulsive epilepsy NOS
+        'F252.00',		#Petit mal status
+        'F253.00',		#Grand mal status
+        'F253.11',		#Status epilepticus
+         'F254.00',		#Partial epilepsy with impairment of consciousness
+        'F254000',		#Temporal lobe epilepsy
+         'F254100',		#Psychomotor epilepsy
+         'F254200',		#Psychosensory epilepsy
+         'F254300',		#Limbic system epilepsy
+        'F254400',		#Epileptic automatism
+        'F254500',		#Complex partial epileptic seizure
+         'F254z00',		#Partial epilepsy with impairment of consciousness NOS
+         'F255.00',		#Partial epilepsy without impairment of consciousness
+        'F255000',		#Jacksonian; focal or motor epilepsy
+        'F255011',		#Focal epilepsy
+        'F255012',		#Motor epilepsy
+         'F255100',		#Sensory induced epilepsy
+         'F255200',		#Somatosensory epilepsy
+        'F255300',		#Visceral reflex epilepsy
+        'F255311',		#Partial epilepsy with autonomic symptoms
+         'F255400',		#Visual reflex epilepsy
+        'F255500',		#Unilateral epilepsy
+        'F255600',		#Simple partial epileptic seizure
+         'F255y00',		#Partial epilepsy without impairment of consciousness OS
+        'F255z00',		#Partial epilepsy without impairment of consciousness NOS
+        'F256.00',		#Infantile Spasms
+        'F256000',		#Hypsarrhthymia
+        'F256100',		#Salaam attacks
+        'F256.11',		#Lightning spasms
+        'F256.12',		#West Syndrome
+        'F256z00',		#Infantile Spasms NOS
+        'F257.00',		#Kojevnikov's epilepsy
+        'F259.00',		#Early infant epileptic encephalopathy with suppression bursts
+        'F259.11',		#Ohtahara syndrome
+         'F25A.00',		#Juvenile myoclonic epilepsy
+         'F25B.00',		#Alcohol-induced epilepsy
+         'F25C.00',		#Drug-induced epilepsy
+         'F25D.00',		#Menstrual epilepsy
+         'F25E.00',		#Stress-induced epilepsy
+        'F25F.00',		#Photosensitive epilepsy
+        'F25G.00',		#Severe myoclonic epilepsy in infancy
+        'F25X.00',		#Status epilepticus; unspecified
+         'F25y.00',		#Other forms of epilepsy
+        'F25y000',		#Cursive (running) epilepsy
+        'F25y100',		#Gelastic epilepsy
+        'F25y200',		#Locl-rlt(foc)(part)idiop epilep&epilptic syn seiz locl onset
+        'F25y300',		#Complex partial status epilepticus
+        'F25y400',		#Benign Rolandic epilepsy
+        'F25y500',		#Panayiotopoulos syndrome
+        'F25yz00',		#Other forms of epilepsy NOS
+        'F25z.00',		#Epilepsy NOS
+        'F25.z.11',		#Fit (in known epileptic) NOS
+        'Fyu5000',		#[X]Other generalized epilepsy and epileptic syndromes
+        'Fyu5100',		#[X]Other epilepsy
+        'Fyu5200',		#[X]Other status epilepticus
+        'Fyu5900',		#[X]Status epilepticus; unspecified
+        'SC20000',		#Traumatic epilepsy
+        'ZS82.00',		#Acquired epileptic aphasia
+        'ZS82.11'		#Landau-Kleffner syndrome
     ]
 }
 
@@ -1878,5 +2047,6 @@ codelist_list_of_lists = [
     sleep_apnoea,
     current_smoker,
     chronic_pulmonary_disease,
-    CKD
+    CKD,
+    epilepsy
 ]

@@ -1,5 +1,3 @@
-
-
 mood_stabilisers = {
     #my own list:
     'drugs':[

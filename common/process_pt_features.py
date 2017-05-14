@@ -20,7 +20,8 @@ def create_pt_features():
     pt_features.drop('reggap',axis=1,inplace=True)
 
     pt_features['pracid']=pt_features['patid'].apply(str).str[-3:] #bizarre, but this is how the pracid works!
-    pt_features['gender']-=1
+    pt_features['male'] = pt_features['gender']-1
+    pt_features.drop(['gender'],axis=1,inplace=True)
     # pt_features['yob'] = pt_features['yob']+1800 # ditto!
     pt_features['yob'] = pt_features['yob'].astype(str).str[1:]
 
@@ -126,17 +127,17 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
         if pd.isnull(row['matchid']):
             patid = row['patid']
             yob = row['yob']
-            gender = row['gender']
+            male = row['male']
             pracid = row['pracid']
             index_date = row['index_date']
             # Define matching criteria
             matches_yob = controls['yob']==yob
-            matches_gender = controls['gender']==gender
-            matches_practice = controls['pracid']==pracid
+            matches_male = controls['male']==male
+            # matches_practice = controls['pracid']==pracid
             # is_not_already_matched = pd.isnull(controls['matchid'])
             enough_data_after_index_date = controls['data_end'] >= (index_date + timedelta(days=(365*req_yrs_post_index)))
             enough_data_before_index_date = controls['data_start'] <= (index_date - timedelta(days=(365*start_year)))
-            match_mask =  matches_yob & matches_gender & matches_practice & enough_data_after_index_date & enough_data_before_index_date
+            match_mask =  matches_yob & matches_male & enough_data_after_index_date & enough_data_before_index_date #& matches_practice
             if len(controls[match_mask])>0:
                 best_match_index = controls.loc[match_mask,'total_available_data'].idxmin(axis=1) # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
                 best_match_id = controls.ix[best_match_index]['patid']
@@ -300,7 +301,17 @@ def create_pdd(pt_features,prescriptions,window,druglist):
 
     pt_features = pd.merge(pt_features,pt_pdds,how='left')
     pt_features[new_colname].fillna(value=0,inplace=True)
-    pt_features[new_colname] = pt_features[new_colname].round(decimals=2)
+    pt_features[new_colname] = pt_features[new_colname]
+
+    #Create quantile columns
+    if druglist['name'] == 'benzo_and_z_drugs':
+        pt_features['benzo_and_z_drugs<1096']=0
+        pt_features['benzo_and_z_drugs>1096']=0
+        pt_features['benzo_and_z_drugs_never_used']=0
+
+        pt_features.loc[pt_features[new_colname] == 0,'benzo_and_z_drugs_never_used']=1
+        pt_features.loc[((pt_features[new_colname]*100) < 1096) & (pt_features[new_colname] >0),'benzo_and_z_drugs<1096']=1
+        pt_features.loc[(pt_features[new_colname]*100) > 1096,'benzo_and_z_drugs>1096']=1
 
     return pt_features
 
