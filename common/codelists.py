@@ -110,7 +110,7 @@ insomnia = {
     'int_or_boolean':'both',    #i.e. we want to get both a count variable (number of insomnia consultations)
                                 # and a boolean variable (has the patient ever seen a GP about insomnia)
                                 # - and we'll decide which is more useful at the analysis stage
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':True,
     'codes':[
         'R005200', # [D]Insomnia NOS
         '1B1B.11', # C/O - insomnia
@@ -137,10 +137,111 @@ insomnia = {
     ]
 }
 
+COPD = {
+    'name':'COPD',
+    'int_or_boolean':'boolean',
+	'record_exposure_in_window_period_only':False,
+    'codes':[
+        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+		'H3...00',		#Chronic obstructive pulmonary disease
+		'H31..00',		#Chronic bronchitis
+		'H310.00',		#Simple chronic bronchitis
+		'H310000',		#Chronic catarrhal bronchitis
+		'H310100',		#Smokers' cough
+		'H310z00',		#Simple chronic bronchitis NOS
+		'H311.00',		#Mucopurulent chronic bronchitis
+		'H311000',		#Purulent chronic bronchitis
+		'H311100',		#Fetid chronic bronchitis
+		'H311z00',		#Mucopurulent chronic bronchitis NOS
+		'H312.00',		#Obstructive chronic bronchitis
+		'H312000',		#Chronic asthmatic bronchitis
+		'H312011',		#Chronic wheezy bronchitis
+		'H312100',		#Emphysematous bronchitis
+		'H312200',		#Acute exacerbation of chronic obstructive airways disease
+		'H312300',		#Bronchiolitis obliterans
+		'H312z00',		#Obstructive chronic bronchitis NOS
+		'H313.00',		#Mixed simple and mucopurulent chronic bronchitis
+		'H31y.00',		#Other chronic bronchitis
+		'H31y000',		#Chronic tracheitis
+		'H31y100',		#Chronic tracheobronchitis
+		'H31yz00',		#Other chronic bronchitis NOS
+		'H31z.00',		#Chronic bronchitis NOS
+		'H32..00',		#Emphysema
+		'H320.00',		#Chronic bullous emphysema
+		'H320000',		#Segmental bullous emphysema
+		'H320100',		#Zonal bullous emphysema
+		'H320200',		#Giant bullous emphysema
+		'H320300',		#Bullous emphysema with collapse
+		'H320311',		#Tension pneumatocoele
+		'H320z00',		#Chronic bullous emphysema NOS
+		'H321.00',		#Panlobular emphysema
+		'H322.00',		#Centrilobular emphysema
+		'H32y.00',		#Other emphysema
+		'H32y000',		#Acute vesicular emphysema
+		'H32y100',		#Atrophic (senile) emphysema
+		'H32y111',		#Acute interstitial emphysema
+		'H32y200',		#MacLeod's unilateral emphysema
+		'H32yz00',		#Other emphysema NOS
+		'H32z.00',		#Emphysema NOS
+		'H36..00',		#Mild chronic obstructive pulmonary disease
+		'H37..00',		#Moderate chronic obstructive pulmonary disease
+		'H38..00',		#Severe chronic obstructive pulmonary disease
+		'H39..00',		#Very severe chronic obstructive pulmonary disease
+		'H3A..00',		#End stage chronic obstructive airways disease
+		'H3y..00',		#Other specified chronic obstructive airways disease
+		'H3y0.00',		#Chronic obstruct pulmonary dis with acute lower resp infectn
+		'H3y1.00',		#Chron obstruct pulmonary dis wth acute exacerbation; unspec
+		'H3y..11',		#Other specified chronic obstructive pulmonary disease
+		'H3z..00'		#Chronic obstructive airways disease NOS
+    ]
+}
+
+asthma = {
+    'name':'asthma',
+    'int_or_boolean':'boolean',
+	'record_exposure_in_window_period_only':False,
+    'codes':[
+        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
+		'H312000',		#Chronic asthmatic bronchitis
+		'H33..00',		#Asthma
+		'H330.00',		#Extrinsic (atopic) asthma
+		'H330000',		#Extrinsic asthma without status asthmaticus
+		'H330011',		#Hay fever with asthma
+		'H330100',		#Extrinsic asthma with status asthmaticus
+		'H330.11',		#Allergic asthma
+		'H330111',		#Extrinsic asthma with asthma attack
+		'H330.12',		#Childhood asthma
+		'H330.13',		#Hay fever with asthma
+		'H330.14',		#Pollen asthma
+		'H330z00',		#Extrinsic asthma NOS
+		'H331.00',		#Intrinsic asthma
+		'H331000',		#Intrinsic asthma without status asthmaticus
+		'H33..11',		#Bronchial asthma
+		'H331100',		#Intrinsic asthma with status asthmaticus
+		'H331.11',		#Late onset asthma
+		'H331111',		#Intrinsic asthma with asthma attack
+		'H331z00',		#Intrinsic asthma NOS
+		'H332.00',		#Mixed asthma
+		'H333.00',		#Acute exacerbation of asthma
+		'H334.00',		#Brittle asthma
+		'H33z.00',		#Asthma unspecified
+		'H33z000',		#Status asthmaticus NOS
+		'H33z011',		#Severe asthma attack
+		'H33z100',		#Asthma attack
+		'H33z.11',		#Hyperreactive airways disease
+		'H33z111',		#Asthma attack NOS
+		'H33z200',		#Late-onset asthma
+		'H33zz00',		#Asthma NOS
+		'H33zz11',		#Exercise induced asthma
+		'H33zz12',		#Allergic asthma NEC
+		'H33zz13'		#Allergic bronchitis NEC
+    ]
+}
+
 chronic_pulmonary_disease = {
     'name': 'chronic_pulmonary_disease',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
     # From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-chronic-pulmonary-disease/
         '114 PF',	  #	PIGEON FANCIER'S LUNG
@@ -355,7 +456,7 @@ chronic_pulmonary_disease = {
 clin_sig_alcohol_use = {
     'name': 'clin_sig_alcohol_use',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
     	'1366',		    #Very heavy drinker - >9u/day
     	'136Q.00',		#Very heavy drinker
@@ -461,7 +562,7 @@ clin_sig_alcohol_use = {
 mental_illness_non_smi = {
     'name': 'mental_illness_non_smi',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes':[
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
@@ -990,7 +1091,7 @@ mental_illness_non_smi = {
 mental_illness_smi = {
     'name': 'mental_illness_smi',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
         #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
@@ -1328,11 +1429,10 @@ mental_illness_smi = {
     ]
 }
 
-
 sleep_apnoea = {
     'name': 'sleep_apnoea',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
     	'H5B0.00',		#Obstructive sleep apnoea
     	'R005100',		#[D]Insomnia with sleep apnoea
@@ -1349,7 +1449,7 @@ sleep_apnoea = {
 intellectual_disability = {
     'name': 'intellectual_disability',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':True,
+	'record_exposure_in_window_period_only':False,
     'codes': [
     #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/26/
     	'1JB0.00',		#Suspected Downs syndrome
@@ -1391,11 +1491,10 @@ intellectual_disability = {
     ]
 }
 
-
 diabetes = {
     'name':'diabetes',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
     	'C10..00',		#Diabetes mellitus
@@ -1518,11 +1617,10 @@ diabetes = {
     ]
 }
 
-
 hypertension = {
     'name':'hypertension',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
     	'G2...00',		#Hypertensive disease
@@ -1553,11 +1651,10 @@ hypertension = {
     ]
 }
 
-
 CHD_heart_failure_and_peripheral_vascular_disease = {
     'name':'CHD_heart_failure_and_peripheral_vascular_disease',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
         #CHD
@@ -1722,7 +1819,7 @@ CHD_heart_failure_and_peripheral_vascular_disease = {
 stroke = {
     'name':'stroke',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
 		'G61..00',		#Intracerebral haemorrhage
@@ -1808,7 +1905,7 @@ stroke = {
 current_smoker = {
     'name':'current_smoker',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':True,
     'codes': [
         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
 		'137..11',		#Smoker - amount smoked
@@ -1844,9 +1941,9 @@ current_smoker = {
 CKD = {
     'name':'CKD',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
-        # From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-renal-disease/
+        #From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-renal-disease/
         '14D1.00',		#H/O: nephritis
         '1Z10.00',		#Chronic kidney disease stage 1
         '1Z11.00',		#Chronic kidney disease stage 2
@@ -1931,7 +2028,7 @@ CKD = {
 epilepsy = {
     'name':'epilepsy',
     'int_or_boolean':'boolean',
-	'use_all_pt_history':False,
+	'record_exposure_in_window_period_only':False,
     'codes': [
         # https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/55/codelist/res55-epilepsy/
         '1473',		#H/O: epilepsy
@@ -1947,7 +2044,7 @@ epilepsy = {
         'Eu05212',		#[X]Schizophrenia-like psychosis in epilepsy
         'Eu05y11',		#[X]Epileptic psychosis NOS
         'Eu06013',		#[X]Limbic epilepsy personality
-         'Eu80300',		#[X]Acquired aphasia with epilepsy [Landau - Kleffner]
+        #  'Eu80300',		#[X]Acquired aphasia with epilepsy [Landau - Kleffner]
          'F132100',		#Progressive myoclonic epilepsy
         'F132200',		#Myoclonic encephalopathy
         'F25..00',		#Epilepsy
@@ -1957,15 +2054,15 @@ epilepsy = {
         'F250100',		#pykno-epilepsy
         'F250200',		#Epileptic seizures - atonic
         'F250300',		#Epileptic seizures - akinetic
-        'F250400',		#Juvenile absence epilepsy
-        'F250500',		#Lennox-Gastaut syndrome
+        # 'F250400',		#Juvenile absence epilepsy
+        # 'F250500',		#Lennox-Gastaut syndrome
          'F250y00',		#Other specified generalised nonconvulsive epilepsy
          'F250z00',		#Generalised nonconvulsive epilepsy NOS
          'F251.00',		#Generalised convulsive epilepsy
         'F251000',		#Grand mal (major) epilepsy
          'F251011',		#Tonic-clonic epilepsy
-         'F251100',		#Neonatal myoclonic epilepsy
-        'F251111',		#Otohara syndrome
+        #  'F251100',		#Neonatal myoclonic epilepsy
+        # 'F251111',		#Otohara syndrome
         'F251200',		#Epileptic seizures - clonic
         'F251300',		#Epileptic seizures - myoclonic
         'F251400',		#Epileptic seizures - tonic
@@ -1997,30 +2094,30 @@ epilepsy = {
         'F255600',		#Simple partial epileptic seizure
          'F255y00',		#Partial epilepsy without impairment of consciousness OS
         'F255z00',		#Partial epilepsy without impairment of consciousness NOS
-        'F256.00',		#Infantile Spasms
-        'F256000',		#Hypsarrhthymia
+        # 'F256.00',		#Infantile Spasms
+        # 'F256000',		#Hypsarrhthymia
         'F256100',		#Salaam attacks
         'F256.11',		#Lightning spasms
-        'F256.12',		#West Syndrome
-        'F256z00',		#Infantile Spasms NOS
+        # 'F256.12',		#West Syndrome
+        # 'F256z00',		#Infantile Spasms NOS
         'F257.00',		#Kojevnikov's epilepsy
-        'F259.00',		#Early infant epileptic encephalopathy with suppression bursts
+        # 'F259.00',		#Early infant epileptic encephalopathy with suppression bursts
         'F259.11',		#Ohtahara syndrome
-         'F25A.00',		#Juvenile myoclonic epilepsy
+        #  'F25A.00',		#Juvenile myoclonic epilepsy
          'F25B.00',		#Alcohol-induced epilepsy
          'F25C.00',		#Drug-induced epilepsy
          'F25D.00',		#Menstrual epilepsy
          'F25E.00',		#Stress-induced epilepsy
         'F25F.00',		#Photosensitive epilepsy
-        'F25G.00',		#Severe myoclonic epilepsy in infancy
+        # 'F25G.00',		#Severe myoclonic epilepsy in infancy
         'F25X.00',		#Status epilepticus; unspecified
          'F25y.00',		#Other forms of epilepsy
         'F25y000',		#Cursive (running) epilepsy
         'F25y100',		#Gelastic epilepsy
         'F25y200',		#Locl-rlt(foc)(part)idiop epilep&epilptic syn seiz locl onset
         'F25y300',		#Complex partial status epilepticus
-        'F25y400',		#Benign Rolandic epilepsy
-        'F25y500',		#Panayiotopoulos syndrome
+        # 'F25y400',		#Benign Rolandic epilepsy
+        # 'F25y500',		#Panayiotopoulos syndrome
         'F25yz00',		#Other forms of epilepsy NOS
         'F25z.00',		#Epilepsy NOS
         'F25.z.11',		#Fit (in known epileptic) NOS
@@ -2030,7 +2127,7 @@ epilepsy = {
         'Fyu5900',		#[X]Status epilepticus; unspecified
         'SC20000',		#Traumatic epilepsy
         'ZS82.00',		#Acquired epileptic aphasia
-        'ZS82.11'		#Landau-Kleffner syndrome
+        # 'ZS82.11'		#Landau-Kleffner syndrome
     ]
 }
 
@@ -2048,5 +2145,7 @@ codelist_list_of_lists = [
     current_smoker,
     chronic_pulmonary_disease,
     CKD,
-    epilepsy
+    epilepsy,
+    COPD,
+    asthma
 ]

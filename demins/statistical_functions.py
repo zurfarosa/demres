@@ -115,10 +115,10 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
     print(multivariate_results)
 
     result_df = pd.DataFrame(columns=['OR','coef','p','[0.025','0.975]'],index=result.pvalues.index)
-    result_df['p']= result.pvalues
-    result_df[['[0.025','0.975]']]=result.conf_int()
-    result_df['OR']= np.exp(result.params)
-    result_df['coef']= result.params
+    result_df['p']= np.round(result.pvalues,3)
+    result_df[['[0.025','0.975]']]=np.round(result.conf_int(),3)
+    result_df['OR']= np.round(np.exp(result.params),3)
+    result_df['coef']= np.round(result.params,3)
 
     summary_table = result.summary().tables[0]
 

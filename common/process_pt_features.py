@@ -204,11 +204,10 @@ def get_condition_status(pt_features,entries,window,condition):
     # If we're using all the patient's history from the exposure window back to birth
     #(e.g. for intellectual disability), overwrite the predefined exposure windows with a single window
 
-    if condition['use_all_pt_history']:
-        start_year = timedelta(days=(365*100))
-    else:
+    if condition['record_exposure_in_window_period_only']==True:
         start_year = timedelta(days=(365*abs(window['start_year'])))
-
+    else: #for all other conditions, record exposure from end of window period back to start of their records
+        start_year = timedelta(days=(365*100))
 
     new_colname = condition['name']
 
@@ -299,6 +298,9 @@ def create_pdd(pt_features,prescriptions,window,druglist):
     window_prescs[new_colname]=(window_prescs['total_amount']/window_prescs['drug substance name'].map(lambda x: pdds[x.upper()])) / 100
     pt_pdds = window_prescs.groupby(by='patid')[new_colname].sum().reset_index() #sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.) divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
 
+
+    if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
+        pt_features.drop(new_colname,axis=1,inplace=True)
     pt_features = pd.merge(pt_features,pt_pdds,how='left')
     pt_features[new_colname].fillna(value=0,inplace=True)
     pt_features[new_colname] = pt_features[new_colname]
@@ -340,7 +342,7 @@ def get_consultation_count(pt_features,all_entries,window):
     Counts the number of non-insomnia-related consultations with the GP during the exposure window
     '''
     relev_entries = pd.merge(all_entries,pt_features[['patid','index_date']],how='inner')
-    new_colname = 'non_insomnia_GP_consultations'
+    new_colname = '10_non_insomnia_GP_consultations'
 
     # Find all consultations which occur on the same day as an insomnia readcode
     insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia['codes'])
@@ -355,6 +357,10 @@ def get_consultation_count(pt_features,all_entries,window):
     non_insom_cons = non_insom_cons[window_mask]
     non_insom_cons = non_insom_cons.groupby('patid')['eventdate'].count().reset_index()
     non_insom_cons.columns=['patid',new_colname]
+    non_insom_cons[new_colname] /= 10
+
+    if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
+        pt_features.drop(new_colname,axis=1,inplace=True)
 
     pt_features = pd.merge(pt_features,non_insom_cons,how='left')
     pt_features[new_colname].fillna(0,inplace=True)
