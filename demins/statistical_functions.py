@@ -4,6 +4,12 @@ import sys
 import pandas as pd
 import numpy as np
 from datetime import date, timedelta
+from scipy.stats import chi2_contingency
+import statsmodels.api as sm
+from statsmodels.tools.tools import add_constant
+from scipy import stats
+import pylab as pl
+
 
 import demres
 from demres.common.constants import entry_type
@@ -13,7 +19,50 @@ import statsmodels.api as sm
 from pprint import pprint
 
 
-def purposefully_select_covariates(pt_features,covariates,main_variable):
+def get_IQR(x):
+    q75, q25 = np.percentile(x, [75 ,25])
+    iqr = '{0} - {1}'.format(str(q25),str(q75))
+    return iqr
+
+
+def add_baseline_characteristics(baseline_df,variables,pt_features):
+    baseline_contin = pd.DataFrame(columns=['Cases - mean','Cases - median','Cases - IQR','Controls - mean','Controls - median','Controls - IQR','P value'])
+    baseline_dichot = pd.DataFrame(columns=['Cases','%Cases','Controls','%Controls','P value'])
+    all_cases = pt_features.loc[pt_features['isCase']==True]
+    all_controls = pt_features.loc[pt_features['isCase']==False]
+    for variable in variables:
+        if set(pt_features[variable])=={0,1}: #if it is a boolean 1 or 0 variable
+            positive_cases = pt_features.loc[(pt_features[variable]==1)&(pt_features['isCase']==1)]
+            negative_cases = pt_features.loc[(pt_features[variable]==0)&(pt_features['isCase']==1)]
+            positive_controls = pt_features.loc[(pt_features[variable]==1)&(pt_features['isCase']==0)]
+            negative_controls = pt_features.loc[(pt_features[variable]==0)&(pt_features['isCase']==0)]
+            baseline_dichot.loc[variable,'Cases'] = "{0:.1f}".format(len(positive_cases))
+            baseline_dichot.loc[variable,'%Cases'] = "{0:.1%}".format(len(positive_cases)/len(all_cases))
+            baseline_dichot.loc[variable,'Controls'] = "{0:.1f}".format(len(positive_controls))
+            baseline_dichot.loc[variable,'%Controls'] = "{0:.1%}".format(len(positive_controls)/len(all_controls))
+            baseline_dichot.loc[variable,'test']='chi2'
+            obs = np.array([[len(positive_cases),len(negative_cases)],[len(positive_controls),len(negative_controls)]])
+            chi2, p, dof, ex = chi2_contingency(obs, correction=False)
+            baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
+            if variable in ['female']:
+                baseline_dichot.loc[variable,'test']='(matched)'
+        else: #if it is a continuous variable
+            cases = pt_features.loc[pt_features['isCase']==1,variable].values
+            controls = pt_features.loc[pt_features['isCase']==0,variable].values
+            baseline_contin.loc[variable,'Cases - mean'] = "{0:.2f}".format(np.mean(cases))
+            baseline_contin.loc[variable,'Cases - median'] = "{0:.2f}".format(np.median(cases))
+            baseline_contin.loc[variable,'Cases - IQR'] = get_IQR(cases)
+            baseline_contin.loc[variable,'Controls - median'] = "{0:.2f}".format(np.median(controls))
+            baseline_contin.loc[variable,'Controls - mean'] = "{0:.2f}".format(np.mean(controls))
+            baseline_contin.loc[variable,'Controls - IQR'] = get_IQR(controls)
+            baseline_contin.loc[variable,'test']='2-sample-t-test'
+            t_stat,p = stats.ttest_ind(cases,controls)
+            baseline_contin.loc[variable,'P value'] = "{0:.3f}".format(p)
+#             if variable in ['age_at_index_date']:
+#                 baseline_contin.loc[variable,'test']='(matched)'
+    return baseline_dichot,baseline_contin
+
+def purposefully_select_covariates(pt_features,covariates,main_variables):
     '''
     Selects covariates to keep in final model.
     Based on a model-building technique described here: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2633005/.
@@ -25,12 +74,12 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
     univariate_results = pd.DataFrame(columns=['odds_ratio','p_value'])
     for covariate in starting_covariates:
         logit = sm.Logit(pt_features['isCase'], pt_features[covariate])
-        result = logit.fit(disp=0)
+        result = logit.fit(disp=0,maxiter=500)
         OR = round(np.exp(result.params).astype(float),4)
         p_value = round(result.pvalues.astype(float),3)
         univariate_results.loc[covariate] = [OR.values[0],p_value.values[0]]
 
-    stage_1_selection_mask = (univariate_results['p_value']<=0.25)|(univariate_results.index==main_variable)|(univariate_results.index=='intercept')
+    stage_1_selection_mask = (univariate_results['p_value']<=0.25)|(univariate_results.index.isin(main_variables))|(univariate_results.index=='intercept')
     stage_1_selected_covariates = univariate_results.loc[stage_1_selection_mask]
     stage_1_unwanted_covariates = univariate_results.loc[~stage_1_selection_mask]
 
@@ -44,11 +93,11 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
     #stage 2 - remove covariates from multivariable model if p value of >0.1
 
     logit = sm.Logit(pt_features['isCase'], pt_features[list(stage_1_selected_covariates.index)])
-    result = logit.fit(disp=0)
+    result = logit.fit(disp=0,maxiter=500)
     multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
     multivariate_results.columns=['odds_ratio','p_value']
 
-    stage_2_selection_mask=(multivariate_results['p_value']<0.1)|(multivariate_results.index==main_variable)|(multivariate_results.index=='insomnia_consultations')
+    stage_2_selection_mask=(multivariate_results['p_value']<0.1)|(multivariate_results.index.isin(main_variables))
     stage_2_selected_covariates = multivariate_results.loc[stage_2_selection_mask]
     stage_2_unwanted_covariates = multivariate_results.loc[~stage_2_selection_mask]
 
@@ -71,7 +120,7 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
         stage_1_selected_covariates_with_one_removed.remove(covariate)
         # print(stage_1_selected_covariates_with_one_removed)
         logit = sm.Logit(pt_features['isCase'], pt_features[stage_1_selected_covariates_with_one_removed])
-        result = logit.fit(disp=0)
+        result = logit.fit(disp=0,maxiter=500)
         one_removed_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
         one_removed_results.columns=['OR_1_removed','p_value']
         # print(one_removed_results)
@@ -94,7 +143,7 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
         stage3_selected_covariates.append(covariate)
         print('\nCovariate being added:',covariate)
         logit = sm.Logit(pt_features['isCase'], pt_features[stage3_selected_covariates])
-        result = logit.fit(disp=0)
+        result = logit.fit(disp=0,maxiter=500)
         multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
         multivariate_results.columns=['odds_ratio','p_value']
         print(multivariate_results)
@@ -109,14 +158,14 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
 
     print('***Final multivariate analysis***\n')
     logit = sm.Logit(pt_features['isCase'], pt_features[stage3_selected_covariates])
-    result = logit.fit(disp=0)
+    result = logit.fit(disp=0,maxiter=500)
     multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
     multivariate_results.columns=['odds_ratio','p_value']
     print(multivariate_results)
 
     result_df = pd.DataFrame(columns=['OR','coef','p','[0.025','0.975]'],index=result.pvalues.index)
     result_df['p']= np.round(result.pvalues,3)
-    result_df[['[0.025','0.975]']]=np.round(result.conf_int(),3)
+    result_df[['[0.025','0.975]']]=np.round(np.exp(result.conf_int()),3)
     result_df['OR']= np.round(np.exp(result.params),3)
     result_df['coef']= np.round(result.params,3)
 
@@ -126,31 +175,13 @@ def purposefully_select_covariates(pt_features,covariates,main_variable):
 
 
 def remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols):
+    print('The following variables are being removed as mean = 0:\n')
     filtered_training_cols = []
     for col in training_cols:
-        # pt_features[col] = pt_features[col].astype(int)
-        if pt_features[col].mean()>0.01: #arbitary number which seems to prevent 'Maximum Likelihood optimization failed to converge' warnings
-            filtered_training_cols.append(col)
+        if pt_features[col].mean()>0: #prevents singular matrix warning
+            filtered_training_cols.a    ppend(col)
             # print(col, pt_features[col].mean())
+        else:
+            print(col)
+    print('\n')
     return filtered_training_cols
-
-def get_univariate_and_multivariate_results(pt_features,training_cols):
-    #first convert booleans to 1 or 0; and do not include columns where the mean value (if continuous) is 0
-    training_cols = remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols)
-    # get univariate results
-    univariate_results = pd.DataFrame(columns=['odds_ratio','p_value'])
-    for covariate in training_cols:
-        logit = sm.Logit(pt_features['isCase'], pt_features[covariate])
-        result = logit.fit(disp=0,maxiter=500)
-        OR = round(np.exp(result.params).astype(float),4)
-        p_value = round(result.pvalues.astype(float),3)
-        univariate_results.loc[covariate] = [OR.values[0],p_value.values[0]]
-
-    # get multivariate results
-    logit = sm.Logit(pt_features['isCase'], pt_features[training_cols])
-    result = logit.fit()
-    multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
-    multivariate_results.columns=['odds_ratio','p_value']
-    multivariate_summary = result.summary()
-
-    return univariate_results, multivariate_results, multivariate_summary

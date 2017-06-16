@@ -7,7 +7,6 @@ import pandas as pd
 from demres.demins.constants import Study_Design
 from demres.common.constants import entry_type
 
-
 def get_prodcodes_from_drug_name(codelist):
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
     prodcodes = [pegprod.loc[pegprod['drug substance name'].str.lower()==med.lower()].loc[:,'prodcode'].tolist() for med in codelist]
@@ -45,9 +44,8 @@ def get_patient_history(all_entries,patid):
     pt_history_elaborated['description']=pt_history_elaborated['drug substance name'].fillna(pt_history_elaborated['read term'])
     inv_entry_type = {v: k for k, v in entry_type.items()}
     pt_history_elaborated['type']=pt_history_elaborated['type'].map(inv_entry_type)
-    pt_history_elaborated = pt_history_elaborated[['patid','eventdate','sysdate','type','description']]
+    pt_history_elaborated = pt_history_elaborated[['patid','medcode','prodcode','eventdate','sysdate','type','description']]
     return pt_history_elaborated
-
 
 def get_windows():
     '''

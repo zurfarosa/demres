@@ -9,7 +9,8 @@ mood_stabilisers = {
         'VALPROIC ACID',
         'lithium citrate',
         'lithium carbonate',
-        'Valproate semisodium'
+        'Valproate semisodium',
+        'oxcarbazepine'
         ],
     'route':'oral',
     'name':'mood_stabilisers'
@@ -24,6 +25,7 @@ benzo_and_z_drugs = {
     	'CHLORDIAZEPOXIDE HYDROCHLORIDE',
     	'CLOBAZAM',
     	'CLONAZEPAM',
+        'flunitrazepam',
     	'FLURAZEPAM',
         'Flurazepam hydrochloride',
     	'LOPRAZOLAM',
@@ -38,8 +40,10 @@ benzo_and_z_drugs = {
         'zopiclone',
         'zolpidem tartrate',
         'ZOLPIDEM',
-        #My own additions
-    	'CHLORDIAZEPOXIDE'
+        #BNF 2000 edition
+    	'CHLORDIAZEPOXIDE',
+        'bromazepam',
+        'clorazepate dipotassium'
         ],
     'route':'oral',
     'name':'benzo_and_z_drugs'
@@ -66,11 +70,14 @@ other_sedatives = {
     	'HYDROXYZINE HYDROCHLORIDE',
     	'KETOTIFEN',
     	'MORPHINE WITH CYCLIZINE',
-    	'PARACETAMOL WITH BUCLIZINE HYDROCHLORIDE AND CODEINE PHOSPHATE',
+    	# 'PARACETAMOL WITH BUCLIZINE HYDROCHLORIDE AND CODEINE PHOSPHATE',
         'Buclizine hydrochloride/Paracetamol/Codeine phosphate',
     	'PIZOTIFEN',
     	'PROMETHAZINE TEOCLATE',
         'PROMETHAZINE hydrochloride',
+
+        #BNF 2000 edition
+        'triclofos sodium'
     ],
     'route':'oral',
     'name':'other_sedatives'
@@ -86,20 +93,26 @@ fgas = {
     'FLUPENTIXOL',
     'HALOPERIDOL',
     'LEVOMEPROMAZINE',
+    'methotrimeprazine',
     'PERICYAZINE',
     'PERPHENAZINE',
     'PIMOZIDE',
     'PROCHLORPERAZINE',
     'PROMAZINE HYDROCHLORIDE',
+    'Thioridazine',
     'SULPIRIDE',
     'TRIFLUOPERAZINE',
     'ZUCLOPENTHIXOL',
     'ZUCLOPENTHIXOL ACETATE',
     #My own additions
-    'Trifluoperazine hydrochloride',
+    # 'Trifluoperazine hydrochloride',
     'Prochlorperazine maleate',
     'Prochlorperazine mesilate',
-    'Zuclopenthixol dihydrochloride'
+    'Zuclopenthixol dihydrochloride',
+    'fluphenazine hydrochloride',
+    'loxapine',
+    'oxypertine',
+    'pericyazine'
     ],
     'route':'oral',
     'name':'fgas'
@@ -115,7 +128,8 @@ sgas = {
     'OLANZAPINE',
     'PALIPERIDONE',
     'QUETIAPINE',
-    'RISPERIDONE'
+    'RISPERIDONE',
+    'zotepine'
     ],
     'route':'oral',
     'name':'sgas'
@@ -129,6 +143,7 @@ fga_depots = {
     'HALOPERIDOL DECANOATE',
     'ZUCLOPENTHIXOL DECANOATE',
     #My own additions:
+    'pipotiazine palmitate'
     ],
     'route':'intramuscular',
     'name':'fga_depots'
@@ -193,7 +208,16 @@ antidepressants = {
     'Sertraline hydrochloride',
     'Trimipramine maleate',
     'Trimipramine maleate',
-    'Venlafaxine Hydrochloride'],
+    'Venlafaxine Hydrochloride',
+    'amoxapine',
+    'maprotiline hydrochloride',
+    'phenelzine',
+    'isocarboxazid',
+    'tranylcypromine',
+    'moclobemine',
+    # 'nefazodone hydrochloride',
+    'tryptophan'
+    ],
     'route':'oral',
     'name':'antidepressants'
 }
@@ -208,7 +232,7 @@ antidementia_drugs = [
 ]
 
 
-psychotropic_list_of_lists = [
+all_druglists = [
     mood_stabilisers,
     benzo_and_z_drugs,
     other_sedatives,

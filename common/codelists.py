@@ -133,7 +133,8 @@ insomnia = {
         'E274.12', # Insomnia due to nonorganic sleep disorder
         'E274E00', # 'Short-sleeper'
         '1BX9.00', # Light sleep
-        '1B1Q.00' # Poor sleep pattern
+        '1B1Q.00', # Poor sleep pattern
+        '1BX3.00' #early morning waking
     ]
 }
 
@@ -1627,7 +1628,7 @@ hypertension = {
     	'G20..00',		#Essential hypertension
     	'G200.00',		#Malignant essential hypertension
     	'G201.00',		#Benign essential hypertension
-    	'G20..11',		#High blood pressure
+    	# 'G20..11',		#High blood pressure
     	'G202.00',		#Systolic hypertension
     	'G203.00',		#Diastolic hypertension
     	'G20z.00',		#Essential hypertension NOS
@@ -1647,7 +1648,7 @@ hypertension = {
     	'G2y..00',		#Other specified hypertensive disease
     	'G2z..00',		#Hypertensive disease NOS
     	'Gyu2.00',		#[X]Hypertensive diseases
-    	'Gyu2000'		#[X]Other secondary hypertension
+    	'Gyu2000'		#[X]Other secondary hypertension nte
     ]
 }
 
@@ -1908,8 +1909,8 @@ current_smoker = {
 	'record_exposure_in_window_period_only':True,
     'codes': [
         #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
-		'137..11',		#Smoker - amount smoked
-		'1372',		#Trivial smoker - < 1 cig/day
+		# '137..11',		#Smoker - amount smoked - REMOVED AS PEGMED DICTIONARY SAYS THIS READCODE ACTUALLY MEANS NON-SMOKER!
+		# '1372',		#Trivial smoker - < 1 cig/day
 		'1372.11',		#Occasional smoker
 		'1373',		#Light smoker - 1-9 cigs/day
 		'1374',		#Moderate smoker - 10-19 cigs/d
@@ -2131,21 +2132,21 @@ epilepsy = {
     ]
 }
 
-codelist_list_of_lists = [
+all_codelists = [
     insomnia,
     stroke,
     intellectual_disability,
     CHD_heart_failure_and_peripheral_vascular_disease,
     hypertension,
     diabetes,
-    clin_sig_alcohol_use,
     mental_illness_non_smi,
     mental_illness_smi,
     sleep_apnoea,
-    current_smoker,
     chronic_pulmonary_disease,
-    CKD,
-    epilepsy,
-    COPD,
-    asthma
+    epilepsy
+    # clin_sig_alcohol_use,
+    # current_smoker,
+    # CKD,
+    # COPD,
+    # asthma
 ]

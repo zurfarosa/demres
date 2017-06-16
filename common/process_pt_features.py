@@ -20,7 +20,7 @@ def create_pt_features():
     pt_features.drop('reggap',axis=1,inplace=True)
 
     pt_features['pracid']=pt_features['patid'].apply(str).str[-3:] #bizarre, but this is how the pracid works!
-    pt_features['male'] = pt_features['gender']-1
+    pt_features['female'] = pt_features['gender']-1
     pt_features.drop(['gender'],axis=1,inplace=True)
     # pt_features['yob'] = pt_features['yob']+1800 # ditto!
     pt_features['yob'] = pt_features['yob'].astype(str).str[1:]
@@ -127,17 +127,17 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
         if pd.isnull(row['matchid']):
             patid = row['patid']
             yob = row['yob']
-            male = row['male']
+            female = row['female']
             pracid = row['pracid']
             index_date = row['index_date']
             # Define matching criteria
             matches_yob = controls['yob']==yob
-            matches_male = controls['male']==male
+            matches_gender = controls['female']==female
             # matches_practice = controls['pracid']==pracid
             # is_not_already_matched = pd.isnull(controls['matchid'])
             enough_data_after_index_date = controls['data_end'] >= (index_date + timedelta(days=(365*req_yrs_post_index)))
             enough_data_before_index_date = controls['data_start'] <= (index_date - timedelta(days=(365*start_year)))
-            match_mask =  matches_yob & matches_male & enough_data_after_index_date & enough_data_before_index_date #& matches_practice
+            match_mask =  matches_yob & matches_gender & enough_data_after_index_date & enough_data_before_index_date #& matches_practice
             if len(controls[match_mask])>0:
                 best_match_index = controls.loc[match_mask,'total_available_data'].idxmin(axis=1) # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
                 best_match_id = controls.ix[best_match_index]['patid']
@@ -152,7 +152,7 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
     pt_features = pt_features.drop('total_available_data',axis=1)
 
     #Now that we ha ve an index date for both cases and controls, finally calculate age at index date
-    pt_features['age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - ('19' + pt_features['yob'].astype(str)).astype(int)
+    pt_features['age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - (1900 + pt_features['yob'].astype(int))
 
     return pt_features
 
@@ -196,6 +196,7 @@ def get_condition_status(pt_features,entries,window,condition):
     (e.g. 'clinically significant alcohol use', or 'insomnia') during a given exposure window  (e.g. 5-10 years prior to index date).
     According to the 'count_or_boolean' parameter, will return either a count of the Read codes (i.e. insomnia) or a simple boolean (all other conditions).
     '''
+
     medcodes = get_medcodes_from_readcodes(condition['codes'])
     medcode_events = entries[entries['medcode'].isin(medcodes)]
     medcode_events = medcode_events[pd.notnull(medcode_events['eventdate'])] #drops a small number of rows  with NaN eventdates
@@ -206,10 +207,14 @@ def get_condition_status(pt_features,entries,window,condition):
 
     if condition['record_exposure_in_window_period_only']==True:
         start_year = timedelta(days=(365*abs(window['start_year'])))
+        print('\t{0} is being measured only during the window period'.format(condition['name']))
     else: #for all other conditions, record exposure from end of window period back to start of their records
         start_year = timedelta(days=(365*100))
 
     new_colname = condition['name']
+
+    if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
+        pt_features.drop(new_colname,axis=1,inplace=True)
 
     # Restrict event counts to those that occur during pt's exposure window
     relevant_event_mask = (medcode_events['eventdate']>=(medcode_events['index_date']-start_year)) & (medcode_events['eventdate']<=(medcode_events['index_date']-timedelta(days=(365*sd.window_length_in_years))))
@@ -223,16 +228,34 @@ def get_condition_status(pt_features,entries,window,condition):
 
     pt_features = pd.merge(pt_features,window_medcode_events,how='left')
 
-    if condition['int_or_boolean']=='both': # e.g. insomnia - we want both a boolean variable and a count (the former seems to be more useful in our model)
-        #Rename and keep the 'count' column
-        pt_features[new_colname+'_consultations']= pt_features[new_colname]
-        pt_features[new_colname+'_consultations'].fillna(0,inplace=True)
-        pt_features[new_colname+'_consultations'] = pt_features[new_colname+'_consultations'].astype(int)
+    pt_features[new_colname].fillna(0,inplace=True)
 
-    #Convert the original count column to a boolean column
-    pt_features.loc[pd.notnull(pt_features[new_colname]),new_colname] = 1
-    pt_features.loc[pd.isnull(pt_features[new_colname]),new_colname] = 0
+
+    #for the insomnia variable, create a dichotomous yes/no variable ('insomnia'),
+    # rename the continous variable as 'insomnia_count', and also create insomnia_count quantiles
+
+    if condition['name'] == 'insomnia':
+        #Rename and keep the 'count' column
+        pt_features[new_colname+'_count']= pt_features[new_colname]
+        pt_features[new_colname+'_count'] = pt_features[new_colname+'_count'].astype(int)
+
+        pt_features['insomnia_count:1-5']=0
+        pt_features['insomnia_count:>5']=0
+        pt_features.loc[((pt_features[new_colname+'_count'] <= 5) & (pt_features[new_colname+'_count'] >0)),'insomnia_count:1-5']=1
+        pt_features.loc[(pt_features[new_colname+'_count'] > 5),'insomnia_count:>5']=1
+
+        #Create a dichotamous insomnia yes/no variable
+        pt_features[new_colname]=np.nan
+         #convert condition from a count to a boolean
+        pt_features.loc[pt_features[new_colname+'_count']>0,new_colname] = 1
+        pt_features.loc[pt_features[new_colname+'_count']==0,new_colname] = 0
+    else:
+        if condition['int_or_boolean']=='boolean': #convert condition from a count to a boolean
+            pt_features.loc[pt_features[new_colname]>0,new_colname] = 1
+            pt_features.loc[pt_features[new_colname]==0,new_colname] = 0
+
     pt_features[new_colname] = pt_features[new_colname].astype(int)
+    print('\tUnique values  ',set(pt_features[new_colname]))
 
     return pt_features
 
@@ -264,6 +287,16 @@ def create_pdd(pt_features,prescriptions,window,druglist):
     amount_and_unit.amount = amount_and_unit.amount.astype('float')
     prescs = pd.concat([prescs,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq'],axis=1)
 
+    # Convert micrograms to mg
+    micro_mask = prescs['unit'].str.contains('microgram',na=False,case=False)
+    prescs.loc[micro_mask,'amount'] /= 1000
+    prescs.loc[micro_mask,'unit'] = 'mg'
+
+    #Convert mg/Xml to mg for simplicity
+    micro_mask = prescs['unit'].str.contains('mg/',na=False,case=False)
+    prescs.loc[micro_mask,'unit'] = 'mg'
+
+
     # Create a 'total_amount' column - used to calculate each pt's PDDs for a given drug.
     prescs['total_amount'] = prescs['qty']*prescs['amount']
 
@@ -279,6 +312,7 @@ def create_pdd(pt_features,prescriptions,window,druglist):
     #Calculate the prescribed daily dose (PDD) for each drug (e.g. 'citalopram') in the druglist (e.g. 'antidepressants')
     pdds = {}
     for drug in druglist['drugs']:
+        print(drug)
         drug = drug.upper()
         temp_prescs = window_prescs[window_prescs['drug substance name'].str.upper()==drug]
         if(len(temp_prescs))>0:
@@ -286,11 +320,16 @@ def create_pdd(pt_features,prescriptions,window,druglist):
             drug_weights = np.array(temp_prescs['qty'])/np.array(temp_prescs['ndd'])
             pdd = np.average(drug_amounts,weights=drug_weights)
             pdds[drug]=pdd
+            print('pdd: ',pdd)
+            print('unit: ',set(temp_prescs['unit']))
             assert pd.notnull(pdd)
+        else:
+            print('temp_prescs not > 0')
+
     #Write PDDs to file for reference
     with open('output/pdds/'+druglist['name']+'_PDD_'+str(abs(window['start_year'])), 'w') as f:
-        for key, value in pdds.items():
-            f.write('{0}: {1}\n'.format(key, np.round(value)))
+        for drug, pdd in pdds.items():
+            f.write('{0}: {1} mg\n'.format(drug, np.round(pdd)))
 
     #Calculate number of PDDs (if any) each pt has been prescribed for the drugs in the druglist.  Note that we use 100_PDDs (roughly 3.3 months worth of a drug), rather than PDDs, as it makes the eventual odds ratio easier to interpret clinically
     window_prescs = window_prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
@@ -307,33 +346,36 @@ def create_pdd(pt_features,prescriptions,window,druglist):
 
     #Create quantile columns
     if druglist['name'] == 'benzo_and_z_drugs':
-        pt_features['benzo_and_z_drugs<1096']=0
-        pt_features['benzo_and_z_drugs>1096']=0
-        pt_features['benzo_and_z_drugs_never_used']=0
+        pt_features['benzo_and_z_drugs:1-1095_pdds']=0
+        pt_features['benzo_and_z_drugs:>1096_pdds']=0
+        # pt_features['benzo_and_z_drugs:0_pdds']=0
 
-        pt_features.loc[pt_features[new_colname] == 0,'benzo_and_z_drugs_never_used']=1
-        pt_features.loc[((pt_features[new_colname]*100) < 1096) & (pt_features[new_colname] >0),'benzo_and_z_drugs<1096']=1
-        pt_features.loc[(pt_features[new_colname]*100) > 1096,'benzo_and_z_drugs>1096']=1
+        pt_features.loc[((pt_features[new_colname]*100) <= 1096) & (pt_features[new_colname] >0),'benzo_and_z_drugs:1-1095_pdds']=1
+        pt_features.loc[(pt_features[new_colname]*100) > 1096,'benzo_and_z_drugs:>1096_pdds']=1
 
-    return pt_features
-
-
-def divide_benzo_pdd_into_quantiles(pt_features,column_to_change):
-    mask = (pt_features[column_to_change]>0) & (pt_features[column_to_change]<=1)
-    pt_features.loc[mask,'benzo_and_z_drugs_1_to_100pdds']=1
-    pt_features['benzo_and_z_drugs_1_to_100pdds'].fillna(value=0,inplace=True)
-
-    mask = (pt_features[column_to_change]>1) & (pt_features[column_to_change]<=10)
-    pt_features.loc[mask,'benzo_and_z_drugs_101_to_1000pdds']=1
-    pt_features['benzo_and_z_drugs_101_to_1000pdds'].fillna(value=0,inplace=True)
-
-    mask = pt_features[column_to_change]>10
-    pt_features.loc[mask,'benzo_and_z_drugs_more_than_1000pdds']=1
-    pt_features['benzo_and_z_drugs_more_than_1000pdds'].fillna(value=0,inplace=True)
-
-    # pt_features.drop([column_to_change],axis=1,inplace=True)
+        #Create simple dichotamous yes/no variable
+        pt_features['benzo_and_z_drugs']=0
+        pt_features.loc[pt_features['benzo_and_z_drugs_100_pdds']>0,'benzo_and_z_drugs']=1
 
     return pt_features
+
+
+# def divide_benzo_pdd_into_quantiles(pt_features,column_to_change):
+#     mask = (pt_features[column_to_change]>0) & (pt_features[column_to_change]<=1)
+#     pt_features.loc[mask,'benzo_and_z_drugs_1_to_100pdds']=1
+#     pt_features['benzo_and_z_drugs_1_to_100pdds'].fillna(value=0,inplace=True)
+#
+#     mask = (pt_features[column_to_change]>1) & (pt_features[column_to_change]<=10)
+#     pt_features.loc[mask,'benzo_and_z_drugs_101_to_1000pdds']=1
+#     pt_features['benzo_and_z_drugs_101_to_1000pdds'].fillna(value=0,inplace=True)
+#
+#     mask = pt_features[column_to_change]>10
+#     pt_features.loc[mask,'benzo_and_z_drugs_more_than_1000pdds']=1
+#     pt_features['benzo_and_z_drugs_more_than_1000pdds'].fillna(value=0,inplace=True)
+#
+#     # pt_features.drop([column_to_change],axis=1,inplace=True)
+#
+#     return pt_features
 
 
 
@@ -342,7 +384,7 @@ def get_consultation_count(pt_features,all_entries,window):
     Counts the number of non-insomnia-related consultations with the GP during the exposure window
     '''
     relev_entries = pd.merge(all_entries,pt_features[['patid','index_date']],how='inner')
-    new_colname = '10_non_insomnia_GP_consultations'
+    new_colname = 'non_insomnia_GP_consultations'
 
     # Find all consultations which occur on the same day as an insomnia readcode
     insomnia_medcodes = get_medcodes_from_readcodes(codelists.insomnia['codes'])
@@ -357,7 +399,7 @@ def get_consultation_count(pt_features,all_entries,window):
     non_insom_cons = non_insom_cons[window_mask]
     non_insom_cons = non_insom_cons.groupby('patid')['eventdate'].count().reset_index()
     non_insom_cons.columns=['patid',new_colname]
-    non_insom_cons[new_colname] /= 10
+
 
     if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
         pt_features.drop(new_colname,axis=1,inplace=True)
