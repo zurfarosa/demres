@@ -27,7 +27,7 @@ def get_IQR(x):
 
 def add_baseline_characteristics(baseline_df,variables,pt_features):
     baseline_contin = pd.DataFrame(columns=['Cases - mean','Cases - median','Cases - IQR','Controls - mean','Controls - median','Controls - IQR','P value'])
-    baseline_dichot = pd.DataFrame(columns=['Cases','%Cases','Controls','%Controls','P value'])
+    baseline_dichot = pd.DataFrame(columns=['Cases','Controls','P value'])
     all_cases = pt_features.loc[pt_features['isCase']==True]
     all_controls = pt_features.loc[pt_features['isCase']==False]
     for variable in variables:
@@ -36,11 +36,8 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
             negative_cases = pt_features.loc[(pt_features[variable]==0)&(pt_features['isCase']==1)]
             positive_controls = pt_features.loc[(pt_features[variable]==1)&(pt_features['isCase']==0)]
             negative_controls = pt_features.loc[(pt_features[variable]==0)&(pt_features['isCase']==0)]
-            baseline_dichot.loc[variable,'Cases'] = "{0:.1f}".format(len(positive_cases))
-            baseline_dichot.loc[variable,'%Cases'] = "{0:.1%}".format(len(positive_cases)/len(all_cases))
-            baseline_dichot.loc[variable,'Controls'] = "{0:.1f}".format(len(positive_controls))
-            baseline_dichot.loc[variable,'%Controls'] = "{0:.1%}".format(len(positive_controls)/len(all_controls))
-            baseline_dichot.loc[variable,'test']='chi2'
+            baseline_dichot.loc[variable,'Cases'] = "{0:.0f} ({1:.1%})".format(len(positive_cases),len(positive_cases)/len(all_cases))
+            baseline_dichot.loc[variable,'Controls'] = "{0:.0f} ({1:.1%})".format(len(positive_controls),len(positive_controls)/len(all_controls))
             if (len(positive_cases)>0) & (len(negative_cases)>0):
                 obs = np.array([[len(positive_cases),len(negative_cases)],[len(positive_controls),len(negative_controls)]])
                 chi2, p, dof, ex = chi2_contingency(obs, correction=False)
@@ -56,10 +53,9 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
             baseline_contin.loc[variable,'Controls - median'] = "{0:.2f}".format(np.median(controls))
             baseline_contin.loc[variable,'Controls - mean'] = "{0:.2f}".format(np.mean(controls))
             baseline_contin.loc[variable,'Controls - IQR'] = get_IQR(controls)
-            baseline_contin.loc[variable,'test']='2-sample-t-test'
             t_stat,p = stats.ttest_ind(cases,controls)
             baseline_contin.loc[variable,'P value'] = "{0:.3f}".format(p)
-    return baseline_dichot,baseline_contin
+    return baseline_dichot.sort_index(),baseline_contin
 
 def purposefully_select_covariates(pt_features,covariates,main_variables):
     '''

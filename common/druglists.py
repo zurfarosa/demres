@@ -83,9 +83,9 @@ other_sedatives = {
     'name':'other_sedatives'
 }
 
-fgas = {
+antipsychotics = {
     'drugs':[
-    #from BNF 2017:
+    #First generation antipsychotics from BNF 2017:
     'AMITRIPTYLINE WITH PERPHENAZINE',
     'BENPERIDOL',
     'CHLORPROMAZINE HYDROCHLORIDE',
@@ -104,6 +104,19 @@ fgas = {
     'TRIFLUOPERAZINE',
     'ZUCLOPENTHIXOL',
     'ZUCLOPENTHIXOL ACETATE',
+
+    # second-generation antipsychotics from BNF 2017:
+    'AMISULPRIDE',
+    'ARIPIPRAZOLE',
+    'ASENAPINE',
+    'CLOZAPINE',
+    'LURASIDONE HYDROCHLORIDE',
+    'OLANZAPINE',
+    'PALIPERIDONE',
+    'QUETIAPINE',
+    'RISPERIDONE',
+    'zotepine',
+
     #My own additions
     # 'Trifluoperazine hydrochloride',
     'Prochlorperazine maleate',
@@ -115,42 +128,19 @@ fgas = {
     'pericyazine'
     ],
     'route':'oral',
-    'name':'fgas'
-}
-sgas = {
-    'drugs':[
-    #from BNF 2017:
-    'AMISULPRIDE',
-    'ARIPIPRAZOLE',
-    'ASENAPINE',
-    'CLOZAPINE',
-    'LURASIDONE HYDROCHLORIDE',
-    'OLANZAPINE',
-    'PALIPERIDONE',
-    'QUETIAPINE',
-    'RISPERIDONE',
-    'zotepine'
-    ],
-    'route':'oral',
-    'name':'sgas'
+    'name':'antipsychotics'
 }
 
-fga_depots = {
+depot_antipsychotics = {
     'drugs':[
-    #from BNF 2017:
+    #first-generation depots from BNF 2017:
     'FLUPENTIXOL DECANOATE',
     'FLUPHENAZINE DECANOATE',
     'HALOPERIDOL DECANOATE',
     'ZUCLOPENTHIXOL DECANOATE',
     #My own additions:
-    'pipotiazine palmitate'
-    ],
-    'route':'intramuscular',
-    'name':'fga_depots'
-}
+    'pipotiazine palmitate',
 
-sga_depots = {
-    'drugs':[
     #from BNF 2017:
     'ARIPIPRAZOLE',
     'OLANZAPINE EMBONATE',
@@ -160,7 +150,7 @@ sga_depots = {
     'Olanzapine embonate monohydrate'
     ],
     'route':'intramuscular',
-    'name':'sga_depots'
+    'name':'depot_antipsychotics'
 }
 
 antidepressants = {
@@ -236,9 +226,7 @@ all_druglists = [
     mood_stabilisers,
     benzo_and_z_drugs,
     other_sedatives,
-    fgas,
-    sgas,
-    sga_depots,
-    fga_depots,
+    antipsychotics,
+    depot_antipsychotics,
     antidepressants
 ]

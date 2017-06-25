@@ -249,9 +249,9 @@ def create_quantiles_and_booleans(pt_features):
     '''
 
     benzo_mask = pt_features['benzo_and_z_drugs_pdds']>0
-    pt_features['benzo_and_z_drugs']=np.nan
-    pt_features.loc[benzo_mask,'benzo_and_z_drugs']=1
-    pt_features.loc[~benzo_mask,'benzo_and_z_drugs']=0
+    pt_features['benzo_and_z_drugs_any']=np.nan
+    pt_features.loc[benzo_mask,'benzo_and_z_drugs_any']=1
+    pt_features.loc[~benzo_mask,'benzo_and_z_drugs_any']=0
 
     #for the insomnia variable, create an additional dichotomous yes/no variable ('insomnia_any')
     pt_features['insomnia_any']= np.nan
@@ -312,7 +312,7 @@ def create_quantiles_and_booleans(pt_features):
     pt_features.loc[above_99_mask,'age_at_index_date:above_99']=1
     pt_features.loc[~above_99_mask,'age_at_index_date:above_99']=0
 
-    for drug in ['antidepressants_pdds','sgas_pdds','fgas_pdds','other_sedatives_pdds','benzo_and_z_drugs_pdds','mood_stabilisers_pdds']:
+    for drug in ['antidepressants_pdds','antipsychotics_pdds','depot_antipsychotics_pdds','other_sedatives_pdds','benzo_and_z_drugs_pdds','mood_stabilisers_pdds']:
         drug_0_mask = pt_features[drug]==0
         drug_1_10_mask = (pt_features[drug]>0) & (pt_features[drug]<=10)
         drug_11_100_mask = (pt_features[drug]>10) & (pt_features[drug]<=100)
@@ -407,7 +407,7 @@ def create_pdd(pt_features,prescriptions,window,druglist):
             print('temp_prescs not > 0')
 
     #Write PDDs to file for reference
-    with open('output/pdds/'+druglist['name']+'_PDD_'+str(abs(window['start_year'])), 'w') as f:
+    with open('output/pdds/'+druglist['name']+'_PDD_start_year_'+str(abs(window['start_year'])), 'w') as f:
         for drug, pdd in pdds.items():
             f.write('{0}: {1} mg\n'.format(drug, np.round(pdd)))
 
