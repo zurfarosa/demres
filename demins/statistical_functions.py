@@ -31,7 +31,7 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
     all_cases = pt_features.loc[pt_features['isCase']==True]
     all_controls = pt_features.loc[pt_features['isCase']==False]
     for variable in variables:
-        if set(pt_features[variable])=={0,1}: #if it is a boolean 1 or 0 variable
+        if set(pt_features[variable]) in [{0,1},{0}]: #if it is a boolean 1 or 0 variable
             positive_cases = pt_features.loc[(pt_features[variable]==1)&(pt_features['isCase']==1)]
             negative_cases = pt_features.loc[(pt_features[variable]==0)&(pt_features['isCase']==1)]
             positive_controls = pt_features.loc[(pt_features[variable]==1)&(pt_features['isCase']==0)]
@@ -41,11 +41,12 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
             baseline_dichot.loc[variable,'Controls'] = "{0:.1f}".format(len(positive_controls))
             baseline_dichot.loc[variable,'%Controls'] = "{0:.1%}".format(len(positive_controls)/len(all_controls))
             baseline_dichot.loc[variable,'test']='chi2'
-            obs = np.array([[len(positive_cases),len(negative_cases)],[len(positive_controls),len(negative_controls)]])
-            chi2, p, dof, ex = chi2_contingency(obs, correction=False)
-            baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
-            if variable in ['female']:
-                baseline_dichot.loc[variable,'test']='(matched)'
+            if (len(positive_cases)>0) & (len(negative_cases)>0):
+                obs = np.array([[len(positive_cases),len(negative_cases)],[len(positive_controls),len(negative_controls)]])
+                chi2, p, dof, ex = chi2_contingency(obs, correction=False)
+                baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
+            else:
+                baseline_dichot.loc[variable,'P value'] =  '-'
         else: #if it is a continuous variable
             cases = pt_features.loc[pt_features['isCase']==1,variable].values
             controls = pt_features.loc[pt_features['isCase']==0,variable].values
@@ -58,8 +59,6 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
             baseline_contin.loc[variable,'test']='2-sample-t-test'
             t_stat,p = stats.ttest_ind(cases,controls)
             baseline_contin.loc[variable,'P value'] = "{0:.3f}".format(p)
-#             if variable in ['age_at_index_date']:
-#                 baseline_contin.loc[variable,'test']='(matched)'
     return baseline_dichot,baseline_contin
 
 def purposefully_select_covariates(pt_features,covariates,main_variables):
@@ -179,7 +178,7 @@ def remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols
     filtered_training_cols = []
     for col in training_cols:
         if pt_features[col].mean()>0: #prevents singular matrix warning
-            filtered_training_cols.a    ppend(col)
+            filtered_training_cols.append(col)
             # print(col, pt_features[col].mean())
         else:
             print(col)

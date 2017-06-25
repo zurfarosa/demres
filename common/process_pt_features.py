@@ -231,34 +231,114 @@ def get_condition_status(pt_features,entries,window,condition):
     pt_features[new_colname].fillna(0,inplace=True)
 
 
-    #for the insomnia variable, create a dichotomous yes/no variable ('insomnia'),
-    # rename the continous variable as 'insomnia_count', and also create insomnia_count quantiles
-
-    if condition['name'] == 'insomnia':
-        #Rename and keep the 'count' column
-        pt_features[new_colname+'_count']= pt_features[new_colname]
-        pt_features[new_colname+'_count'] = pt_features[new_colname+'_count'].astype(int)
-
-        pt_features['insomnia_count:1-5']=0
-        pt_features['insomnia_count:>5']=0
-        pt_features.loc[((pt_features[new_colname+'_count'] <= 5) & (pt_features[new_colname+'_count'] >0)),'insomnia_count:1-5']=1
-        pt_features.loc[(pt_features[new_colname+'_count'] > 5),'insomnia_count:>5']=1
-
-        #Create a dichotamous insomnia yes/no variable
-        pt_features[new_colname]=np.nan
-         #convert condition from a count to a boolean
-        pt_features.loc[pt_features[new_colname+'_count']>0,new_colname] = 1
-        pt_features.loc[pt_features[new_colname+'_count']==0,new_colname] = 0
-    else:
-        if condition['int_or_boolean']=='boolean': #convert condition from a count to a boolean
-            pt_features.loc[pt_features[new_colname]>0,new_colname] = 1
-            pt_features.loc[pt_features[new_colname]==0,new_colname] = 0
+    if condition['int_or_boolean']=='boolean': #convert condition from a count to a boolean
+        pt_features.loc[pt_features[new_colname]>0,new_colname] = 1
+        pt_features.loc[pt_features[new_colname]==0,new_colname] = 0
 
     pt_features[new_colname] = pt_features[new_colname].astype(int)
+
     print('\tUnique values  ',set(pt_features[new_colname]))
 
     return pt_features
 
+
+def create_quantiles_and_booleans(pt_features):
+    '''
+    Converts various continuous variables (e.g. age, insomnia) into quantiles,
+    and converts others (insomnia, benzodiazepine_pdd) into booleans
+    '''
+
+    benzo_mask = pt_features['benzo_and_z_drugs_pdds']>0
+    pt_features['benzo_and_z_drugs']=np.nan
+    pt_features.loc[benzo_mask,'benzo_and_z_drugs']=1
+    pt_features.loc[~benzo_mask,'benzo_and_z_drugs']=0
+
+    #for the insomnia variable, create an additional dichotomous yes/no variable ('insomnia_any')
+    pt_features['insomnia_any']= np.nan
+    pt_features.loc[pt_features['insomnia']>0,'insomnia_any'] = 1
+    pt_features.loc[pt_features['insomnia']==0,'insomnia_any'] = 0
+
+    #Also, create quantiles for insomnia
+    insomnia_count_0_mask = pt_features['insomnia']==0
+    insomnia_count_1_10_mask = (pt_features['insomnia']>0) & (pt_features['insomnia']<=10)
+    insomnia_count_above_10_mask = pt_features['insomnia']>10
+    pt_features.loc[insomnia_count_0_mask,'insomnia_count:0']=1
+    pt_features.loc[~insomnia_count_0_mask,'insomnia_count:0']=0
+    pt_features.loc[insomnia_count_1_10_mask,'insomnia_count:1_10']=1
+    pt_features.loc[~insomnia_count_1_10_mask,'insomnia_count:1_10']=0
+    pt_features.loc[insomnia_count_above_10_mask,'insomnia_count:above_10']=1
+    pt_features.loc[~insomnia_count_above_10_mask,'insomnia_count:above_10']=0
+
+    #Create quantiles for non_insomnia_GP_consultations
+    # (these are only used in the baseline characteristics section of the paper, not in the actual logistic regression)
+    non_insomnia_GP_consultations_0_mask = pt_features['non_insomnia_GP_consultations']==0
+    non_insomnia_GP_consultations_1_10_mask = (pt_features['non_insomnia_GP_consultations']>0) & (pt_features['non_insomnia_GP_consultations']<=10)
+    non_insomnia_GP_consultations_11_100_mask = (pt_features['non_insomnia_GP_consultations']>10) & (pt_features['non_insomnia_GP_consultations']<=100)
+    non_insomnia_GP_consultations_101_1000_mask = (pt_features['non_insomnia_GP_consultations']>100) & (pt_features['non_insomnia_GP_consultations']<=1000)
+    non_insomnia_GP_consultations_above_1000_mask = pt_features['non_insomnia_GP_consultations']>1000
+    pt_features.loc[non_insomnia_GP_consultations_0_mask,'non_insomnia_GP_consultations:0']=1
+    pt_features.loc[~non_insomnia_GP_consultations_0_mask,'non_insomnia_GP_consultations:0']=0
+    pt_features.loc[non_insomnia_GP_consultations_1_10_mask,'non_insomnia_GP_consultations:1_10']=1
+    pt_features.loc[~non_insomnia_GP_consultations_1_10_mask,'non_insomnia_GP_consultations:1_10']=0
+    pt_features.loc[non_insomnia_GP_consultations_11_100_mask,'non_insomnia_GP_consultations:11_100']=1
+    pt_features.loc[~non_insomnia_GP_consultations_11_100_mask,'non_insomnia_GP_consultations:11_100']=0
+    pt_features.loc[non_insomnia_GP_consultations_101_1000_mask,'non_insomnia_GP_consultations:101_1000']=1
+    pt_features.loc[~non_insomnia_GP_consultations_101_1000_mask,'non_insomnia_GP_consultations:101_1000']=0
+    pt_features.loc[non_insomnia_GP_consultations_above_1000_mask,'non_insomnia_GP_consultations:above_1000']=1
+    pt_features.loc[~non_insomnia_GP_consultations_above_1000_mask,'non_insomnia_GP_consultations:above_1000']=0
+
+    # Create quantiles for age
+    # (these are only used in the baseline characteristics section of the paper, not in the actual logistic regression)
+    age_65_69_mask = pt_features['age_at_index_date']<70
+    age_70_74_mask = (pt_features['age_at_index_date']<75) & (pt_features['age_at_index_date']>=70)
+    age_75_79_mask = (pt_features['age_at_index_date']<80) & (pt_features['age_at_index_date']>=75)
+    age_80_84_mask = (pt_features['age_at_index_date']<85) & (pt_features['age_at_index_date']>=80)
+    age_85_89_mask = (pt_features['age_at_index_date']<90) & (pt_features['age_at_index_date']>=85)
+    age_90_94_mask = (pt_features['age_at_index_date']<95) & (pt_features['age_at_index_date']>=90)
+    age_95_99_mask = (pt_features['age_at_index_date']<100) & (pt_features['age_at_index_date']>=95)
+    above_99_mask = pt_features['age_at_index_date']>=100
+    pt_features.loc[age_65_69_mask,'age_at_index_date:65-69']=1
+    pt_features.loc[~age_65_69_mask,'age_at_index_date:65-69']=0
+    pt_features.loc[age_70_74_mask,'age_at_index_date:70-74']=1
+    pt_features.loc[~age_70_74_mask,'age_at_index_date:70-74']=0
+    pt_features.loc[age_75_79_mask,'age_at_index_date:75-79']=1
+    pt_features.loc[~age_75_79_mask,'age_at_index_date:75-79']=0
+    pt_features.loc[age_80_84_mask,'age_at_index_date:80-84']=1
+    pt_features.loc[~age_80_84_mask,'age_at_index_date:80-84']=0
+    pt_features.loc[age_85_89_mask,'age_at_index_date:85-89']=1
+    pt_features.loc[~age_85_89_mask,'age_at_index_date:85-89']=0
+    pt_features.loc[age_90_94_mask,'age_at_index_date:90-99']=1
+    pt_features.loc[~age_90_94_mask,'age_at_index_date:90-99']=0
+    pt_features.loc[above_99_mask,'age_at_index_date:above_99']=1
+    pt_features.loc[~above_99_mask,'age_at_index_date:above_99']=0
+
+    for drug in ['antidepressants_pdds','sgas_pdds','fgas_pdds','other_sedatives_pdds','benzo_and_z_drugs_pdds','mood_stabilisers_pdds']:
+        drug_0_mask = pt_features[drug]==0
+        drug_1_10_mask = (pt_features[drug]>0) & (pt_features[drug]<=10)
+        drug_11_100_mask = (pt_features[drug]>10) & (pt_features[drug]<=100)
+        drug_101_1000_mask = (pt_features[drug]>100) & (pt_features[drug]<=1000)
+        drug_1001_10000_mask = (pt_features[drug]>1000) & (pt_features[drug]<=10000)
+        drug_above_10000_mask = pt_features[drug]>10000
+
+        pt_features.loc[drug_0_mask,drug+':0']=1
+        pt_features.loc[~drug_0_mask,drug+':0']=0
+
+        pt_features.loc[drug_1_10_mask,drug+':1_10']=1
+        pt_features.loc[~drug_1_10_mask,drug+':1_10']=0
+
+        pt_features.loc[drug_11_100_mask,drug+':11_100']=1
+        pt_features.loc[~drug_11_100_mask,drug+':11_100']=0
+
+        pt_features.loc[drug_101_1000_mask,drug+':101_1000']=1
+        pt_features.loc[~drug_101_1000_mask,drug+':101_1000']=0
+
+        pt_features.loc[drug_1001_10000_mask,drug+':1001_10000']=1
+        pt_features.loc[~drug_1001_10000_mask,drug+':1001_10000']=0
+
+        pt_features.loc[drug_above_10000_mask,drug+':above_10000']=1
+        pt_features.loc[~drug_above_10000_mask,drug+':above_10000']=0
+
+    return pt_features
 
 def create_pdds(pt_features,prescriptions,window,list_of_druglists):
 
@@ -273,7 +353,7 @@ def create_pdds(pt_features,prescriptions,window,list_of_druglists):
 
 def create_pdd(pt_features,prescriptions,window,druglist):
     '''
-    Adds a 100 prescribed daily doses (PDD) column for each drug in a druglist to the pt_features dataframe
+    Adds a prescribed daily doses (PDD) column for each drug in a druglist to the pt_features dataframe
     '''
     prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
     prescs = prescriptions.loc[prescriptions['prodcode'].isin([prodcodes])]
@@ -331,11 +411,11 @@ def create_pdd(pt_features,prescriptions,window,druglist):
         for drug, pdd in pdds.items():
             f.write('{0}: {1} mg\n'.format(drug, np.round(pdd)))
 
-    #Calculate number of PDDs (if any) each pt has been prescribed for the drugs in the druglist.  Note that we use 100_PDDs (roughly 3.3 months worth of a drug), rather than PDDs, as it makes the eventual odds ratio easier to interpret clinically
+    #Calculate number of PDDs (if any) each pt has been prescribed for the drugs in the druglist.
     window_prescs = window_prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
-    new_colname = druglist['name']+'_100_pdds'
-    window_prescs[new_colname]=(window_prescs['total_amount']/window_prescs['drug substance name'].map(lambda x: pdds[x.upper()])) / 100
-    pt_pdds = window_prescs.groupby(by='patid')[new_colname].sum().reset_index() #sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.) divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
+    new_colname = druglist['name']+'_pdds'
+    window_prescs[new_colname]=(window_prescs['total_amount']/window_prescs['drug substance name'].map(lambda x: pdds[x.upper()]))
+    pt_pdds = window_prescs.groupby(by='patid')[new_colname].sum().reset_index() #sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.)
 
 
     if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
@@ -344,38 +424,8 @@ def create_pdd(pt_features,prescriptions,window,druglist):
     pt_features[new_colname].fillna(value=0,inplace=True)
     pt_features[new_colname] = pt_features[new_colname]
 
-    #Create quantile columns
-    if druglist['name'] == 'benzo_and_z_drugs':
-        pt_features['benzo_and_z_drugs:1-1095_pdds']=0
-        pt_features['benzo_and_z_drugs:>1096_pdds']=0
-        # pt_features['benzo_and_z_drugs:0_pdds']=0
-
-        pt_features.loc[((pt_features[new_colname]*100) <= 1096) & (pt_features[new_colname] >0),'benzo_and_z_drugs:1-1095_pdds']=1
-        pt_features.loc[(pt_features[new_colname]*100) > 1096,'benzo_and_z_drugs:>1096_pdds']=1
-
-        #Create simple dichotamous yes/no variable
-        pt_features['benzo_and_z_drugs']=0
-        pt_features.loc[pt_features['benzo_and_z_drugs_100_pdds']>0,'benzo_and_z_drugs']=1
-
     return pt_features
 
-
-# def divide_benzo_pdd_into_quantiles(pt_features,column_to_change):
-#     mask = (pt_features[column_to_change]>0) & (pt_features[column_to_change]<=1)
-#     pt_features.loc[mask,'benzo_and_z_drugs_1_to_100pdds']=1
-#     pt_features['benzo_and_z_drugs_1_to_100pdds'].fillna(value=0,inplace=True)
-#
-#     mask = (pt_features[column_to_change]>1) & (pt_features[column_to_change]<=10)
-#     pt_features.loc[mask,'benzo_and_z_drugs_101_to_1000pdds']=1
-#     pt_features['benzo_and_z_drugs_101_to_1000pdds'].fillna(value=0,inplace=True)
-#
-#     mask = pt_features[column_to_change]>10
-#     pt_features.loc[mask,'benzo_and_z_drugs_more_than_1000pdds']=1
-#     pt_features['benzo_and_z_drugs_more_than_1000pdds'].fillna(value=0,inplace=True)
-#
-#     # pt_features.drop([column_to_change],axis=1,inplace=True)
-#
-#     return pt_features
 
 
 
