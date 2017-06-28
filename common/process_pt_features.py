@@ -248,7 +248,7 @@ def create_quantiles_and_booleans(pt_features):
     and converts others (insomnia, benzodiazepine_pdd) into booleans
     '''
 
-    benzo_mask = pt_features['benzo_and_z_drugs_pdds']>0
+    benzo_mask = pt_features['benzo_and_z_drugs_100_pdds']>0
     pt_features['benzo_and_z_drugs_any']=np.nan
     pt_features.loc[benzo_mask,'benzo_and_z_drugs_any']=1
     pt_features.loc[~benzo_mask,'benzo_and_z_drugs_any']=0
@@ -260,12 +260,15 @@ def create_quantiles_and_booleans(pt_features):
 
     #Also, create quantiles for insomnia
     insomnia_count_0_mask = pt_features['insomnia']==0
-    insomnia_count_1_10_mask = (pt_features['insomnia']>0) & (pt_features['insomnia']<=10)
+    insomnia_count_1_5_mask = (pt_features['insomnia']>0) & (pt_features['insomnia']<=5)
+    insomnia_count_6_10_mask = (pt_features['insomnia']>5) & (pt_features['insomnia']<=10)
     insomnia_count_above_10_mask = pt_features['insomnia']>10
     pt_features.loc[insomnia_count_0_mask,'insomnia_count:0']=1
     pt_features.loc[~insomnia_count_0_mask,'insomnia_count:0']=0
-    pt_features.loc[insomnia_count_1_10_mask,'insomnia_count:1_10']=1
-    pt_features.loc[~insomnia_count_1_10_mask,'insomnia_count:1_10']=0
+    pt_features.loc[insomnia_count_1_5_mask,'insomnia_count:1_5']=1
+    pt_features.loc[~insomnia_count_1_5_mask,'insomnia_count:1_5']=0
+    pt_features.loc[insomnia_count_6_10_mask,'insomnia_count:6_10']=1
+    pt_features.loc[~insomnia_count_6_10_mask,'insomnia_count:6_10']=0
     pt_features.loc[insomnia_count_above_10_mask,'insomnia_count:above_10']=1
     pt_features.loc[~insomnia_count_above_10_mask,'insomnia_count:above_10']=0
 
@@ -312,13 +315,14 @@ def create_quantiles_and_booleans(pt_features):
     pt_features.loc[above_99_mask,'age_at_index_date:above_99']=1
     pt_features.loc[~above_99_mask,'age_at_index_date:above_99']=0
 
-    for drug in ['antidepressants_pdds','antipsychotics_pdds','depot_antipsychotics_pdds','other_sedatives_pdds','benzo_and_z_drugs_pdds','mood_stabilisers_pdds']:
-        drug_0_mask = pt_features[drug]==0
-        drug_1_10_mask = (pt_features[drug]>0) & (pt_features[drug]<=10)
-        drug_11_100_mask = (pt_features[drug]>10) & (pt_features[drug]<=100)
-        drug_101_1000_mask = (pt_features[drug]>100) & (pt_features[drug]<=1000)
-        drug_1001_10000_mask = (pt_features[drug]>1000) & (pt_features[drug]<=10000)
-        drug_above_10000_mask = pt_features[drug]>10000
+    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds','depot_antipsychotics_100_pdds','other_sedatives_100_pdds','benzo_and_z_drugs_100_pdds','mood_stabilisers_100_pdds']:
+        drug_pdds = pt_features[drug] * 100 #convert unit from '100 pdds' to 'pdds'
+        drug_0_mask = drug_pdds==0
+        drug_1_10_mask = (drug_pdds>0) & (drug_pdds<=10)
+        drug_11_100_mask = (drug_pdds>10) & (drug_pdds<=100)
+        drug_101_1000_mask = (drug_pdds>100) & (drug_pdds<=1000)
+        drug_1001_10000_mask = (drug_pdds>1000) & (drug_pdds<=10000)
+        drug_above_10000_mask = drug_pdds>10000
 
         pt_features.loc[drug_0_mask,drug+':0']=1
         pt_features.loc[~drug_0_mask,drug+':0']=0
@@ -413,9 +417,13 @@ def create_pdd(pt_features,prescriptions,window,druglist):
 
     #Calculate number of PDDs (if any) each pt has been prescribed for the drugs in the druglist.
     window_prescs = window_prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
-    new_colname = druglist['name']+'_pdds'
-    window_prescs[new_colname]=(window_prescs['total_amount']/window_prescs['drug substance name'].map(lambda x: pdds[x.upper()]))
-    pt_pdds = window_prescs.groupby(by='patid')[new_colname].sum().reset_index() #sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.)
+    new_colname = druglist['name']+'_100_pdds'
+
+    # Sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.).
+    # Then divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
+    window_prescs[new_colname]=(window_prescs['total_amount']/window_prescs['drug substance name'].map(lambda x: pdds[x.upper()]))/100
+    pt_pdds = window_prescs.groupby(by='patid')[new_colname].sum().reset_index()
+
 
 
     if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)

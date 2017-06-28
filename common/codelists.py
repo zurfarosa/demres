@@ -1178,7 +1178,7 @@ mental_illness_smi = {
     	'Eu23z00',		#[X]Acute and transient psychotic disorder; unspecified
     	'Eu23z11',		#[X]Brief reactive psychosis NOS
     	'Eu23z12',		#[X]Reactive psychosis
-    	'Eu25.00',		#[X]Schizoaffective disorders
+    	'Eu25.00',		#[X]/bective disorders
     	'Eu25000',		#[X]Schizoaffective disorder; manic type
     	'Eu25011',		#[X]Schizoaffective psychosis; manic type
     	'Eu25012',		#[X]Schizophreniform psychosis; manic type
@@ -1445,7 +1445,7 @@ hypertension = {
     ]
 }
 
-CHD_heart_failure_and_peripheral_vascular_disease = {
+non_stroke_vascular_disease = {
     'name':'CHD_heart_failure_and_peripheral_vascular_disease',
     'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
@@ -1929,7 +1929,7 @@ all_codelists = [
     insomnia,
     stroke,
     intellectual_disability,
-    CHD_heart_failure_and_peripheral_vascular_disease,
+    non_stroke_vascular_disease,
     hypertension,
     diabetes,
     mental_illness_non_smi,
