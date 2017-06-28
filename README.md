@@ -5,7 +5,7 @@ This is a collection of dementia-related research projects I am currently workin
 
 ## Cloning
 Clone this directory into your working directory:
-`git clone https://github.com/zurfarosa/demres.git`
+`git clone https://github.com/zurfarosa/demres`
 
 The demres/data directory will *not* be cloned, as they contain anonymised but still confidential patient data. If you are a team member and wish to have access to these files, please contact me at richard.hoile@sussexpartnership.nhs.uk
 
