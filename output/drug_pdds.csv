@@ -1,0 +1,82 @@
+drug_name,drug_type,pdd(mg)
+CARBAMAZEPINE,mood_stabilisers,315.0
+GABAPENTIN,mood_stabilisers,716.0
+LAMOTRIGINE,mood_stabilisers,138.0
+SODIUM VALPROATE,mood_stabilisers,772.0
+LITHIUM CITRATE,mood_stabilisers,1165.0
+LITHIUM CARBONATE,mood_stabilisers,437.0
+VALPROATE SEMISODIUM,mood_stabilisers,408.0
+OXCARBAZEPINE,mood_stabilisers,660.0
+ALPRAZOLAM,benzo_and_z_drugs,0.0
+CHLORDIAZEPOXIDE HYDROCHLORIDE,benzo_and_z_drugs,11.0
+CLOBAZAM,benzo_and_z_drugs,10.0
+CLONAZEPAM,benzo_and_z_drugs,1.0
+FLUNITRAZEPAM,benzo_and_z_drugs,0.0
+FLURAZEPAM HYDROCHLORIDE,benzo_and_z_drugs,26.0
+LORAZEPAM,benzo_and_z_drugs,1.0
+LORMETAZEPAM,benzo_and_z_drugs,1.0
+NITRAZEPAM,benzo_and_z_drugs,6.0
+OXAZEPAM,benzo_and_z_drugs,19.0
+TEMAZEPAM,benzo_and_z_drugs,14.0
+ZALEPLON,benzo_and_z_drugs,7.0
+ZOPICLONE,benzo_and_z_drugs,7.0
+ZOLPIDEM TARTRATE,benzo_and_z_drugs,7.0
+CLOMETHIAZOLE,other_sedatives,333.0
+MELATONIN,other_sedatives,3.0
+MEPROBAMATE,other_sedatives,435.0
+ALIMEMAZINE TARTRATE,other_sedatives,16.0
+CHLORPHENAMINE MALEATE,other_sedatives,7.0
+CINNARIZINE,other_sedatives,43.0
+CYPROHEPTADINE HYDROCHLORIDE,other_sedatives,6.0
+HYDROXYZINE HYDROCHLORIDE,other_sedatives,21.0
+BUCLIZINE HYDROCHLORIDE/PARACETAMOL/CODEINE PHOSPHATE,other_sedatives,6.0
+PROMETHAZINE TEOCLATE,other_sedatives,28.0
+PROMETHAZINE HYDROCHLORIDE,other_sedatives,27.0
+CHLORPROMAZINE HYDROCHLORIDE,antipsychotics,22.0
+HALOPERIDOL,antipsychotics,6.0
+PERPHENAZINE,antipsychotics,2.0
+PIMOZIDE,antipsychotics,4.0
+PROMAZINE HYDROCHLORIDE,antipsychotics,35.0
+THIORIDAZINE,antipsychotics,5.0
+SULPIRIDE,antipsychotics,409.0
+AMISULPRIDE,antipsychotics,39.0
+OLANZAPINE,antipsychotics,7.0
+RISPERIDONE,antipsychotics,2.0
+PROCHLORPERAZINE MALEATE,antipsychotics,11.0
+PROCHLORPERAZINE MESILATE,antipsychotics,6.0
+ZUCLOPENTHIXOL DIHYDROCHLORIDE,antipsychotics,14.0
+FLUPHENAZINE HYDROCHLORIDE,antipsychotics,1.0
+OXYPERTINE,antipsychotics,40.0
+FLUPENTIXOL DECANOATE,depot_antipsychotics,9.0
+FLUPHENAZINE DECANOATE,depot_antipsychotics,25.0
+ZUCLOPENTHIXOL DECANOATE,depot_antipsychotics,44.0
+MIANSERIN HYDROCHLORIDE,antidepressants,26.0
+MIRTAZAPINE,antidepressants,28.0
+AMITRIPTYLINE HYDROCHLORIDE,antidepressants,31.0
+CLOMIPRAMINE HYDROCHLORIDE,antidepressants,41.0
+DOSULEPIN HYDROCHLORIDE,antidepressants,57.0
+IMIPRAMINE HYDROCHLORIDE,antidepressants,48.0
+FLUVOXAMINE MALEATE,antidepressants,91.0
+BUPROPION HYDROCHLORIDE,antidepressants,203.0
+BUSPIRONE HYDROCHLORIDE,antidepressants,7.0
+TRAZODONE HYDROCHLORIDE,antidepressants,132.0
+CITALOPRAM HYDROBROMIDE,antidepressants,18.0
+CITALOPRAM HYDROCHLORIDE,antidepressants,40.0
+DOSULEPIN HYDROCHLORIDE,antidepressants,57.0
+DOXEPIN HYDROCHLORIDE,antidepressants,51.0
+DULOXETINE HYDROCHLORIDE,antidepressants,48.0
+ESCITALOPRAM OXALATE,antidepressants,11.0
+FLUOXETINE HYDROCHLORIDE,antidepressants,20.0
+FLUVOXAMINE MALEATE,antidepressants,91.0
+LOFEPRAMINE HYDROCHLORIDE,antidepressants,123.0
+NORTRIPTYLINE HYDROCHLORIDE,antidepressants,34.0
+PAROXETINE HYDROCHLORIDE,antidepressants,20.0
+REBOXETINE MESILATE,antidepressants,6.0
+SERTRALINE HYDROCHLORIDE,antidepressants,60.0
+TRIMIPRAMINE MALEATE,antidepressants,54.0
+TRIMIPRAMINE MALEATE,antidepressants,54.0
+VENLAFAXINE HYDROCHLORIDE,antidepressants,94.0
+AMOXAPINE,antidepressants,89.0
+MAPROTILINE HYDROCHLORIDE,antidepressants,96.0
+ISOCARBOXAZID,antidepressants,20.0
+TRYPTOPHAN,antidepressants,1000.0

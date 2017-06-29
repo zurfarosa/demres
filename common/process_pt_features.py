@@ -344,97 +344,103 @@ def create_quantiles_and_booleans(pt_features):
 
     return pt_features
 
-def create_pdds(pt_features,prescriptions,window,list_of_druglists):
+def create_pdd_for_each_drug(prescriptions,druglists,pt_features):
+    '''
+    Create a prescribed daily dose for each drug, based on average doses in the patient sample during the main exposure window
+    '''
 
+    pt_features = pd.read_csv('data/pt_data/processed_data/pt_features_demins_'+subtype+'_'+sd.exposure_windows[0]['name']+'.csv',delimiter=',',parse_dates=['index_date','data_end','data_start'],infer_datetime_format=True)
     prescs = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
     prescs = prescs[pd.notnull(prescs['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
+
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
     prescs = pd.merge(prescs,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
 
-    for druglist in list_of_druglists:
-        pt_features = create_pdd(pt_features,prescs,window,druglist) #note that create_ppd returns a tuple
-    return pt_features
+    all_drugs = [drug for druglist in druglists.all_druglists for drug in druglist['drugs'] ]
 
-def create_pdd(pt_features,prescriptions,window,druglist):
-    '''
-    Adds a prescribed daily doses (PDD) column for each drug in a druglist to the pt_features dataframe
-    '''
-    prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-    prescs = prescriptions.loc[prescriptions['prodcode'].isin([prodcodes])]
-
-    # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
-    prescs = prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
+    prodcodes = get_prodcodes_from_drug_name(all_drugs)
+    relev_prescs = prescs.loc[prescs['prodcode'].isin(prodcodes)]
 
     # Create new columns ('amount' and 'unit', extracted from the 'substrance strength' string)
-    amount_and_unit = prescs['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
+    amount_and_unit = relev_prescs['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
     amount_and_unit.columns=['amount','unit']
     amount_and_unit.amount = amount_and_unit.amount.astype('float')
-    prescs = pd.concat([prescs,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq'],axis=1)
+    reformatted_prescs = pd.concat([relev_prescs,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq'],axis=1)
 
     # Convert micrograms to mg
-    micro_mask = prescs['unit'].str.contains('microgram',na=False,case=False)
-    prescs.loc[micro_mask,'amount'] /= 1000
-    prescs.loc[micro_mask,'unit'] = 'mg'
+    micro_mask = reformatted_prescs['unit'].str.contains('microgram',na=False,case=False)
+    reformatted_prescs.loc[micro_mask,'amount'] /= 1000
+    reformatted_prescs.loc[micro_mask,'unit'] = 'mg'
 
     #Convert mg/Xml to mg for simplicity
-    micro_mask = prescs['unit'].str.contains('mg/',na=False,case=False)
-    prescs.loc[micro_mask,'unit'] = 'mg'
-
+    micro_mask = reformatted_prescs['unit'].str.contains('mg/',na=False,case=False)
+    reformatted_prescs.loc[micro_mask,'unit'] = 'mg'
 
     # Create a 'total_amount' column - used to calculate each pt's PDDs for a given drug.
-    prescs['total_amount'] = prescs['qty']*prescs['amount']
+    reformatted_prescs['total_amount'] = reformatted_prescs['qty']*reformatted_prescs['amount']
 
     #Change all 'numeric daily doses' (NDD) from 0 (this appears to be the default in the CPRD data) to 1.
     #Note that an NDD of 2 means 'twice daily'
-    prescs.loc[prescs['ndd'] == 0,'ndd']=1
+    reformatted_prescs.loc[reformatted_prescs['ndd'] == 0,'ndd']=1
 
-    #Only use prescriptions belonging to the exposure window
-    start_year = timedelta(days=(365*abs(window['start_year'])))
-    relevant_presc_mask = (prescs['eventdate']>=(prescs['index_date']-start_year)) & (prescs['eventdate']<=(prescs['index_date']-timedelta(days=(365*sd.window_length_in_years))))
-    window_prescs = prescs[relevant_presc_mask]
+    #Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
+    start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
+    end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))
+    timely_presc_mask = (reformatted_prescs['eventdate']>=(reformatted_prescs['index_date']-start_year)) & (reformatted_prescs['eventdate']<=(reformatted_prescs['index_date']-end_year))
+    timely_prescs = reformatted_prescs[timely_presc_mask]
 
-    #Calculate the prescribed daily dose (PDD) for each drug (e.g. 'citalopram') in the druglist (e.g. 'antidepressants')
-    pdds = {}
-    for drug in druglist['drugs']:
-        print(drug)
-        drug = drug.upper()
-        temp_prescs = window_prescs[window_prescs['drug substance name'].str.upper()==drug]
-        if(len(temp_prescs))>0:
-            drug_amounts = np.array(temp_prescs['amount'])*np.array(temp_prescs['ndd'])
-            drug_weights = np.array(temp_prescs['qty'])/np.array(temp_prescs['ndd'])
-            pdd = np.average(drug_amounts,weights=drug_weights)
-            pdds[drug]=pdd
-            print('pdd: ',pdd)
-            print('unit: ',set(temp_prescs['unit']))
-            assert pd.notnull(pdd)
-        else:
-            print('temp_prescs not > 0')
+    timely_prescs.to_hdf('hdf/timely_prescs.hdf','timely_prescs',mode='w',format='table')
+    pdds = pd.DataFrame(columns=['drug_name','drug_type','pdd(mg)'])
+
+    for druglist in druglists:
+        prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
+        druglist_prescs = timely_prescs.loc[timely_prescs['prodcode'].isin(prodcodes)]
+
+        # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
+        druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
+
+
+        #Calculate the prescribed daily dose (PDD) for each drug (e.g. 'citalopram') in the druglist (e.g. 'antidepressants')
+        for drug in druglist['drugs']:
+            print(drug)
+            drug = drug.upper()
+            temp_prescs = druglist_prescs[druglist_prescs['drug substance name'].str.upper()==drug]
+            if(len(temp_prescs))>0:
+                drug_amounts = np.array(temp_prescs['amount'])*np.array(temp_prescs['ndd'])
+                drug_weights = np.array(temp_prescs['qty'])/np.array(temp_prescs['ndd'])
+                pdd = np.average(drug_amounts,weights=drug_weights)
+                pdds.loc[len(pdds)]=[drug,druglist['name'], np.round(pdd)]
+                assert pd.notnull(pdd)
+            else:
+                print('temp_prescs not > 0')
+        print(pdds)
 
     #Write PDDs to file for reference
-    with open('output/pdds/'+druglist['name']+'_PDD_start_year_'+str(abs(window['start_year'])), 'w') as f:
-        for drug, pdd in pdds.items():
-            f.write('{0}: {1} mg\n'.format(drug, np.round(pdd)))
-
-    #Calculate number of PDDs (if any) each pt has been prescribed for the drugs in the druglist.
-    window_prescs = window_prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
-    new_colname = druglist['name']+'_100_pdds'
-
-    # Sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.).
-    # Then divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
-    window_prescs[new_colname]=(window_prescs['total_amount']/window_prescs['drug substance name'].map(lambda x: pdds[x.upper()]))/100
-    pt_pdds = window_prescs.groupby(by='patid')[new_colname].sum().reset_index()
+    pdds.to_csv('output/drug_pdds.csv',index=False)
 
 
+def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
+    '''
+    Adds a prescribed daily doses (PDD) column for each drug in a druglist to the pt_features dataframe
+    '''
+    pdds = pd.read_csv('output/drug_pdds.csv', delimiter=',')
+    timely_prescs = pd.read_hdf('hdf/timely_prescs.hdf')
+    timely_prescs_grouped = timely_prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
+    # print(timely_prescs_grouped)
+    # print(timely_p/rescs_grouped[timely_prescs_grouped['drug substance name']=='Sodium valproate'])
+    for druglist in druglists:
+        druglist_grouped = timely_prescs_grouped[timely_prescs_grouped['drug substance name'].isin(druglist['drugs'])]
+        new_colname = druglist['name']+'_100_pdds'
+        # Sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.).
+        # Then divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
+        druglist_grouped.loc[:,new_colname]=(druglist_grouped['total_amount']/druglist_grouped['drug substance name'].map(lambda x: pdds.loc[pdds['drug_name']==x.upper(),'pdd(mg)'].values[0]))/100
 
-    if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
-        pt_features.drop(new_colname,axis=1,inplace=True)
-    pt_features = pd.merge(pt_features,pt_pdds,how='left')
-    pt_features[new_colname].fillna(value=0,inplace=True)
-    pt_features[new_colname] = pt_features[new_colname]
-
+        pt_pdds = druglist_grouped.groupby(by='patid')[new_colname].sum().reset_index()
+        if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
+            pt_features.drop(new_colname,axis=1,inplace=True)
+        pt_features = pd.merge(pt_features,pt_pdds,how='left')
+        pt_features[new_colname].fillna(value=0,inplace=True)
     return pt_features
-
-
 
 
 def get_consultation_count(pt_features,all_entries,window):
