@@ -81,12 +81,12 @@ def add_data_start_and_end_dates(all_entries,pt_features):
 
     logging.debug('finding earliest sysdates')
     earliest_sysdates = all_entries.groupby('patid')['sysdate'].min().reset_index()
-    earliest_sysdates = earliest_sysdates.rename(columns={'sysdate':'data_start'},copy=False)
+    earliest_sysdates.rename(columns={'sysdate':'data_start'},inplace=True)
     logging.debug('earliest_sysdates:\n{0}'.format(earliest_sysdates.head(5)))
 
     logging.debug('finding latest sysdates')
     latest_sysdates = all_entries.groupby('patid')['sysdate'].max().reset_index()
-    latest_sysdates = latest_sysdates.rename(columns={'sysdate':'data_end'},copy=False)
+    latest_sysdates.rename(columns={'sysdate':'data_end'},inplace=True)
     logging.debug('latest_sysdates:\n{0}'.format(latest_sysdates.head(5)))
 
     logging.debug('merging pt_features with earliest sysdates')
@@ -164,7 +164,7 @@ def delete_unmatched_cases_and_controls(pt_features):
     removed_pts.loc[:,'reason_for_removal']='Unmatchable'
     removed_pts.to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
     pt_features = pt_features.loc[pd.notnull(pt_features['matchid'])]
-    pt_features['matchid']=pt_features['matchid'].astype(int)
+    pt_features.loc[:,'matchid']=pt_features['matchid'].astype(int)
     return pt_features
 
 def delete_patients_if_not_enough_data(isCase,pt_features,start_year):
@@ -323,43 +323,49 @@ def create_quantiles_and_booleans(pt_features):
         drug_101_1000_mask = (drug_pdds>100) & (drug_pdds<=1000)
         drug_1001_10000_mask = (drug_pdds>1000) & (drug_pdds<=10000)
         drug_above_10000_mask = drug_pdds>10000
+        drug_name_with_100_pdds_removed = drug.replace('s_100','')
 
-        pt_features.loc[drug_0_mask,drug+':0']=1
-        pt_features.loc[~drug_0_mask,drug+':0']=0
+        pt_features.loc[drug_0_mask,drug_name_with_100_pdds_removed+':00000']=1
+        pt_features.loc[~drug_0_mask,drug_name_with_100_pdds_removed+':00000']=0
 
-        pt_features.loc[drug_1_10_mask,drug+':1_10']=1
-        pt_features.loc[~drug_1_10_mask,drug+':1_10']=0
+        pt_features.loc[drug_1_10_mask,drug_name_with_100_pdds_removed+':00001_10']=1
+        pt_features.loc[~drug_1_10_mask,drug_name_with_100_pdds_removed+':00001_10']=0
 
-        pt_features.loc[drug_11_100_mask,drug+':11_100']=1
-        pt_features.loc[~drug_11_100_mask,drug+':11_100']=0
+        pt_features.loc[drug_11_100_mask,drug_name_with_100_pdds_removed+':00011_100']=1
+        pt_features.loc[~drug_11_100_mask,drug_name_with_100_pdds_removed+':00011_100']=0
 
-        pt_features.loc[drug_101_1000_mask,drug+':101_1000']=1
-        pt_features.loc[~drug_101_1000_mask,drug+':101_1000']=0
+        pt_features.loc[drug_101_1000_mask,drug_name_with_100_pdds_removed+':00101_1000']=1
+        pt_features.loc[~drug_101_1000_mask,drug_name_with_100_pdds_removed+':00101_1000']=0
 
-        pt_features.loc[drug_1001_10000_mask,drug+':1001_10000']=1
-        pt_features.loc[~drug_1001_10000_mask,drug+':1001_10000']=0
+        pt_features.loc[drug_1001_10000_mask,drug_name_with_100_pdds_removed+':01001_10000']=1
+        pt_features.loc[~drug_1001_10000_mask,drug_name_with_100_pdds_removed+':01001_10000']=0
 
-        pt_features.loc[drug_above_10000_mask,drug+':above_10000']=1
-        pt_features.loc[~drug_above_10000_mask,drug+':above_10000']=0
+        pt_features.loc[drug_above_10000_mask,drug_name_with_100_pdds_removed+':10000_and_above']=1
+        pt_features.loc[~drug_above_10000_mask,drug_name_with_100_pdds_removed+':10000_and_above    ']=0
 
     return pt_features
 
-def create_pdd_for_each_drug(prescriptions,druglists,pt_features):
+def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window):
     '''
-    Create a prescribed daily dose for each drug, based on average doses in the patient sample during the main exposure window
+    Filter prescriptions to only include ones which are for relevant drugs and within the exposure window,
+    and create 'amount' and 'unit' columns (necessary for calculating PDD)
     '''
-
-    pt_features = pd.read_csv('data/pt_data/processed_data/pt_features_demins_'+subtype+'_'+sd.exposure_windows[0]['name']+'.csv',delimiter=',',parse_dates=['index_date','data_end','data_start'],infer_datetime_format=True)
     prescs = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
     prescs = prescs[pd.notnull(prescs['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
 
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
     prescs = pd.merge(prescs,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
 
-    all_drugs = [drug for druglist in druglists.all_druglists for drug in druglist['drugs'] ]
+    #Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
+    start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
+    end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))
+    timely_presc_mask = (prescs['eventdate']>=(prescs['index_date']-start_year)) & (prescs['eventdate']<=(prescs['index_date']-end_year))
+    timely_prescs = prescs[timely_presc_mask]
+
+    all_drugs = [drug for druglist in druglists for drug in druglist['drugs'] ]
 
     prodcodes = get_prodcodes_from_drug_name(all_drugs)
-    relev_prescs = prescs.loc[prescs['prodcode'].isin(prodcodes)]
+    relev_prescs = timely_prescs.loc[timely_prescs['prodcode'].isin(prodcodes)].copy()
 
     # Create new columns ('amount' and 'unit', extracted from the 'substrance strength' string)
     amount_and_unit = relev_prescs['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
@@ -383,18 +389,19 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features):
     #Note that an NDD of 2 means 'twice daily'
     reformatted_prescs.loc[reformatted_prescs['ndd'] == 0,'ndd']=1
 
-    #Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
-    start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
-    end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))
-    timely_presc_mask = (reformatted_prescs['eventdate']>=(reformatted_prescs['index_date']-start_year)) & (reformatted_prescs['eventdate']<=(reformatted_prescs['index_date']-end_year))
-    timely_prescs = reformatted_prescs[timely_presc_mask]
+    return reformatted_prescs
 
-    timely_prescs.to_hdf('hdf/timely_prescs.hdf','timely_prescs',mode='w',format='table')
+def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
+    '''
+    Create a prescribed daily dose for each drug, based on average doses in the patient sample during the main exposure window
+    '''
+    prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
+
     pdds = pd.DataFrame(columns=['drug_name','drug_type','pdd(mg)'])
 
     for druglist in druglists:
         prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-        druglist_prescs = timely_prescs.loc[timely_prescs['prodcode'].isin(prodcodes)]
+        druglist_prescs = prescs.loc[prescs['prodcode'].isin(prodcodes)]
 
         # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
         druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
@@ -412,7 +419,7 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features):
                 pdds.loc[len(pdds)]=[drug,druglist['name'], np.round(pdd)]
                 assert pd.notnull(pdd)
             else:
-                print('temp_prescs not > 0')
+                print('\tNo prescriptions found')
         print(pdds)
 
     #Write PDDs to file for reference
@@ -424,23 +431,20 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     Adds a prescribed daily doses (PDD) column for each drug in a druglist to the pt_features dataframe
     '''
     pdds = pd.read_csv('output/drug_pdds.csv', delimiter=',')
-    timely_prescs = pd.read_hdf('hdf/timely_prescs.hdf')
-    timely_prescs_grouped = timely_prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
-    # print(timely_prescs_grouped)
-    # print(timely_p/rescs_grouped[timely_prescs_grouped['drug substance name']=='Sodium valproate'])
+    prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
+    prescs_grouped = prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index().copy()
     for druglist in druglists:
-        druglist_grouped = timely_prescs_grouped[timely_prescs_grouped['drug substance name'].isin(druglist['drugs'])]
         new_colname = druglist['name']+'_100_pdds'
         # Sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.).
         # Then divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
-        druglist_grouped.loc[:,new_colname]=(druglist_grouped['total_amount']/druglist_grouped['drug substance name'].map(lambda x: pdds.loc[pdds['drug_name']==x.upper(),'pdd(mg)'].values[0]))/100
+        prescs_grouped.loc[:,new_colname]=(prescs_grouped['total_amount']/prescs_grouped['drug substance name'].map(lambda x: pdds.loc[pdds['drug_name']==x.upper(),'pdd(mg)'].values[0]))/100
 
-        pt_pdds = druglist_grouped.groupby(by='patid')[new_colname].sum().reset_index()
+        pt_pdds = prescs_grouped.groupby(by='patid')[new_colname].sum().reset_index().copy()
         if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
             pt_features.drop(new_colname,axis=1,inplace=True)
         pt_features = pd.merge(pt_features,pt_pdds,how='left')
         pt_features[new_colname].fillna(value=0,inplace=True)
-    return pt_features
+    return pt_features,prescs,prescs_grouped,pt_pdds
 
 
 def get_consultation_count(pt_features,all_entries,window):

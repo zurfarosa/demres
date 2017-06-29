@@ -25,6 +25,7 @@ benzo_and_z_drugs = {
     	'CHLORDIAZEPOXIDE HYDROCHLORIDE',
     	'CLOBAZAM',
     	'CLONAZEPAM',
+        'diazepam',
         'flunitrazepam',
     	'FLURAZEPAM',
         'Flurazepam hydrochloride',
@@ -43,7 +44,9 @@ benzo_and_z_drugs = {
         #BNF 2000 edition
     	'CHLORDIAZEPOXIDE',
         'bromazepam',
-        'clorazepate dipotassium'
+        'clorazepate dipotassium',
+        #my own additions
+        'Loprazolam mesilate'
         ],
     'route':'oral',
     'name':'benzo_and_z_drugs'
@@ -113,7 +116,7 @@ antipsychotics = {
     'LURASIDONE HYDROCHLORIDE',
     'OLANZAPINE',
     'PALIPERIDONE',
-    'QUETIAPINE',
+    'quetiapine fumarate',
     'RISPERIDONE',
     'zotepine',
 
@@ -125,7 +128,8 @@ antipsychotics = {
     'fluphenazine hydrochloride',
     'loxapine',
     'oxypertine',
-    'pericyazine'
+    'pericyazine',
+     'Thioridazine hydrochloride'
     ],
     'route':'oral',
     'name':'antipsychotics'
@@ -159,8 +163,8 @@ antidepressants = {
     'VORTIOXETINE',
     'MIANSERIN HYDROCHLORIDE',
     'MIRTAZAPINE',
-    'AMITRIPTYLINE HYDROCHLORIDE',
-    'AMITRIPTYLINE WITH PERPHENAZINE',
+    # 'AMITRIPTYLINE HYDROCHLORIDE',
+    # 'AMITRIPTYLINE WITH PERPHENAZINE',
     'CLOMIPRAMINE HYDROCHLORIDE',
     'DOSULEPIN HYDROCHLORIDE',
     'DOXEPIN',

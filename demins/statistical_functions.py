@@ -169,13 +169,13 @@ def purposefully_select_covariates(pt_features,covariates,main_variables):
 
 
 def remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols):
-    print('The following variables are being removed as mean = 0:\n')
     filtered_training_cols = []
     for col in training_cols:
         if pt_features[col].mean()>0: #prevents singular matrix warning
+            print(col,' being retained as mean < 0')
             filtered_training_cols.append(col)
             # print(col, pt_features[col].mean())
         else:
-            print(col)
+            print(col, ' being removed as mean = 0')
     print('\n')
     return filtered_training_cols

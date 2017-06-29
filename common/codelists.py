@@ -1446,7 +1446,7 @@ hypertension = {
 }
 
 non_stroke_vascular_disease = {
-    'name':'CHD_heart_failure_and_peripheral_vascular_disease',
+    'name':'non_stroke_vascular_disease',
     'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes': [
@@ -1928,7 +1928,7 @@ epilepsy = {
 all_codelists = [
     insomnia,
     stroke,
-    intellectual_disability,
+    # intellectual_disability,
     non_stroke_vascular_disease,
     hypertension,
     diabetes,
@@ -1937,9 +1937,5 @@ all_codelists = [
     sleep_apnoea,
     chronic_pulmonary_disease,
     epilepsy
-    # clin_sig_alcohol_use,
-    # current_smoker,
     # CKD,
-    # COPD,
-    # asthma
 ]
