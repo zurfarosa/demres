@@ -74,37 +74,69 @@ def only_include_specific_dementia_subtype(pt_features,subtype='all_dementia'):
 
 def add_data_start_and_end_dates(all_encounters,pt_features):
     '''
-    Needs the dateframe created by create_medcoded_entries() to be passed to it.
-    This function looks at all clinical entries (e.g. prescriptions, referrals, consultations), and looks for the first and last 'sysdated' entry.
+    This function looks at all clinical encounters (e.g. referrals, consultations, but not prescriptions)
+    to find the data start and end dates.
     '''
     logging.debug('add_sys_start_and_end_dates_to_pt_features all_entries.csv')
 
-    logging.debug('finding earliest sysdates')
-    earliest_sysdates = all_enco.groupby('patid')['sysdate'].min().reset_index()
-    earliest_sysdates.rename(columns={'sysdate':'data_start'},inplace=True)
-    logging.debug('earliest_sysdates:\n{0}'.format(earliest_sysdates.head(5)))
-
-    logging.debug('finding latest sysdates')
-    latest_sysdates = all_enco.groupby('patid')['sysdate'].max().reset_index()
+    #Calculate the data_end date - we can use the last sysdate
+    print('calculating lastest_sysdate')
+    latest_sysdates = all_encounters.groupby('patid')['sysdate'].max().reset_index()
     latest_sysdates.rename(columns={'sysdate':'data_end'},inplace=True)
-    logging.debug('latest_sysdates:\n{0}'.format(latest_sysdates.head(5)))
-
-    logging.debug('merging pt_features with earliest sysdates')
-    pt_features = pd.merge(pt_features,earliest_sysdates,how='left')
-    logging.debug('merging pt_features with latest sysdates')
     pt_features = pd.merge(pt_features,latest_sysdates,how='left')
 
-    # Remove pts without any sysdates
-    logging.debug('removing patients without any events')
-    # pd.options.mode.chained_assignment = None  # default='warn'
-    pts_without_any_events = pt_features.loc[pd.isnull(pt_features['data_start'])]
-    logging.debug('There are {0} patients without any events'.format(len(pts_without_any_events)))
-    if len(pts_without_any_events)>0:
+    #We now find the earliest sysdate - however, this will not necessarily be the data_start date, as often patients have detailed notes prior to this, entered retrospectively
+    print('calculating earliest_sysdate')
+    earliest_sysdates = all_encounters.groupby('patid')['sysdate'].min().reset_index()
+    earliest_sysdates.rename(columns={'sysdate':'earliest_sysdate'},inplace=True)
+    pt_features = pd.merge(pt_features,earliest_sysdates,how='left')
+
+    #As an alternative to the earliest sysdate, find the earliest year in which you have at least 15
+    # retrospectively-dated entries - this, in my opinion, is likely to be when the electronic record
+    # started to be filled in prospectively (the reason for the discrepancy between the eventdate and the sysdate
+    # is probably because the entries were given a new sysdate for some reason, e.g. software update)
+    print('resampling all_encounters - may take some time...')
+    resampled_entries = all_encounters.set_index('eventdate').groupby('patid').resample('AS').size()
+    resampled_entries2 = resampled_entries.reset_index()
+    resampled_entries2.columns = ['patid','year','consultation_count']
+    resampled_entries3 = resampled_entries2.loc[resampled_entries2['consultation_count']>=15]
+    resampled_entries4 = resampled_entries3.groupby('patid').year.min().reset_index()
+    resampled_entries4['year']=resampled_entries4['year']+pd.Timedelta(days=365)
+    resampled_entries4.columns=['patid','start_of_year_after_earliest_year_with_>15_consultations']
+    pt_features = pd.merge(pt_features,resampled_entries4,how='left')
+
+    # Watch out for 'converted codes' (medcode 14) - these are uninformative medcodes where the specific Read codes have
+    # been lost, probably due to some software update in the 1990s.
+    print('locating converted codes')
+    converted_code_entries = all_encounters[all_encounters['medcode']==14]
+    latest_converted_code_entries = converted_code_entries.groupby('patid')['sysdate'].max().reset_index()
+    latest_converted_code_entries.columns = ['patid','sysdate_of_final_converted_code']
+    pt_features = pd.merge(pt_features,latest_converted_code_entries,how='left')
+
+    # Now choose which measure we are going to use for data_start. Note that if a converted code exists for a patid,
+    # it's probably safest just to use the earliest sysdate
+    print('choosing most appropriate measure of data_start')
+    dont_use_earliest_sysdate_mask = ((pt_features['start_of_year_after_earliest_year_with_>15_consultations']<pt_features['earliest_sysdate']) &
+        ((pt_features['start_of_year_after_earliest_year_with_>15_consultations'] > pt_features['sysdate_of_final_converted_code']) | (pd.isnull(pt_features['sysdate_of_final_converted_code'])))
+            )
+    pt_features['data_start']=np.nan
+    pt_features.loc[dont_use_earliest_sysdate_mask,'data_start']=pt_features['start_of_year_after_earliest_year_with_>15_consultations'].copy()
+    pt_features.loc[~dont_use_earliest_sysdate_mask,'data_start']=pt_features['earliest_sysdate'].copy()
+
+    # Remove patients without any events
+    print('removing patients without any events')
+    no_event_mask = pd.isnull(pt_features['earliest_sysdate'])
+    print('There are {0} patients without any events'.format(len(pt_features[no_event_mask])))
+    if len(pt_features[no_event_mask])>0:
         pts_without_any_events.loc[:,'reason_for_removal']='Pt did not have any events'
         pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
+    pt_features = pt_features.loc[~no_event_mask].copy()
 
-    logging.debug('writing all the patients with events to pt_features.csv')
-    pt_features = pt_features.loc[pd.notnull(pt_features['data_start'])]
+    pt_features.drop(['earliest_sysdate',
+       'sysdate_of_final_converted_code',
+       'start_of_year_after_earliest_year_with_>15_consultations'],inplace=True,axis=1)
+
+
     return pt_features
 
 
@@ -123,8 +155,10 @@ def match_cases_and_controls(pt_features,window):
 
     cases_mask = (pt_features['isCase']==True) & \
                 (pt_features['data_start'] <= (pt_features['index_date'] - timedelta(days=(365*start_year))))
-    suitable_cases = pt_features.loc[cases_mask]
-    controls = pt_features.loc[pt_features['isCase']==False]
+    suitable_cases = pt_features.loc[cases_mask].copy()
+    print('length of suitable cases',len(suitable_cases))
+    controls = pt_features.loc[pt_features['isCase']==False].copy()
+    print('length of controls',len(controls))
     for index,row in suitable_cases.iterrows():
         if pd.isnull(row['matchid']):
             patid = row['patid']
@@ -149,7 +183,7 @@ def match_cases_and_controls(pt_features,window):
                 controls = controls.drop(best_match_index) #drop this row from controls dataframe so it cannot be matched again
             else:
                 logging.debug('No match found for {0}'.format(patid))
-    pt_features = pt_features.drop('total_available_data',axis=1)
+    pt_features.drop('total_available_data',axis=1,inplace=True)
 
     #Now that we have an index date for both cases and controls, finally calculate age at index date
     pt_features['age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - (1900 + pt_features['yob'].astype(int))
@@ -162,6 +196,7 @@ def delete_unmatched_cases_and_controls(pt_features):
     '''
     removed_pts = pt_features.loc[pd.isnull(pt_features['matchid'])]
     removed_pts.loc[:,'reason_for_removal']='Unmatchable'
+    print(len(removed_pts),' patients being removed as unmatchable')
     removed_pts.to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
     pt_features = pt_features.loc[pd.notnull(pt_features['matchid'])]
     pt_features.loc[:,'matchid']=pt_features['matchid'].astype(int)
@@ -261,16 +296,13 @@ def create_quantiles_and_booleans(pt_features):
     #Also, create quantiles for insomnia
     insomnia_count_0_mask = pt_features['insomnia']==0
     insomnia_count_1_5_mask = (pt_features['insomnia']>0) & (pt_features['insomnia']<=5)
-    insomnia_count_6_10_mask = (pt_features['insomnia']>5) & (pt_features['insomnia']<=10)
-    insomnia_count_above_10_mask = pt_features['insomnia']>10
+    insomnia_count_above_5_mask = pt_features['insomnia']>5
     pt_features.loc[insomnia_count_0_mask,'insomnia_count:0']=1
     pt_features.loc[~insomnia_count_0_mask,'insomnia_count:0']=0
     pt_features.loc[insomnia_count_1_5_mask,'insomnia_count:1_5']=1
     pt_features.loc[~insomnia_count_1_5_mask,'insomnia_count:1_5']=0
-    pt_features.loc[insomnia_count_6_10_mask,'insomnia_count:6_10']=1
-    pt_features.loc[~insomnia_count_6_10_mask,'insomnia_count:6_10']=0
-    pt_features.loc[insomnia_count_above_10_mask,'insomnia_count:above_10']=1
-    pt_features.loc[~insomnia_count_above_10_mask,'insomnia_count:above_10']=0
+    pt_features.loc[insomnia_count_above_5_mask,'insomnia_count:above_5']=1
+    pt_features.loc[~insomnia_count_above_5_mask,'insomnia_count:above_5']=0
 
     #Create quantiles for non_insomnia_GP_consultations
     # (these are only used in the baseline characteristics section of the paper, not in the actual logistic regression)
@@ -351,7 +383,7 @@ def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,wind
     and create 'amount' and 'unit' columns (necessary for calculating PDD)
     '''
     prescs = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
-    prescs = prescs[pd.notnull(prescs['qty'])] #remove the relatively small number of prescriptions where the quantity is NaN
+    prescs = prescs.loc[pd.notnull(prescs['qty'])].copy() #remove the relatively small number of prescriptions where the quantity is NaN
 
     pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
     prescs = pd.merge(prescs,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
@@ -360,7 +392,7 @@ def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,wind
     start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
     end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))
     timely_presc_mask = (prescs['eventdate']>=(prescs['index_date']-start_year)) & (prescs['eventdate']<=(prescs['index_date']-end_year))
-    timely_prescs = prescs[timely_presc_mask]
+    timely_prescs = prescs.loc[timely_presc_mask].copy()
 
     all_drugs = [drug for druglist in druglists for drug in druglist['drugs'] ]
 
@@ -381,6 +413,9 @@ def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,wind
     #Convert mg/Xml to mg for simplicity
     micro_mask = reformatted_prescs['unit'].str.contains('mg/',na=False,case=False)
     reformatted_prescs.loc[micro_mask,'unit'] = 'mg'
+
+    #Remove the small number of  prescriptions where there is no amount
+    reformatted_prescs = reformatted_prescs[pd.notnull(reformatted_prescs['amount'])].copy()
 
     # Create a 'total_amount' column - used to calculate each pt's PDDs for a given drug.
     reformatted_prescs['total_amount'] = reformatted_prescs['qty']*reformatted_prescs['amount']
@@ -406,21 +441,19 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
         # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
         druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
 
-
         #Calculate the prescribed daily dose (PDD) for each drug (e.g. 'citalopram') in the druglist (e.g. 'antidepressants')
         for drug in druglist['drugs']:
-            print(drug)
             drug = drug.upper()
             temp_prescs = druglist_prescs[druglist_prescs['drug substance name'].str.upper()==drug].copy()
             if(len(temp_prescs))>0:
                 drug_amounts = np.array(temp_prescs['amount'])*np.array(temp_prescs['ndd'])
                 drug_weights = np.array(temp_prescs['qty'])/np.array(temp_prescs['ndd'])
                 pdd = np.average(drug_amounts,weights=drug_weights)
+                print(drug,'\tpdd:',str(pdd))
                 pdds.loc[len(pdds)]=[drug,druglist['name'], pdd]
                 assert pd.notnull(pdd)
             else:
-                print('\tNo prescriptions found')
-        print(pdds)
+                print(drug,'\tNo prescriptions found')
 
     #Write PDDs to file for reference
     pdds.to_csv('output/drug_pdds.csv',index=False)
@@ -452,11 +485,11 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     return pt_features
 
 
-def get_consultation_count(pt_features,all_enco,window):
+def get_consultation_count(pt_features,all_encounters,window):
     '''
     Counts the number of non-insomnia-related consultations with the GP during the exposure window
     '''
-    relev_entries = pd.merge(all_enco,pt_features[['patid','index_date']],how='inner')
+    relev_entries = pd.merge(all_encounters,pt_features[['patid','index_date']],how='inner')
     new_colname = 'non_insomnia_GP_consultations'
 
     # Find all consultations which occur on the same day as an insomnia readcode

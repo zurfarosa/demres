@@ -16,7 +16,6 @@ all_dementia = [
 	'E002z00',	#	Senile dementia with depressive or paranoid fe...
 	'E004100',	#	Arteriosclerotic dementia with delirium
 	'E02y100',	#	Drug-induced dementia
-	'Eu02500',	#	[X]Lewy body dementia
 	'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
 	'E004300',	#	Arteriosclerotic dementia with depression
 	'E003.00',	#	Senile dementia with delirium
@@ -29,6 +28,7 @@ all_dementia = [
 	'Eu01.11',	#	[X]Arteriosclerotic dementia
 	'Eu02300',	#	[X]Dementia in Parkinson's disease
 	'Eu01000',	#	[X]Vascular dementia of acute onset
+	'Eu02500',	#	[X]Lewy body dementia
 	'F116.00',	#	Lewy body disease
 	'Eu00.00',	#	[X]Dementia in Alzheimer's disease
 	'E004.11',	#	Multi infarct dementia
@@ -105,6 +105,12 @@ alzheimers = [
 	'Eu00z00',	#	[X]Dementia in Alzheimer's disease, unspecified
 ]
 
+dlb_and_pdd = [
+	'Eu02500',	#	[X]Lewy body dementia
+	'F116.00',	#	Lewy body disease
+	'Eu02300'	#	[X]Dementia in Parkinson's disease
+]
+
 insomnia = {
     'name':'insomnia',
     'int_or_boolean':'both',    #i.e. we want to get both a count variable (number of insomnia consultations)
@@ -114,15 +120,10 @@ insomnia = {
     'codes':[
         'R005200', # [D]Insomnia NOS
         '1B1B.11', # C/O - insomnia
-        'R005.00', # [D]Sleep disturbances
-        'R005000', # sleep disturbance unspecified
         'E274111', # Insomnia NOS
         'Fy00.00',  # Disorders of maintaining and initiating sleep
         '1B1B.00', # Cannot sleep - insomnia
-        '663N.00', # Asthma disturbing sleep
         'R005.11', # [D]Insomnia - symptom
-        '663N200', # Asthma disturbs sleep frequently
-        '663N100', # Asthma disturbs sleep weekly
         'E274100', # Transient insomnia
         '1B1B200', # Late insomnia
         '1B1B000', # Initial insomnia
@@ -134,9 +135,7 @@ insomnia = {
         'E274.12', # Insomnia due to nonorganic sleep disorder
         'E274E00', # 'Short-sleeper'
         '1BX9.00', # Light sleep
-        '1B1Q.00', # Poor sleep pattern
-        'Fy0..00', # Sleep Disorders
-        'E274.00', # Non-organic sleep disorders
+        # '1B1Q.00', # Poor sleep pattern
         '1BX3.00' #early morning waking
     ]
 }

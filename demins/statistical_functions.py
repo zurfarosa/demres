@@ -19,8 +19,7 @@ import statsmodels.api as sm
 from pprint import pprint
 
 
-def add_baseline_characteristics(baseline_df,variables,pt_features):
-    baseline_contin = pd.DataFrame(columns=['Cases - mean','Cases - median','Cases - IQR','Controls - mean','Controls - median','Controls - IQR','P value'])
+def add_baseline_characteristics(variables,pt_features):
     baseline_dichot = pd.DataFrame(columns=['Cases','Controls','P value'])
     all_cases = pt_features.loc[pt_features['isCase']==True]
     all_controls = pt_features.loc[pt_features['isCase']==False]
@@ -38,18 +37,7 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
                 baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
             else:
                 baseline_dichot.loc[variable,'P value'] =  '-'
-        # else: #if it is a continuous variable
-            # cases = pt_features.loc[pt_features['isCase']==1,variable].values
-            # controls = pt_features.loc[pt_features['isCase']==0,variable].values
-            # baseline_contin.loc[variable,'Cases - mean'] = "{0:.2f}".format(np.mean(cases))
-            # baseline_contin.loc[variable,'Cases - median'] = "{0:.2f}".format(np.median(cases))
-            # baseline_contin.loc[variable,'Cases - IQR'] = get_IQR(cases)
-            # baseline_contin.loc[variable,'Controls - median'] = "{0:.2f}".format(np.median(controls))
-            # baseline_contin.loc[variable,'Controls - mean'] = "{0:.2f}".format(np.mean(controls))
-            # baseline_contin.loc[variable,'Controls - IQR'] = get_IQR(controls)
-            # t_stat,p = stats.ttest_ind(cases,controls)
-            # baseline_contin.loc[variable,'P value'] = "{0:.3f}".format(p)
-    return baseline_dichot.sort_index(),baseline_contin
+    return baseline_dichot
 
 def purposefully_select_covariates(pt_features,covariates,main_variables):
     '''
