@@ -116,7 +116,7 @@ def create_immunisations():
 def create_medcoded_entries():
     #logging.debug('calling create_medcoded_entries')
     """
-    Creates simplified hdf files (all_entries and )
+    Creates simplified hdf file.
     This is a file containing a dataframe containing simplified data
     (just patient ID, eventdate, sysdate, and medcode) from the
     Extract_Clinical_001 and 002 files, Extract_Test_001 and 002 file and Extract_Referral_001 file
@@ -137,19 +137,30 @@ def create_medcoded_entries():
     medcoded_entries = pd.concat([clinicals,tests,referrals,immunisations],ignore_index=True)
     medcoded_entries.to_hdf('hdf/medcoded_entries.hdf','medcoded_entries',mode='w')
 
-def get_all_entries():
+def get_all_encounters():
     medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
     medcoded_entries['prodcode']=np.nan
 
-    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
-    prescriptions = prescriptions.loc[:,['patid','sysdate','eventdate','prodcode']]
-    prescriptions['medcode']=np.nan
-    prescriptions['type']=entry_type['prescription']
+    # prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+    # prescriptions = prescriptions.loc[:,['patid','sysdate','eventdate','prodcode']]
+    # prescriptions['medcode']=np.nan
+    # prescriptions['type']=entry_type['prescription']
 
     consultations = pd.read_hdf('hdf/consultations.hdf')[['patid','sysdate','eventdate']]
     consultations['medcode']=np.nan
     consultations['prodcode']=np.nan
     consultations['type']=entry_type['consultation']
 
-    all_entries = pd.concat([consultations,prescriptions,medcoded_entries],ignore_index=True)
+    # all_entries = pd.concat([consultations,prescriptions,medcoded_entries],ignore_index=True)
+    all_encounters = pd.concat([consultations,medcoded_entries],ignore_index=True)
+    return all_encounters
+
+def get_all_entries(all_encounters):
+
+    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+    prescriptions = prescriptions.loc[:,['patid','sysdate','eventdate','prodcode']]
+    prescriptions['medcode']=np.nan
+    prescriptions['type']=entry_type['prescription']
+
+    all_entries = pd.concat([all_encounters,prescriptions],ignore_index=True)
     return all_entries

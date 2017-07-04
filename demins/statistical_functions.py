@@ -19,12 +19,6 @@ import statsmodels.api as sm
 from pprint import pprint
 
 
-def get_IQR(x):
-    q75, q25 = np.percentile(x, [75 ,25])
-    iqr = '{0} - {1}'.format(str(q25),str(q75))
-    return iqr
-
-
 def add_baseline_characteristics(baseline_df,variables,pt_features):
     baseline_contin = pd.DataFrame(columns=['Cases - mean','Cases - median','Cases - IQR','Controls - mean','Controls - median','Controls - IQR','P value'])
     baseline_dichot = pd.DataFrame(columns=['Cases','Controls','P value'])
@@ -44,17 +38,17 @@ def add_baseline_characteristics(baseline_df,variables,pt_features):
                 baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
             else:
                 baseline_dichot.loc[variable,'P value'] =  '-'
-        else: #if it is a continuous variable
-            cases = pt_features.loc[pt_features['isCase']==1,variable].values
-            controls = pt_features.loc[pt_features['isCase']==0,variable].values
-            baseline_contin.loc[variable,'Cases - mean'] = "{0:.2f}".format(np.mean(cases))
-            baseline_contin.loc[variable,'Cases - median'] = "{0:.2f}".format(np.median(cases))
-            baseline_contin.loc[variable,'Cases - IQR'] = get_IQR(cases)
-            baseline_contin.loc[variable,'Controls - median'] = "{0:.2f}".format(np.median(controls))
-            baseline_contin.loc[variable,'Controls - mean'] = "{0:.2f}".format(np.mean(controls))
-            baseline_contin.loc[variable,'Controls - IQR'] = get_IQR(controls)
-            t_stat,p = stats.ttest_ind(cases,controls)
-            baseline_contin.loc[variable,'P value'] = "{0:.3f}".format(p)
+        # else: #if it is a continuous variable
+            # cases = pt_features.loc[pt_features['isCase']==1,variable].values
+            # controls = pt_features.loc[pt_features['isCase']==0,variable].values
+            # baseline_contin.loc[variable,'Cases - mean'] = "{0:.2f}".format(np.mean(cases))
+            # baseline_contin.loc[variable,'Cases - median'] = "{0:.2f}".format(np.median(cases))
+            # baseline_contin.loc[variable,'Cases - IQR'] = get_IQR(cases)
+            # baseline_contin.loc[variable,'Controls - median'] = "{0:.2f}".format(np.median(controls))
+            # baseline_contin.loc[variable,'Controls - mean'] = "{0:.2f}".format(np.mean(controls))
+            # baseline_contin.loc[variable,'Controls - IQR'] = get_IQR(controls)
+            # t_stat,p = stats.ttest_ind(cases,controls)
+            # baseline_contin.loc[variable,'P value'] = "{0:.3f}".format(p)
     return baseline_dichot.sort_index(),baseline_contin
 
 def purposefully_select_covariates(pt_features,covariates,main_variables):
@@ -172,10 +166,10 @@ def remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols
     filtered_training_cols = []
     for col in training_cols:
         if pt_features[col].mean()>0: #prevents singular matrix warning
-            print(col,' being retained as mean < 0')
+            print(col,' being retained as mean > 0')
             filtered_training_cols.append(col)
             # print(col, pt_features[col].mean())
         else:
-            print(col, ' being removed as mean = 0')
+            print(col, ' being removed as mean == 0')
     print('\n')
     return filtered_training_cols

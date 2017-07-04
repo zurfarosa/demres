@@ -72,7 +72,7 @@ def only_include_specific_dementia_subtype(pt_features,subtype='all_dementia'):
     return pt_features
 
 
-def add_data_start_and_end_dates(all_entries,pt_features):
+def add_data_start_and_end_dates(all_encounters,pt_features):
     '''
     Needs the dateframe created by create_medcoded_entries() to be passed to it.
     This function looks at all clinical entries (e.g. prescriptions, referrals, consultations), and looks for the first and last 'sysdated' entry.
@@ -80,12 +80,12 @@ def add_data_start_and_end_dates(all_entries,pt_features):
     logging.debug('add_sys_start_and_end_dates_to_pt_features all_entries.csv')
 
     logging.debug('finding earliest sysdates')
-    earliest_sysdates = all_entries.groupby('patid')['sysdate'].min().reset_index()
+    earliest_sysdates = all_enco.groupby('patid')['sysdate'].min().reset_index()
     earliest_sysdates.rename(columns={'sysdate':'data_start'},inplace=True)
     logging.debug('earliest_sysdates:\n{0}'.format(earliest_sysdates.head(5)))
 
     logging.debug('finding latest sysdates')
-    latest_sysdates = all_entries.groupby('patid')['sysdate'].max().reset_index()
+    latest_sysdates = all_enco.groupby('patid')['sysdate'].max().reset_index()
     latest_sysdates.rename(columns={'sysdate':'data_end'},inplace=True)
     logging.debug('latest_sysdates:\n{0}'.format(latest_sysdates.head(5)))
 
@@ -108,10 +108,12 @@ def add_data_start_and_end_dates(all_entries,pt_features):
     return pt_features
 
 
-def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
+def match_cases_and_controls(pt_features,window):
     '''
     Matches cases and controls. Will not match cases to controls who do not have enough years of data
     '''
+    req_yrs_post_index=sd.req_yrs_post_index
+    start_year=abs(window['start_year'])
     pt_features['matchid']=np.nan
     # pt_features['data_end'] = pd.to_datetime(pt_features['data_end'],errors='coerce', format='%Y-%m-%d')
     # pt_features['data_start'] = pd.to_datetime(pt_features['data_start'],errors='coerce', format='%Y-%m-%d')
@@ -128,13 +130,11 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
             patid = row['patid']
             yob = row['yob']
             female = row['female']
-            pracid = row['pracid']
             index_date = row['index_date']
             # Define matching criteria
             matches_yob = controls['yob']==yob
             matches_gender = controls['female']==female
             # matches_practice = controls['pracid']==pracid
-            # is_not_already_matched = pd.isnull(controls['matchid'])
             enough_data_after_index_date = controls['data_end'] >= (index_date + timedelta(days=(365*req_yrs_post_index)))
             enough_data_before_index_date = controls['data_start'] <= (index_date - timedelta(days=(365*start_year)))
             match_mask =  matches_yob & matches_gender & enough_data_after_index_date & enough_data_before_index_date #& matches_practice
@@ -151,7 +151,7 @@ def match_cases_and_controls(pt_features,req_yrs_post_index,start_year):
                 logging.debug('No match found for {0}'.format(patid))
     pt_features = pt_features.drop('total_available_data',axis=1)
 
-    #Now that we ha ve an index date for both cases and controls, finally calculate age at index date
+    #Now that we have an index date for both cases and controls, finally calculate age at index date
     pt_features['age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - (1900 + pt_features['yob'].astype(int))
 
     return pt_features
@@ -401,7 +401,7 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
 
     for druglist in druglists:
         prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-        druglist_prescs = prescs.loc[prescs['prodcode'].isin(prodcodes)]
+        druglist_prescs = prescs.loc[prescs['prodcode'].isin(prodcodes)].copy()
 
         # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
         druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
@@ -411,12 +411,12 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
         for drug in druglist['drugs']:
             print(drug)
             drug = drug.upper()
-            temp_prescs = druglist_prescs[druglist_prescs['drug substance name'].str.upper()==drug]
+            temp_prescs = druglist_prescs[druglist_prescs['drug substance name'].str.upper()==drug].copy()
             if(len(temp_prescs))>0:
                 drug_amounts = np.array(temp_prescs['amount'])*np.array(temp_prescs['ndd'])
                 drug_weights = np.array(temp_prescs['qty'])/np.array(temp_prescs['ndd'])
                 pdd = np.average(drug_amounts,weights=drug_weights)
-                pdds.loc[len(pdds)]=[drug,druglist['name'], np.round(pdd)]
+                pdds.loc[len(pdds)]=[drug,druglist['name'], pdd]
                 assert pd.notnull(pdd)
             else:
                 print('\tNo prescriptions found')
@@ -432,26 +432,31 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     '''
     pdds = pd.read_csv('output/drug_pdds.csv', delimiter=',')
     prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
-    prescs_grouped = prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index().copy()
+    prescs_grouped = prescs.groupby(by=['patid','prodcode','drug substance name']).total_amount.sum().reset_index()
     for druglist in druglists:
         new_colname = druglist['name']+'_100_pdds'
+        prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
+        print(len(prodcodes))
+        relev_prescs = prescs_grouped.loc[prescs_grouped['prodcode'].isin(prodcodes)]
+        print(relev_prescs)
+
         # Sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.).
         # Then divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
-        prescs_grouped.loc[:,new_colname]=(prescs_grouped['total_amount']/prescs_grouped['drug substance name'].map(lambda x: pdds.loc[pdds['drug_name']==x.upper(),'pdd(mg)'].values[0]))/100
+        relev_prescs.loc[:,new_colname]=(relev_prescs['total_amount']/relev_prescs['drug substance name'].map(lambda x: pdds.loc[pdds['drug_name']==x.upper(),'pdd(mg)'].values[0]))/100
 
-        pt_pdds = prescs_grouped.groupby(by='patid')[new_colname].sum().reset_index().copy()
+        pt_pdds = relev_prescs.groupby(by='patid')[new_colname].sum().reset_index().copy()
         if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
             pt_features.drop(new_colname,axis=1,inplace=True)
         pt_features = pd.merge(pt_features,pt_pdds,how='left')
         pt_features[new_colname].fillna(value=0,inplace=True)
-    return pt_features,prescs,prescs_grouped,pt_pdds
+    return pt_features
 
 
-def get_consultation_count(pt_features,all_entries,window):
+def get_consultation_count(pt_features,all_enco,window):
     '''
     Counts the number of non-insomnia-related consultations with the GP during the exposure window
     '''
-    relev_entries = pd.merge(all_entries,pt_features[['patid','index_date']],how='inner')
+    relev_entries = pd.merge(all_enco,pt_features[['patid','index_date']],how='inner')
     new_colname = 'non_insomnia_GP_consultations'
 
     # Find all consultations which occur on the same day as an insomnia readcode

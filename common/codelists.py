@@ -115,13 +115,14 @@ insomnia = {
         'R005200', # [D]Insomnia NOS
         '1B1B.11', # C/O - insomnia
         'R005.00', # [D]Sleep disturbances
+        'R005000', # sleep disturbance unspecified
         'E274111', # Insomnia NOS
         'Fy00.00',  # Disorders of maintaining and initiating sleep
         '1B1B.00', # Cannot sleep - insomnia
         '663N.00', # Asthma disturbing sleep
         'R005.11', # [D]Insomnia - symptom
-        # '663N200', # Asthma disturbs sleep frequently
-        # '663N100', # Asthma disturbs sleep weekly
+        '663N200', # Asthma disturbs sleep frequently
+        '663N100', # Asthma disturbs sleep weekly
         'E274100', # Transient insomnia
         '1B1B200', # Late insomnia
         '1B1B000', # Initial insomnia
@@ -134,6 +135,8 @@ insomnia = {
         'E274E00', # 'Short-sleeper'
         '1BX9.00', # Light sleep
         '1B1Q.00', # Poor sleep pattern
+        'Fy0..00', # Sleep Disorders
+        'E274.00', # Non-organic sleep disorders
         '1BX3.00' #early morning waking
     ]
 }
