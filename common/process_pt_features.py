@@ -25,7 +25,6 @@ def create_pt_features():
     # pt_features['yob'] = pt_features['yob']+1800 # ditto!
     pt_features['yob'] = pt_features['yob'].astype(str).str[1:]
 
-    # pt_features.to_csv('data/pt_data/processed_data/pt_features.csv',index=False)
     return pt_features
 
 def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_features):
@@ -72,7 +71,7 @@ def only_include_specific_dementia_subtype(pt_features,subtype='all_dementia'):
     return pt_features
 
 
-def add_data_start_and_end_dates(all_encounters,pt_features):
+def add_data_start_and_end_dates(all_encounters,pt_features,subtype):
     '''
     This function looks at all clinical encounters (e.g. referrals, consultations, but not prescriptions)
     to find the data start and end dates.
@@ -80,7 +79,7 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
     logging.debug('add_sys_start_and_end_dates_to_pt_features all_entries.csv')
 
     #Calculate the data_end date - we can use the last sysdate
-    print('calculating lastest_sysdate')
+    print('calculating latest_sysdate')
     latest_sysdates = all_encounters.groupby('patid')['sysdate'].max().reset_index()
     latest_sysdates.rename(columns={'sysdate':'data_end'},inplace=True)
     pt_features = pd.merge(pt_features,latest_sysdates,how='left')
@@ -91,18 +90,17 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
     earliest_sysdates.rename(columns={'sysdate':'earliest_sysdate'},inplace=True)
     pt_features = pd.merge(pt_features,earliest_sysdates,how='left')
 
-    #As an alternative to the earliest sysdate, find the earliest year in which you have at least 15
-    # retrospectively-dated entries - this, in my opinion, is likely to be when the electronic record
+    #As an alternative to the earliest sysdate, find the earliest two year period in which you have at least 40
+    # eventdates (not sysdates) - this, in my opinion, is likely to be when the electronic record
     # started to be filled in prospectively (the reason for the discrepancy between the eventdate and the sysdate
     # is probably because the entries were given a new sysdate for some reason, e.g. software update)
     print('resampling all_encounters - may take some time...')
-    resampled_entries = all_encounters.set_index('eventdate').groupby('patid').resample('AS').size()
+    resampled_entries = all_encounters.set_index('eventdate').groupby('patid').resample('24M').size()
     resampled_entries2 = resampled_entries.reset_index()
-    resampled_entries2.columns = ['patid','year','consultation_count']
-    resampled_entries3 = resampled_entries2.loc[resampled_entries2['consultation_count']>=15]
-    resampled_entries4 = resampled_entries3.groupby('patid').year.min().reset_index()
-    resampled_entries4['year']=resampled_entries4['year']+pd.Timedelta(days=365)
-    resampled_entries4.columns=['patid','start_of_year_after_earliest_year_with_>15_consultations']
+    resampled_entries2.columns = ['patid','twentyfour_month_period_ending','consultation_count']
+    resampled_entries3 = resampled_entries2.loc[resampled_entries2['consultation_count']>=40]
+    resampled_entries4 = resampled_entries3.groupby('patid').twentyfour_month_period_ending.min().reset_index()
+    resampled_entries4.columns = ['patid','estimated_data_start'] #conservative estimate, as the estimated data start will be at the END of the 24 month period of high activity
     pt_features = pd.merge(pt_features,resampled_entries4,how='left')
 
     # Watch out for 'converted codes' (medcode 14) - these are uninformative medcodes where the specific Read codes have
@@ -116,11 +114,11 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
     # Now choose which measure we are going to use for data_start. Note that if a converted code exists for a patid,
     # it's probably safest just to use the earliest sysdate
     print('choosing most appropriate measure of data_start')
-    dont_use_earliest_sysdate_mask = ((pt_features['start_of_year_after_earliest_year_with_>15_consultations']<pt_features['earliest_sysdate']) &
-        ((pt_features['start_of_year_after_earliest_year_with_>15_consultations'] > pt_features['sysdate_of_final_converted_code']) | (pd.isnull(pt_features['sysdate_of_final_converted_code'])))
+    dont_use_earliest_sysdate_mask = ((pt_features['estimated_data_start']<pt_features['earliest_sysdate']) &
+        ((pt_features['estimated_data_start'] > pt_features['sysdate_of_final_converted_code']) | (pd.isnull(pt_features['sysdate_of_final_converted_code'])))
             )
     pt_features['data_start']=np.nan
-    pt_features.loc[dont_use_earliest_sysdate_mask,'data_start']=pt_features['start_of_year_after_earliest_year_with_>15_consultations'].copy()
+    pt_features.loc[dont_use_earliest_sysdate_mask,'data_start']=pt_features['estimated_data_start'].copy()
     pt_features.loc[~dont_use_earliest_sysdate_mask,'data_start']=pt_features['earliest_sysdate'].copy()
 
     # Remove patients without any events
@@ -132,33 +130,32 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
         pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
     pt_features = pt_features.loc[~no_event_mask].copy()
 
-    pt_features.drop(['earliest_sysdate',
-       'sysdate_of_final_converted_code',
-       'start_of_year_after_earliest_year_with_>15_consultations'],inplace=True,axis=1)
+    pt_features.drop(['earliest_sysdate','sysdate_of_final_converted_code','estimated_data_start'],inplace=True,axis=1)
 
+    pt_features.to_csv('data/pt_data/processed_data/pt_features_demins_'+subtype+'.csv',index=False)
 
     return pt_features
 
 
 def match_cases_and_controls(pt_features,window):
     '''
-    Matches cases and controls. Will not match cases to controls who do not have enough years of data
+    Matches cases to controls.
+    Controls are given an index date after being matched.
     '''
     req_yrs_post_index=sd.req_yrs_post_index
     start_year=abs(window['start_year'])
     pt_features['matchid']=np.nan
-    # pt_features['data_end'] = pd.to_datetime(pt_features['data_end'],errors='coerce', format='%Y-%m-%d')
-    # pt_features['data_start'] = pd.to_datetime(pt_features['data_start'],errors='coerce', format='%Y-%m-%d')
-    # pt_features['index_date'] = pd.to_datetime(pt_features['index_date'],errors='coerce', format='%Y-%m-%d')
     pt_features.loc[:,'total_available_data']= pt_features.loc[:,'data_end'] - pt_features.loc[:,'data_start']
     pt_features.sort_values(inplace=True,by='total_available_data',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
 
     cases_mask = (pt_features['isCase']==True) & \
                 (pt_features['data_start'] <= (pt_features['index_date'] - timedelta(days=(365*start_year))))
     suitable_cases = pt_features.loc[cases_mask].copy()
-    print('length of suitable cases',len(suitable_cases))
+    print('All patients',len(pt_features))
+    print('Number of suitable cases',len(suitable_cases))
     controls = pt_features.loc[pt_features['isCase']==False].copy()
-    print('length of controls',len(controls))
+    print('Number of controls',len(controls))
+
     for index,row in suitable_cases.iterrows():
         if pd.isnull(row['matchid']):
             patid = row['patid']
@@ -175,48 +172,43 @@ def match_cases_and_controls(pt_features,window):
             if len(controls[match_mask])>0:
                 best_match_index = controls.loc[match_mask,'total_available_data'].idxmin(axis=1) # To make matching more efficient, first try to match cases with those controls with the LEAST amount of available data
                 best_match_id = controls.ix[best_match_index]['patid']
-                logging.debug('Out of a list of {0} matching patients, patid {1} is the best match for {2}'.format(len(controls[match_mask]),best_match_id,patid))
                 #give both the case and control a unique match ID (for convenience, I've used the iterrows index)
                 pt_features.loc[index,'matchid']=index
                 pt_features.loc[best_match_index,'matchid']=index
                 pt_features.loc[best_match_index,'index_date']=index_date
                 controls = controls.drop(best_match_index) #drop this row from controls dataframe so it cannot be matched again
-            else:
-                logging.debug('No match found for {0}'.format(patid))
+
     pt_features.drop('total_available_data',axis=1,inplace=True)
 
+    #Remove patients without a matchid
+    to_remove_mask = pd.isnull(pt_features['matchid'])
+    pt_features.loc[to_remove_mask,'reason_for_removal']='Unmatchable'
+    print(len(pt_features[to_remove_mask]),' patients being removed as unmatchable')
+    pt_features[to_remove_mask].to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
+    pt_features = pt_features.loc[~to_remove_mask].copy()
+
     #Now that we have an index date for both cases and controls, finally calculate age at index date
-    pt_features['age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - (1900 + pt_features['yob'].astype(int))
+    pt_features.loc[:,'age_at_index_date'] = pd.DatetimeIndex(pt_features['index_date']).year.astype(int) - (1900 + pt_features['yob'].astype(int))
 
-    return pt_features
-
-def delete_unmatched_cases_and_controls(pt_features):
-    '''
-    Removes all unmatched cases and controls
-    '''
-    removed_pts = pt_features.loc[pd.isnull(pt_features['matchid'])]
-    removed_pts.loc[:,'reason_for_removal']='Unmatchable'
-    print(len(removed_pts),' patients being removed as unmatchable')
-    removed_pts.to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
-    pt_features = pt_features.loc[pd.notnull(pt_features['matchid'])]
     pt_features.loc[:,'matchid']=pt_features['matchid'].astype(int)
     return pt_features
 
-def delete_patients_if_not_enough_data(isCase,pt_features,start_year):
-    '''
-    Despite requiring user to specify whether patients are cases or controls, this only needs to be called for cases,
-    as controls without enough data are removed by the match_cases_and_controls() function.
-    '''
-    delete_mask = (pt_features['days pre_indexdate']<(start_year*365)) \
-            | (pt_features['days post_indexdate']<(sd.req_yrs_post_index*365))
-    delete_mask = delete_mask & (pt_features['isCase']==isCase)
-    #delete cases and controls if not enough data prior to index dates
-    removed_pts = pt_features.loc[delete_mask]
-    removed_pts['reason_for_removal']='Not enough available data prior or post index date'
-    removed_pts.to_csv('data/pt_data/removed_patients/removed_pts_with_not_enough_data.csv',mode='a',index=False)
-    pt_features=pt_features.loc[delete_mask == False]
-    # pt_features.to_csv('data/pt_data/processed_data/pt_features.csv',index=False)
-    return pt_features
+
+# def delete_patients_if_not_enough_data(isCase,pt_features,start_year):
+#     '''
+#     Despite requiring user to specify whether patients are cases or controls, this only needs to be called for cases,
+#     as controls without enough data are removed by the match_cases_and_controls() function.
+#     '''
+#     delete_mask = (pt_features['days pre_indexdate']<(start_year*365)) \
+#             | (pt_features['days post_indexdate']<(sd.req_yrs_post_index*365))
+#     delete_mask = delete_mask & (pt_features['isCase']==isCase)
+#     #delete cases and controls if not enough data prior to index dates
+#     removed_pts = pt_features.loc[delete_mask]
+#     removed_pts['reason_for_removal']='Not enough available data prior or post index date'
+#     removed_pts.to_csv('data/pt_data/removed_patients/removed_pts_with_not_enough_data.csv',mode='a',index=False)
+#     pt_features=pt_features.loc[delete_mask == False]
+#     # pt_features.to_csv('data/pt_data/processed_data/pt_features.csv',index=False)
+#     return pt_features
 
 
 def get_multiple_condition_statuses(pt_features,entries,window,conditions):
@@ -467,16 +459,18 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
     prescs_grouped = prescs.groupby(by=['patid','prodcode','drug substance name']).total_amount.sum().reset_index()
     for druglist in druglists:
+        print(druglist['name'])
         new_colname = druglist['name']+'_100_pdds'
         prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-        print(len(prodcodes))
         relev_prescs = prescs_grouped.loc[prescs_grouped['prodcode'].isin(prodcodes)]
-        print(relev_prescs)
+        print('There are {0} relevant prescription entries for {1}'.format(len(relev_prescs),druglist['name']))
 
-        # Sum the total pdds for each patients (e.g. lorazpeam AND zopiclone AND promethazine etc.).
-        # Then divide by 100, because 100_PDDs gives a more clinically useful odds ratio at the regression stage
-        relev_prescs.loc[:,new_colname]=(relev_prescs['total_amount']/relev_prescs['drug substance name'].map(lambda x: pdds.loc[pdds['drug_name']==x.upper(),'pdd(mg)'].values[0]))/100
-
+        # Sum the total pdds of a particular drug type for each patients
+        # (e.g. lorazepam AND zopiclone AND diazepam when calculating benzo/z-drug pdds).
+        # Then divide by 100, because 100_PDDs is an easier-to-interpret unit for odds ratio than PDDs alone
+        relev_prescs['drug substance name'] =  relev_prescs['drug substance name'].str.upper()
+        relev_prescs = pd.merge(relev_prescs,pdds,left_on='drug substance name',right_on='drug_name',how='left')[['patid','prodcode','drug substance name','total_amount','pdd(mg)']]
+        relev_prescs[new_colname] = relev_prescs['pdd(mg)']/100
         pt_pdds = relev_prescs.groupby(by='patid')[new_colname].sum().reset_index().copy()
         if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
             pt_features.drop(new_colname,axis=1,inplace=True)

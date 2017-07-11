@@ -65,7 +65,7 @@ def explore_similar_drug_names(druglists,pt_features):
     it may bring drugs like cinnarizine or cinnarizine with X. If they sound sensible, these drugs can then be added manually to the relevant druglist.
     '''
     #Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
-    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+    prescriptions = pd.read_hdf('data/pt_data/processed_data/hdf/prescriptions.hdf')
     prescriptions = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
     start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
     end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))

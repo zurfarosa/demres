@@ -50,7 +50,7 @@ def create_prescriptions():
     # logging.debug('converting sysdate to datetime')
     prescriptions['sysdate'] = pd.to_datetime(prescriptions['sysdate'],format='%d/%m/%Y',errors='coerce')
     # logging.debug('writing to csv')
-    prescriptions.to_hdf('hdf/prescriptions.hdf','prescriptions',mode='w')
+    prescriptions.to_hdf('data/pt_data/processed_data/hdf/prescriptions.hdf','prescriptions',mode='w')
 
 def create_clinicals():
     #logging.debug('processing clinical - reading clin1')
@@ -63,7 +63,7 @@ def create_clinicals():
     clinicals['eventdate'] = pd.to_datetime(clinicals['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing clinical - converting to datetime - sysdate')
     clinicals['sysdate'] = pd.to_datetime(clinicals['sysdate'],format='%d/%m/%Y',errors='coerce')
-    clinicals.to_hdf('hdf/clinicals.hdf','clinicals',mode='w')
+    clinicals.to_hdf('data/pt_data/processed_data/hdf/clinicals.hdf','clinicals',mode='w')
 
 def create_tests():
     #logging.debug('processing tests')
@@ -75,7 +75,7 @@ def create_tests():
     tests['eventdate'] = pd.to_datetime(tests['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing test - converting to datetime - sysdate')
     tests['sysdate'] = pd.to_datetime(tests['sysdate'],format='%d/%m/%Y',errors='coerce')
-    tests.to_hdf('hdf/tests.hdf','tests',mode='w')
+    tests.to_hdf('data/pt_data/processed_data/hdf/tests.hdf','tests',mode='w')
 
 def create_referrals():
     #logging.debug('processing referrals')
@@ -84,7 +84,7 @@ def create_referrals():
     referrals['eventdate'] = pd.to_datetime(referrals['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing referrals - converting to datetime - sysdate')
     referrals['sysdate'] = pd.to_datetime(referrals['sysdate'],format='%d/%m/%Y',errors='coerce')
-    referrals.to_hdf('hdf/referrals.hdf','referrals',mode='w')
+    referrals.to_hdf('data/pt_data/processed_data/hdf/referrals.hdf','referrals',mode='w')
 
 def create_consultations():
     """
@@ -102,7 +102,7 @@ def create_consultations():
     consultations['sysdate'] = pd.to_datetime(consultations['sysdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('adding type column')
     #logging.debug('writing to csv')
-    consultations.to_hdf('hdf/consultations.hdf','consultations',mode ='w')
+    consultations.to_hdf('data/pt_data/processed_data/hdf/consultations.hdf','consultations',mode ='w')
 
 def create_immunisations():
     #logging.debug('processing immunisations')
@@ -111,7 +111,7 @@ def create_immunisations():
     immunisations['eventdate'] = pd.to_datetime(immunisations['eventdate'],format='%d/%m/%Y',errors='coerce')
     #logging.debug('processing  immunisations - converting to datetime - sysdate')
     immunisations['sysdate'] = pd.to_datetime(immunisations['sysdate'],format='%d/%m/%Y',errors='coerce')
-    immunisations.to_hdf('hdf/immunisations.hdf','immunisations',mode='w')
+    immunisations.to_hdf('data/pt_data/processed_data/hdf/immunisations.hdf','immunisations',mode='w')
 
 def create_medcoded_entries():
     #logging.debug('calling create_medcoded_entries')
@@ -122,31 +122,31 @@ def create_medcoded_entries():
     Extract_Clinical_001 and 002 files, Extract_Test_001 and 002 file and Extract_Referral_001 file
     (but not the Extract_Therapy_001 or 002 files or Extract_Consultations_001 or 002)
     """
-    clinicals = pd.read_hdf('hdf/clinicals.hdf')[['patid','sysdate','eventdate','medcode']]
+    clinicals = pd.read_hdf('data/pt_data/processed_data/hdf/clinicals.hdf')[['patid','sysdate','eventdate','medcode']]
     clinicals['type']=entry_type['clinical']
 
-    tests = pd.read_hdf('hdf/tests.hdf')[['patid','sysdate','eventdate','medcode']]
+    tests = pd.read_hdf('data/pt_data/processed_data/hdf/tests.hdf')[['patid','sysdate','eventdate','medcode']]
     tests['type']=entry_type['test']
 
-    referrals = pd.read_hdf('hdf/referrals.hdf')[['patid','sysdate','eventdate','medcode']]
+    referrals = pd.read_hdf('data/pt_data/processed_data/hdf/referrals.hdf')[['patid','sysdate','eventdate','medcode']]
     referrals['type']=entry_type['referral']
 
-    immunisations = pd.read_hdf('hdf/immunisations.hdf')[['patid','sysdate','eventdate','medcode']]
+    immunisations = pd.read_hdf('data/pt_data/processed_data/hdf/immunisations.hdf')[['patid','sysdate','eventdate','medcode']]
     immunisations['type']=entry_type['immunisation']
 
     medcoded_entries = pd.concat([clinicals,tests,referrals,immunisations],ignore_index=True)
-    medcoded_entries.to_hdf('hdf/medcoded_entries.hdf','medcoded_entries',mode='w')
+    medcoded_entries.to_hdf('data/pt_data/processed_data/hdf/medcoded_entries.hdf','medcoded_entries',mode='w')
 
 def get_all_encounters():
-    medcoded_entries = pd.read_hdf('hdf/medcoded_entries.hdf')
+    medcoded_entries = pd.read_hdf('data/pt_data/processed_data/hdf/medcoded_entries.hdf')
     medcoded_entries['prodcode']=np.nan
 
-    # prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+    # prescriptions = pd.read_hdf('data/pt_data/processed_data/hdf/prescriptions.hdf')
     # prescriptions = prescriptions.loc[:,['patid','sysdate','eventdate','prodcode']]
     # prescriptions['medcode']=np.nan
     # prescriptions['type']=entry_type['prescription']
 
-    consultations = pd.read_hdf('hdf/consultations.hdf')[['patid','sysdate','eventdate']]
+    consultations = pd.read_hdf('data/pt_data/processed_data/hdf/consultations.hdf')[['patid','sysdate','eventdate']]
     consultations['medcode']=np.nan
     consultations['prodcode']=np.nan
     consultations['type']=entry_type['consultation']
@@ -157,7 +157,7 @@ def get_all_encounters():
 
 def get_all_entries(all_encounters):
 
-    prescriptions = pd.read_hdf('hdf/prescriptions.hdf')
+    prescriptions = pd.read_hdf('data/pt_data/processed_data/hdf/prescriptions.hdf')
     prescriptions = prescriptions.loc[:,['patid','sysdate','eventdate','prodcode']]
     prescriptions['medcode']=np.nan
     prescriptions['type']=entry_type['prescription']
