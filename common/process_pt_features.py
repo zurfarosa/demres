@@ -365,7 +365,7 @@ def create_quantiles_and_booleans(pt_features):
         pt_features.loc[~drug_1001_10000_mask,drug_name_with_100_pdds_removed+':01001_10000']=0
 
         pt_features.loc[drug_above_10000_mask,drug_name_with_100_pdds_removed+':10000_and_above']=1
-        pt_features.loc[~drug_above_10000_mask,drug_name_with_100_pdds_removed+':10000_and_above    ']=0
+        pt_features.loc[~drug_above_10000_mask,drug_name_with_100_pdds_removed+':10000_and_above']=0
 
     return pt_features
 
@@ -427,8 +427,8 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
     pdds = pd.DataFrame(columns=['drug_name','drug_type','pdd(mg)'])
 
     for druglist in druglists:
-        prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-        druglist_prescs = prescs.loc[prescs['prodcode'].isin(prodcodes)].copy()
+        capitalised_drugs = [drug.upper() for drug in druglist['drugs']]
+        druglist_prescs = prescs.loc[prescs['drug substance name'].isin(capitalised_drugs)]
 
         # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
         druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
@@ -457,20 +457,24 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     '''
     pdds = pd.read_csv('output/drug_pdds.csv', delimiter=',')
     prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
-    prescs_grouped = prescs.groupby(by=['patid','prodcode','drug substance name']).total_amount.sum().reset_index()
+    prescs['drug substance name'] = prescs['drug substance name'].str.upper()
+    prescs_grouped = prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
     for druglist in druglists:
         print(druglist['name'])
+        capitalised_drugs = [drug.upper() for drug in druglist['drugs']]
         new_colname = druglist['name']+'_100_pdds'
-        prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-        relev_prescs = prescs_grouped.loc[prescs_grouped['prodcode'].isin(prodcodes)]
+        # prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
+        relev_prescs = prescs_grouped.loc[prescs_grouped['drug substance name'].isin(capitalised_drugs)]
         print('There are {0} relevant prescription entries for {1}'.format(len(relev_prescs),druglist['name']))
 
         # Sum the total pdds of a particular drug type for each patients
         # (e.g. lorazepam AND zopiclone AND diazepam when calculating benzo/z-drug pdds).
         # Then divide by 100, because 100_PDDs is an easier-to-interpret unit for odds ratio than PDDs alone
-        relev_prescs['drug substance name'] =  relev_prescs['drug substance name'].str.upper()
-        relev_prescs = pd.merge(relev_prescs,pdds,left_on='drug substance name',right_on='drug_name',how='left')[['patid','prodcode','drug substance name','total_amount','pdd(mg)']]
-        relev_prescs[new_colname] = relev_prescs['pdd(mg)']/100
+
+        # relev_prescs['drug substance name'] =  relev_prescs['drug substance name'].str.upper()
+
+        relev_prescs = pd.merge(relev_prescs,pdds,left_on='drug substance name',right_on='drug_name',how='left')[['patid','drug substance name','total_amount','pdd(mg)']]
+        relev_prescs[new_colname] = (relev_prescs['total_amount'] / relev_prescs['pdd(mg)'])/100
         pt_pdds = relev_prescs.groupby(by='patid')[new_colname].sum().reset_index().copy()
         if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
             pt_features.drop(new_colname,axis=1,inplace=True)
