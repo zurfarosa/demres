@@ -1930,7 +1930,7 @@ epilepsy = {
 all_codelists = [
     insomnia,
     stroke,
-    # intellectual_disability,
+    intellectual_disability,
     non_stroke_vascular_disease,
     hypertension,
     diabetes,
@@ -1939,5 +1939,4 @@ all_codelists = [
     sleep_apnoea,
     chronic_pulmonary_disease,
     epilepsy
-    # CKD,
 ]

@@ -48,16 +48,16 @@ def purposefully_select_covariates(pt_features,covariates,main_variables):
 
     #stage 1 - remove covariates with univariate p value of >0.25
 
-    univariate_results = pd.DataFrame(columns=['Univariate OR','p value','[0.025','0.975]'])
+    univariate_results = pd.DataFrame(columns=['Univariate OR','[0.025','0.975]','p value'])
 
     for covariate in sorted(starting_covariates):
         logit = sm.Logit(pt_features['isCase'], pt_features[covariate])
         result = logit.fit(disp=0,maxiter=500)
-        OR = round(np.exp(result.params).astype(float),3)
+        OR = round(np.exp(result.params).astype(float),2)
         p_value = round(result.pvalues.astype(float),3)
-        conf_ints = np.round(np.exp(result.conf_int()),3)
+        conf_ints = np.round(np.exp(result.conf_int()),2)
 
-        univariate_results.loc[covariate] = [OR.values[0],p_value.values[0],conf_ints.values[0][0],conf_ints.values[0][1]]
+        univariate_results.loc[covariate] = [OR.values[0],conf_ints.values[0][0],conf_ints.values[0][1],p_value.values[0]]
 
     stage_1_selection_mask = (univariate_results['p value']<=0.25)|(univariate_results.index.isin(main_variables))|(univariate_results.index=='intercept')
     stage_1_selected_covariates = univariate_results.loc[stage_1_selection_mask]
@@ -74,7 +74,7 @@ def purposefully_select_covariates(pt_features,covariates,main_variables):
 
     logit = sm.Logit(pt_features['isCase'], pt_features[list(stage_1_selected_covariates.index)])
     result = logit.fit(disp=0,maxiter=500)
-    multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
+    multivariate_results = pd.concat([round(np.exp(result.params),2),round(result.pvalues,3)],axis=1)
     multivariate_results.columns=['odds_ratio','p_value']
 
     stage_2_selection_mask=(multivariate_results['p_value']<0.1)|(multivariate_results.index.isin(main_variables))
@@ -101,7 +101,7 @@ def purposefully_select_covariates(pt_features,covariates,main_variables):
         # print(stage_1_selected_covariates_with_one_removed)
         logit = sm.Logit(pt_features['isCase'], pt_features[stage_1_selected_covariates_with_one_removed])
         result = logit.fit(disp=0,maxiter=500)
-        one_removed_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
+        one_removed_results = pd.concat([round(np.exp(result.params),2),round(result.pvalues,3)],axis=1)
         one_removed_results.columns=['OR_1_removed','p_value']
         # print(one_removed_results)
         concat_results = (pd.concat([multivariate_results['odds_ratio'],one_removed_results['OR_1_removed']],axis=1))
@@ -124,7 +124,7 @@ def purposefully_select_covariates(pt_features,covariates,main_variables):
         print('\nCovariate being added:',covariate)
         logit = sm.Logit(pt_features['isCase'], pt_features[stage3_selected_covariates])
         result = logit.fit(disp=0,maxiter=500)
-        multivariate_results = pd.concat([round(np.exp(result.params),4),round(result.pvalues,3)],axis=1)
+        multivariate_results = pd.concat([round(np.exp(result.params),2),round(result.pvalues,3)],axis=1)
         multivariate_results.columns=['odds_ratio','p_value']
         print(multivariate_results)
         p_value = multivariate_results.loc[covariate,'p_value']
@@ -139,15 +139,27 @@ def purposefully_select_covariates(pt_features,covariates,main_variables):
     print('***Final multivariate analysis***\n')
     logit = sm.Logit(pt_features['isCase'], pt_features[stage3_selected_covariates])
     result = logit.fit(disp=0,maxiter=500)
-    multivariate_results = pd.concat([round(np.exp(result.params),3),round(result.pvalues,3),np.round(np.exp(result.conf_int()),3)],axis=1)
-    multivariate_results.columns=['Multivariate OR','p value','[0.025','0.975]']
+    multivariate_results = pd.concat([round(np.exp(result.params),2),np.round(np.exp(result.conf_int()),2),round(result.pvalues,3)],axis=1)
+    multivariate_results.columns=['Multivariate OR','multi [0.025','multi 0.975]','multi p value']
     multivariate_results.sort_index(inplace=True)
     print(multivariate_results)
 
+
     univariate_and_multivariate_results = pd.concat([univariate_results,multivariate_results],axis=1,join_axes=[multivariate_results.index])
+
+    univariate_and_multivariate_results_formatted = pd.DataFrame(columns=['Univariate OR', 'Multivariate OR'])
+    univariate_and_multivariate_results_formatted['Univariate OR']=univariate_and_multivariate_results['Univariate OR'].map(lambda x: "{:.2f}".format(x)) + ' (95% CI='+  univariate_and_multivariate_results['[0.025'].map(lambda x: "{:.2f}".format(x)) + '-' + univariate_and_multivariate_results['0.975]'].map(lambda x: "{:.2f}".format(x)) + ', p=' + univariate_and_multivariate_results['p value'].map(lambda x: "{:.2f}".format(x))+ ')'
+    univariate_and_multivariate_results_formatted['Multivariate OR']=univariate_and_multivariate_results['Multivariate OR'].map(lambda x: "{:.2f}".format(x)) + ' (95% CI='+  univariate_and_multivariate_results['multi [0.025'].map(lambda x: "{:.2f}".format(x)) + '-' + univariate_and_multivariate_results['multi 0.975]'].map(lambda x: "{:.2f}".format(x)) + ', p=' + univariate_and_multivariate_results['multi p value'].map(lambda x: "{:.2f}".format(x)) + ')'
+    new_index = [row.capitalize().replace('_',' ').replace('100 pdds','(100 PDDs)').replace('gp','GP').replace('Non ','Non-').replace('Benzo and z drugs','Benzodiazepines and z-drugs') for row in univariate_and_multivariate_results_formatted.index]
+    univariate_and_multivariate_results_formatted.index = new_index
+
+    print('\n',univariate_and_multivariate_results_formatted)
+
+    # print(univariate_and_multivariate_results_formatted)
+
     summary_table = result.summary().tables[0]
 
-    return summary_table,univariate_and_multivariate_results
+    return summary_table,univariate_and_multivariate_results,univariate_and_multivariate_results_formatted
 
 
 def remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols):

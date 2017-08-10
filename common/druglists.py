@@ -231,6 +231,5 @@ all_druglists = [
     benzo_and_z_drugs,
     other_sedatives,
     antipsychotics,
-    depot_antipsychotics,
     antidepressants
 ]
