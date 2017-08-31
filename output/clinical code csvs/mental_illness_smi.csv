@@ -1,0 +1,327 @@
+code,coding_system,description,entity,list_name
+Eu33300,Read,[X]Recurrent depress disorder cur epi severe with psyc symp,diagnostic,severe_mental_illness
+Eu33311,Read,[X]Endogenous depression with psychotic symptoms,diagnostic,severe_mental_illness
+Eu33312,Read,[X]Manic-depress psychosis;depressed type+psychotic symptoms,diagnostic,severe_mental_illness
+Eu33313,Read,[X]Recurr severe episodes/major depression+psychotic symptom,diagnostic,severe_mental_illness
+Eu33314,Read,[X]Recurr severe episodes/psychogenic depressive psychosis,diagnostic,severe_mental_illness
+Eu33315,Read,[X]Recurrent severe episodes of psychotic depression,diagnostic,severe_mental_illness
+Eu33316,Read,[X]Recurrent severe episodes/reactive depressive psychosis,diagnostic,severe_mental_illness
+Eu33200,Read,[X]Recurr depress disorder cur epi severe without psyc sympt,diagnostic,severe_mental_illness
+Eu32700,Read,[X]Major depression; severe without psychotic symptoms,diagnostic,severe_mental_illness
+E112300,Read,Single major depressive episode; severe; without psychosis,diagnostic,severe_mental_illness
+E112400,Read,Single major depressive episode; severe; with psychosis,diagnostic,severe_mental_illness
+Eu32300,Read,[X]Severe depressive episode with psychotic symptoms,diagnostic,severe_mental_illness
+Eu32311,Read,[X]Single episode of major depression and psychotic symptoms,diagnostic,severe_mental_illness
+Eu32312,Read,[X]Single episode of psychogenic depressive psychosis,diagnostic,severe_mental_illness
+Eu32313,Read,[X]Single episode of psychotic depression,diagnostic,severe_mental_illness
+Eu32314,Read,[X]Single episode of reactive depressive psychosis,diagnostic,severe_mental_illness
+Eu32800,Read,[X]Major depression; severe with psychotic symptoms,diagnostic,severe_mental_illness
+Eu32900,Read,[X]Single major depr ep; severe with psych; psych in remiss,diagnostic,severe_mental_illness
+Eu32A00,Read,[X]Recurr major depr ep; severe with psych; psych in remiss,diagnostic,severe_mental_illness
+E113300,Read,Recurrent major depressive episodes; severe; no psychosis,diagnostic,severe_mental_illness
+E113400,Read,Recurrent major depressive episodes; severe; with psychosis,diagnostic,severe_mental_illness
+146D.00,Read,H/O: manic depressive disorder,diagnostic,severe_mental_illness
+1S42.00,Read,Manic mood,diagnostic,severe_mental_illness
+6657,Read,On lithium,diagnostic,severe_mental_illness
+6657.11,Read,Lithium monitoring,diagnostic,severe_mental_illness
+6657.12,Read,Started lithium,diagnostic,severe_mental_illness
+E11..00,Read,Affective psychoses,diagnostic,severe_mental_illness
+E110.00,Read,Manic disorder; single episode,diagnostic,severe_mental_illness
+E110000,Read,Single manic episode; unspecified,diagnostic,severe_mental_illness
+E110100,Read,Single manic episode; mild,diagnostic,severe_mental_illness
+E110.11,Read,Hypomanic psychoses,diagnostic,severe_mental_illness
+E110200,Read,Single manic episode; moderate,diagnostic,severe_mental_illness
+E110300,Read,Single manic episode; severe without mention of psychosis,diagnostic,severe_mental_illness
+E110400,Read,Single manic episode; severe; with psychosis,diagnostic,severe_mental_illness
+E110600,Read,Single manic episode in full remission,diagnostic,severe_mental_illness
+E110z00,Read,Manic disorder; single episode NOS,diagnostic,severe_mental_illness
+E111.00,Read,Recurrent manic episodes,diagnostic,severe_mental_illness
+E111000,Read,Recurrent manic episodes; unspecified,diagnostic,severe_mental_illness
+E11..11,Read,Bipolar psychoses,diagnostic,severe_mental_illness
+E111100,Read,Recurrent manic episodes; mild,diagnostic,severe_mental_illness
+E111200,Read,Recurrent manic episodes; moderate,diagnostic,severe_mental_illness
+E11..13,Read,Manic psychoses,diagnostic,severe_mental_illness
+E111300,Read,Recurrent manic episodes; severe without mention psychosis,diagnostic,severe_mental_illness
+E111400,Read,Recurrent manic episodes; severe; with psychosis,diagnostic,severe_mental_illness
+E111500,Read,Recurrent manic episodes; partial or unspecified remission,diagnostic,severe_mental_illness
+E111600,Read,Recurrent manic episodes; in full remission,diagnostic,severe_mental_illness
+E111z00,Read,Recurrent manic episode NOS,diagnostic,severe_mental_illness
+E114.00,Read,Bipolar affective disorder; currently manic,diagnostic,severe_mental_illness
+E114000,Read,Bipolar affective disorder; currently manic; unspecified,diagnostic,severe_mental_illness
+E114100,Read,Bipolar affective disorder; currently manic; mild,diagnostic,severe_mental_illness
+E114.11,Read,Manic-depressive - now manic,diagnostic,severe_mental_illness
+E114200,Read,Bipolar affective disorder; currently manic; moderate,diagnostic,severe_mental_illness
+E114300,Read,Bipolar affect disord; currently manic; severe; no psychosis,diagnostic,severe_mental_illness
+E114400,Read,Bipolar affect disord; currently manic;severe with psychosis,diagnostic,severe_mental_illness
+E114500,Read,Bipolar affect disord;currently manic; part/unspec remission,diagnostic,severe_mental_illness
+E114600,Read,Bipolar affective disorder; currently manic; full remission,diagnostic,severe_mental_illness
+E114z00,Read,Bipolar affective disorder; currently manic; NOS,diagnostic,severe_mental_illness
+E115.00,Read,Bipolar affective disorder; currently depressed,diagnostic,severe_mental_illness
+E115000,Read,Bipolar affective disorder; currently depressed; unspecified,diagnostic,severe_mental_illness
+E115100,Read,Bipolar affective disorder; currently depressed; mild,diagnostic,severe_mental_illness
+E115.11,Read,Manic-depressive - now depressed,diagnostic,severe_mental_illness
+E115200,Read,Bipolar affective disorder; currently depressed; moderate,diagnostic,severe_mental_illness
+E115300,Read,Bipolar affect disord; now depressed; severe; no psychosis,diagnostic,severe_mental_illness
+E115400,Read,Bipolar affect disord; now depressed; severe with psychosis,diagnostic,severe_mental_illness
+E115500,Read,Bipolar affect disord; now depressed; part/unspec remission,diagnostic,severe_mental_illness
+E115600,Read,Bipolar affective disorder; now depressed; in full remission,diagnostic,severe_mental_illness
+E115z00,Read,Bipolar affective disorder; currently depressed; NOS,diagnostic,severe_mental_illness
+E116.00,Read,Mixed bipolar affective disorder,diagnostic,severe_mental_illness
+E116000,Read,Mixed bipolar affective disorder; unspecified,diagnostic,severe_mental_illness
+E116100,Read,Mixed bipolar affective disorder; mild,diagnostic,severe_mental_illness
+E116200,Read,Mixed bipolar affective disorder; moderate,diagnostic,severe_mental_illness
+E116300,Read,Mixed bipolar affective disorder; severe; without psychosis,diagnostic,severe_mental_illness
+E116400,Read,Mixed bipolar affective disorder; severe; with psychosis,diagnostic,severe_mental_illness
+E116500,Read,Mixed bipolar affective disorder; partial/unspec remission,diagnostic,severe_mental_illness
+E116600,Read,Mixed bipolar affective disorder; in full remission,diagnostic,severe_mental_illness
+E116z00,Read,Mixed bipolar affective disorder; NOS,diagnostic,severe_mental_illness
+E117.00,Read,Unspecified bipolar affective disorder,diagnostic,severe_mental_illness
+E117000,Read,Unspecified bipolar affective disorder; unspecified,diagnostic,severe_mental_illness
+E117100,Read,Unspecified bipolar affective disorder; mild,diagnostic,severe_mental_illness
+E117200,Read,Unspecified bipolar affective disorder; moderate,diagnostic,severe_mental_illness
+E117300,Read,Unspecified bipolar affective disorder; severe; no psychosis,diagnostic,severe_mental_illness
+E117400,Read,Unspecified bipolar affective disorder;severe with psychosis,diagnostic,severe_mental_illness
+E117500,Read,Unspecified bipolar affect disord; partial/unspec remission,diagnostic,severe_mental_illness
+E117600,Read,Unspecified bipolar affective disorder; in full remission,diagnostic,severe_mental_illness
+E117z00,Read,Unspecified bipolar affective disorder; NOS,diagnostic,severe_mental_illness
+E11y.00,Read,Other and unspecified manic-depressive psychoses,diagnostic,severe_mental_illness
+E11y000,Read,Unspecified manic-depressive psychoses,diagnostic,severe_mental_illness
+E11y100,Read,Atypical manic disorder,diagnostic,severe_mental_illness
+E11y300,Read,Other mixed manic-depressive psychoses,diagnostic,severe_mental_illness
+E11yz00,Read,Other and unspecified manic-depressive psychoses NOS,diagnostic,severe_mental_illness
+Eu3..00,Read,[X]Mood - affective disorders,diagnostic,severe_mental_illness
+Eu30.00,Read,[X]Manic episode,diagnostic,severe_mental_illness
+Eu30000,Read,[X]Hypomania,diagnostic,severe_mental_illness
+Eu30100,Read,[X]Mania without psychotic symptoms,diagnostic,severe_mental_illness
+Eu30.11,Read,[X]Bipolar disorder; single manic episode,diagnostic,severe_mental_illness
+Eu30200,Read,[X]Mania with psychotic symptoms,diagnostic,severe_mental_illness
+Eu30211,Read,[X]Mania with mood-congruent psychotic symptoms,diagnostic,severe_mental_illness
+Eu30212,Read,[X]Mania with mood-incongruent psychotic symptoms,diagnostic,severe_mental_illness
+Eu30y00,Read,[X]Other manic episodes,diagnostic,severe_mental_illness
+Eu30z00,Read,[X]Manic episode; unspecified,diagnostic,severe_mental_illness
+Eu30z11,Read,[X]Mania NOS,diagnostic,severe_mental_illness
+Eu31.00,Read,[X]Bipolar affective disorder,diagnostic,severe_mental_illness
+Eu31000,Read,[X]Bipolar affective disorder; current episode hypomanic,diagnostic,severe_mental_illness
+Eu31100,Read,[X]Bipolar affect disorder cur epi manic wout psychotic symp,diagnostic,severe_mental_illness
+Eu31.11,Read,[X]Manic-depressive illness,diagnostic,severe_mental_illness
+Eu31.12,Read,[X]Manic-depressive psychosis,diagnostic,severe_mental_illness
+Eu31.13,Read,[X]Manic-depressive reaction,diagnostic,severe_mental_illness
+Eu31200,Read,[X]Bipolar affect disorder cur epi manic with psychotic symp,diagnostic,severe_mental_illness
+Eu31300,Read,[X]Bipolar affect disorder cur epi mild or moderate depressn,diagnostic,severe_mental_illness
+Eu31400,Read,[X]Bipol aff disord; curr epis sev depress; no psychot symp,diagnostic,severe_mental_illness
+Eu31500,Read,[X]Bipolar affect dis cur epi severe depres with psyc symp,diagnostic,severe_mental_illness
+Eu31600,Read,[X]Bipolar affective disorder; current episode mixed,diagnostic,severe_mental_illness
+Eu31700,Read,[X]Bipolar affective disorder; currently in remission,diagnostic,severe_mental_illness
+Eu31y00,Read,[X]Other bipolar affective disorders,diagnostic,severe_mental_illness
+Eu31y11,Read,[X]Bipolar II disorder,diagnostic,severe_mental_illness
+Eu31y12,Read,[X]Recurrent manic episodes,diagnostic,severe_mental_illness
+Eu31z00,Read,[X]Bipolar affective disorder; unspecified,diagnostic,severe_mental_illness
+Eu33213,Read,[X]Manic-depress psychosis;depressd;no psychotic symptoms,diagnostic,severe_mental_illness
+Eu33312,Read,[X]Manic-depress psychosis;depressed type+psychotic symptoms,diagnostic,severe_mental_illness
+Eu34.00,Read,[X]Persistent mood affective disorders,diagnostic,severe_mental_illness
+Eu34000,Read,[X]Cyclothymia,diagnostic,severe_mental_illness
+Eu34y00,Read,[X]Other persistent mood affective disorders,diagnostic,severe_mental_illness
+Eu34z00,Read,[X]Persistent mood affective disorder; unspecified,diagnostic,severe_mental_illness
+Eu3y.00,Read,[X]Other mood affective disorders,diagnostic,severe_mental_illness
+Eu3y000,Read,[X]Other single mood affective disorders,diagnostic,severe_mental_illness
+Eu3y011,Read,[X]Mixed affective episode,diagnostic,severe_mental_illness
+Eu3y100,Read,[X]Other recurrent mood affective disorders,diagnostic,severe_mental_illness
+Eu3yy00,Read,[X]Other specified mood affective disorders,diagnostic,severe_mental_illness
+Eu3z.00,Read,[X]Unspecified mood affective disorder,diagnostic,severe_mental_illness
+Eu3z.11,Read,[X]Affective psychosis NOS,diagnostic,severe_mental_illness
+ZV11111,Read,[V]Personal history of manic-depressive psychosis,diagnostic,severe_mental_illness
+ZV11112,Read,[V]Personal history of manic-depressive psychosis,diagnostic,severe_mental_illness
+1464,Read,H/O: schizophrenia,diagnostic,severe_mental_illness
+146H.00,Read,H/O: psychosis,diagnostic,severe_mental_illness
+1BH..00,Read,Delusions,diagnostic,severe_mental_illness
+1BH0.00,Read,Delusion of persecution,diagnostic,severe_mental_illness
+1BH1.00,Read,Grandiose delusions,diagnostic,severe_mental_illness
+1BH..11,Read,Delusion,diagnostic,severe_mental_illness
+1BH2.00,Read,Ideas of reference,diagnostic,severe_mental_illness
+1BH3.00,Read,Paranoid ideation,diagnostic,severe_mental_illness
+225E.00,Read,O/E - paranoid delusions,diagnostic,severe_mental_illness
+225F.00,Read,O/E - delusion of persecution,diagnostic,severe_mental_illness
+285..11,Read,Psychotic condition; insight present,diagnostic,severe_mental_illness
+286..11,Read,Poor insight into psychotic condition,diagnostic,severe_mental_illness
+665E.00,Read,Injectable neuroleptic given,diagnostic,severe_mental_illness
+665F.00,Read,On injectable neuroleptic,diagnostic,severe_mental_illness
+E1...00,Read,Non-organic psychoses,diagnostic,severe_mental_illness
+E10..00,Read,Schizophrenic disorders,diagnostic,severe_mental_illness
+E100.00,Read,Simple schizophrenia,diagnostic,severe_mental_illness
+E100000,Read,Unspecified schizophrenia,diagnostic,severe_mental_illness
+E100100,Read,Subchronic schizophrenia,diagnostic,severe_mental_illness
+E100.11,Read,Schizophrenia simplex,diagnostic,severe_mental_illness
+E100200,Read,Chronic schizophrenic,diagnostic,severe_mental_illness
+E100300,Read,Acute exacerbation of subchronic schizophrenia,diagnostic,severe_mental_illness
+E100400,Read,Acute exacerbation of chronic schizophrenia,diagnostic,severe_mental_illness
+E100500,Read,Schizophrenia in remission,diagnostic,severe_mental_illness
+E100z00,Read,Simple schizophrenia NOS,diagnostic,severe_mental_illness
+E101.00,Read,Hebephrenic schizophrenia,diagnostic,severe_mental_illness
+E101000,Read,Unspecified hebephrenic schizophrenia,diagnostic,severe_mental_illness
+E101400,Read,Acute exacerbation of chronic hebephrenic schizophrenia,diagnostic,severe_mental_illness
+E101500,Read,Hebephrenic schizophrenia in remission,diagnostic,severe_mental_illness
+E101z00,Read,Hebephrenic schizophrenia NOS,diagnostic,severe_mental_illness
+E102.00,Read,Catatonic schizophrenia,diagnostic,severe_mental_illness
+E102000,Read,Unspecified catatonic schizophrenia,diagnostic,severe_mental_illness
+E102100,Read,Subchronic catatonic schizophrenia,diagnostic,severe_mental_illness
+E102500,Read,Catatonic schizophrenia in remission,diagnostic,severe_mental_illness
+E102z00,Read,Catatonic schizophrenia NOS,diagnostic,severe_mental_illness
+E103.00,Read,Paranoid schizophrenia,diagnostic,severe_mental_illness
+E103000,Read,Unspecified paranoid schizophrenia,diagnostic,severe_mental_illness
+E103200,Read,Chronic paranoid schizophrenia,diagnostic,severe_mental_illness
+E103300,Read,Acute exacerbation of subchronic paranoid schizophrenia,diagnostic,severe_mental_illness
+E103400,Read,Acute exacerbation of chronic paranoid schizophrenia,diagnostic,severe_mental_illness
+E103500,Read,Paranoid schizophrenia in remission,diagnostic,severe_mental_illness
+E103z00,Read,Paranoid schizophrenia NOS,diagnostic,severe_mental_illness
+E104.00,Read,Acute schizophrenic episode,diagnostic,severe_mental_illness
+E105.00,Read,Latent schizophrenia,diagnostic,severe_mental_illness
+E105000,Read,Unspecified latent schizophrenia,diagnostic,severe_mental_illness
+E105200,Read,Chronic latent schizophrenia,diagnostic,severe_mental_illness
+E105500,Read,Latent schizophrenia in remission,diagnostic,severe_mental_illness
+E105z00,Read,Latent schizophrenia NOS,diagnostic,severe_mental_illness
+E106.00,Read,Residual schizophrenia,diagnostic,severe_mental_illness
+E107.00,Read,Schizo-affective schizophrenia,diagnostic,severe_mental_illness
+E107000,Read,Unspecified schizo-affective schizophrenia,diagnostic,severe_mental_illness
+E107100,Read,Subchronic schizo-affective schizophrenia,diagnostic,severe_mental_illness
+E107.11,Read,Cyclic schizophrenia,diagnostic,severe_mental_illness
+E107200,Read,Chronic schizo-affective schizophrenia,diagnostic,severe_mental_illness
+E107300,Read,Acute exacerbation subchronic schizo-affective schizophrenia,diagnostic,severe_mental_illness
+E107400,Read,Acute exacerbation of chronic schizo-affective schizophrenia,diagnostic,severe_mental_illness
+E107500,Read,Schizo-affective schizophrenia in remission,diagnostic,severe_mental_illness
+E107z00,Read,Schizo-affective schizophrenia NOS,diagnostic,severe_mental_illness
+E10y.00,Read,Other schizophrenia,diagnostic,severe_mental_illness
+E10y000,Read,Atypical schizophrenia,diagnostic,severe_mental_illness
+E10y100,Read,Coenesthopathic schizophrenia,diagnostic,severe_mental_illness
+E10y.11,Read,Cenesthopathic schizophrenia,diagnostic,severe_mental_illness
+E10yz00,Read,Other schizophrenia NOS,diagnostic,severe_mental_illness
+E10z.00,Read,Schizophrenia NOS,diagnostic,severe_mental_illness
+E11z.00,Read,Other and unspecified affective psychoses,diagnostic,severe_mental_illness
+E11z000,Read,Unspecified affective psychoses NOS,diagnostic,severe_mental_illness
+E11zz00,Read,Other affective psychosis NOS,diagnostic,severe_mental_illness
+E12..00,Read,Paranoid states,diagnostic,severe_mental_illness
+E120.00,Read,Simple paranoid state,diagnostic,severe_mental_illness
+E121.00,Read,Chronic paranoid psychosis,diagnostic,severe_mental_illness
+E122.00,Read,Paraphrenia,diagnostic,severe_mental_illness
+E123.00,Read,Shared paranoid disorder,diagnostic,severe_mental_illness
+E12y.00,Read,Other paranoid states,diagnostic,severe_mental_illness
+E12y000,Read,Paranoia querulans,diagnostic,severe_mental_illness
+E12yz00,Read,Other paranoid states NOS,diagnostic,severe_mental_illness
+E12z.00,Read,Paranoid psychosis NOS,diagnostic,severe_mental_illness
+E13..00,Read,Other nonorganic psychoses,diagnostic,severe_mental_illness
+E130.00,Read,Reactive depressive psychosis,diagnostic,severe_mental_illness
+E130.11,Read,Psychotic reactive depression,diagnostic,severe_mental_illness
+E131.00,Read,Acute hysterical psychosis,diagnostic,severe_mental_illness
+E13..11,Read,Reactive psychoses,diagnostic,severe_mental_illness
+E133.00,Read,Acute paranoid reaction,diagnostic,severe_mental_illness
+E134.00,Read,Psychogenic paranoid psychosis,diagnostic,severe_mental_illness
+E13y.00,Read,Other reactive psychoses,diagnostic,severe_mental_illness
+E13y100,Read,Brief reactive psychosis,diagnostic,severe_mental_illness
+E13yz00,Read,Other reactive psychoses NOS,diagnostic,severe_mental_illness
+E13z.00,Read,Nonorganic psychosis NOS,diagnostic,severe_mental_illness
+E13z.11,Read,Psychotic episode NOS,diagnostic,severe_mental_illness
+E14..00,Read,Psychoses with origin in childhood,diagnostic,severe_mental_illness
+E141.00,Read,Disintegrative psychosis,diagnostic,severe_mental_illness
+E141100,Read,Residual disintegrative psychoses,diagnostic,severe_mental_illness
+E141.11,Read,Heller's syndrome,diagnostic,severe_mental_illness
+E1y..00,Read,Other specified non-organic psychoses,diagnostic,severe_mental_illness
+E1z..00,Read,Non-organic psychosis NOS,diagnostic,severe_mental_illness
+Eu02z12,Read,[X] Presenile psychosis NOS,diagnostic,severe_mental_illness
+Eu0z.12,Read,[X]Symptomatic psychosis NOS,diagnostic,severe_mental_illness
+Eu2..00,Read,[X]Schizophrenia; schizotypal and delusional disorders,diagnostic,severe_mental_illness
+Eu20.00,Read,[X]Schizophrenia,diagnostic,severe_mental_illness
+Eu20000,Read,[X]Paranoid schizophrenia,diagnostic,severe_mental_illness
+Eu20011,Read,[X]Paraphrenic schizophrenia,diagnostic,severe_mental_illness
+Eu20100,Read,[X]Hebephrenic schizophrenia,diagnostic,severe_mental_illness
+Eu20111,Read,[X]Disorganised schizophrenia,diagnostic,severe_mental_illness
+Eu20200,Read,[X]Catatonic schizophrenia,diagnostic,severe_mental_illness
+Eu20211,Read,[X]Catatonic stupor,diagnostic,severe_mental_illness
+Eu20212,Read,[X]Schizophrenic catalepsy,diagnostic,severe_mental_illness
+Eu20213,Read,[X]Schizophrenic catatonia,diagnostic,severe_mental_illness
+Eu20214,Read,[X]Schizophrenic flexibilatis cerea,diagnostic,severe_mental_illness
+Eu20300,Read,[X]Undifferentiated schizophrenia,diagnostic,severe_mental_illness
+Eu20311,Read,[X]Atypical schizophrenia,diagnostic,severe_mental_illness
+Eu20500,Read,[X]Residual schizophrenia,diagnostic,severe_mental_illness
+Eu20511,Read,[X]Chronic undifferentiated schizophrenia,diagnostic,severe_mental_illness
+Eu20600,Read,[X]Simple schizophrenia,diagnostic,severe_mental_illness
+Eu20y00,Read,[X]Other schizophrenia,diagnostic,severe_mental_illness
+Eu20y12,Read,[X]Schizophreniform disord NOS,diagnostic,severe_mental_illness
+Eu20y13,Read,[X]Schizophrenifrm psychos NOS,diagnostic,severe_mental_illness
+Eu20z00,Read,[X]Schizophrenia; unspecified,diagnostic,severe_mental_illness
+Eu21.00,Read,[X]Schizotypal disorder,diagnostic,severe_mental_illness
+Eu21.11,Read,[X]Latent schizophrenic reaction,diagnostic,severe_mental_illness
+Eu21.12,Read,[X]Borderline schizophrenia,diagnostic,severe_mental_illness
+Eu21.13,Read,[X]Latent schizophrenia,diagnostic,severe_mental_illness
+Eu21.14,Read,[X]Prepsychotic schizophrenia,diagnostic,severe_mental_illness
+Eu21.15,Read,[X]Prodromal schizophrenia,diagnostic,severe_mental_illness
+Eu21.16,Read,[X]Pseudoneurotic schizophrenia,diagnostic,severe_mental_illness
+Eu22.00,Read,[X]Persistent delusional disorders,diagnostic,severe_mental_illness
+Eu22000,Read,[X]Delusional disorder,diagnostic,severe_mental_illness
+Eu22011,Read,[X]Paranoid psychosis,diagnostic,severe_mental_illness
+Eu22012,Read,[X]Paranoid state,diagnostic,severe_mental_illness
+Eu22013,Read,[X]Paraphrenia - late,diagnostic,severe_mental_illness
+Eu22014,Read,[X]Sensitiver Beziehungswahn,diagnostic,severe_mental_illness
+Eu22015,Read,[X]Paranoia,diagnostic,severe_mental_illness
+Eu22100,Read,[X]Delusional misidentification syndrome,diagnostic,severe_mental_illness
+Eu22111,Read,[X]Capgras syndrome,diagnostic,severe_mental_illness
+Eu22y00,Read,[X]Other persistent delusional disorders,diagnostic,severe_mental_illness
+Eu22y11,Read,[X]Delusional dysmorphophobia,diagnostic,severe_mental_illness
+Eu22y12,Read,[X]Involutional paranoid state,diagnostic,severe_mental_illness
+Eu22y13,Read,[X]Paranoia querulans,diagnostic,severe_mental_illness
+Eu22z00,Read,[X]Persistent delusional disorder; unspecified,diagnostic,severe_mental_illness
+Eu23.00,Read,[X]Acute and transient psychotic disorders,diagnostic,severe_mental_illness
+Eu23000,Read,[X]Acute polymorphic psychot disord without symp of schizoph,diagnostic,severe_mental_illness
+Eu23012,Read,[X]Cycloid psychosis,diagnostic,severe_mental_illness
+Eu23100,Read,[X]Acute polymorphic psychot disord with symp of schizophren,diagnostic,severe_mental_illness
+Eu23112,Read,[X]Cycloid psychosis with symptoms of schizophrenia,diagnostic,severe_mental_illness
+Eu23200,Read,[X]Acute schizophrenia-like psychotic disorder,diagnostic,severe_mental_illness
+Eu23211,Read,[X]Brief schizophreniform disorder,diagnostic,severe_mental_illness
+Eu23212,Read,[X]Brief schizophrenifrm psych,diagnostic,severe_mental_illness
+Eu23214,Read,[X]Schizophrenic reaction,diagnostic,severe_mental_illness
+Eu23300,Read,[X]Other acute predominantly delusional psychotic disorders,diagnostic,severe_mental_illness
+Eu23312,Read,[X]Psychogenic paranoid psychosis,diagnostic,severe_mental_illness
+Eu23y00,Read,[X]Other acute and transient psychotic disorders,diagnostic,severe_mental_illness
+Eu23z00,Read,[X]Acute and transient psychotic disorder; unspecified,diagnostic,severe_mental_illness
+Eu23z11,Read,[X]Brief reactive psychosis NOS,diagnostic,severe_mental_illness
+Eu23z12,Read,[X]Reactive psychosis,diagnostic,severe_mental_illness
+Eu25.00,Read,[X]/bective disorders,diagnostic,severe_mental_illness
+Eu25000,Read,[X]Schizoaffective disorder; manic type,diagnostic,severe_mental_illness
+Eu25011,Read,[X]Schizoaffective psychosis; manic type,diagnostic,severe_mental_illness
+Eu25012,Read,[X]Schizophreniform psychosis; manic type,diagnostic,severe_mental_illness
+Eu25100,Read,[X]Schizoaffective disorder; depressive type,diagnostic,severe_mental_illness
+Eu25111,Read,[X]Schizoaffective psychosis; depressive type,diagnostic,severe_mental_illness
+Eu25112,Read,[X]Schizophreniform psychosis; depressive type,diagnostic,severe_mental_illness
+Eu25200,Read,[X]Schizoaffective disorder; mixed type,diagnostic,severe_mental_illness
+Eu25212,Read,[X]Mixed schizophrenic and affective psychosis,diagnostic,severe_mental_illness
+Eu25y00,Read,[X]Other schizoaffective disorders,diagnostic,severe_mental_illness
+Eu25z00,Read,[X]Schizoaffective disorder; unspecified,diagnostic,severe_mental_illness
+Eu25z11,Read,[X]Schizoaffective psychosis NOS,diagnostic,severe_mental_illness
+Eu2y.00,Read,[X]Other nonorganic psychotic disorders,diagnostic,severe_mental_illness
+Eu2y.11,Read,[X]Chronic hallucinatory psychosis,diagnostic,severe_mental_illness
+Eu2z.00,Read,[X]Unspecified nonorganic psychosis,diagnostic,severe_mental_illness
+Eu2z.11,Read,[X]Psychosis NOS,diagnostic,severe_mental_illness
+Eu32300,Read,[X]Severe depressive episode with psychotic symptoms,diagnostic,severe_mental_illness
+Eu32311,Read,[X]Single episode of major depression and psychotic symptoms,diagnostic,severe_mental_illness
+Eu32312,Read,[X]Single episode of psychogenic depressive psychosis,diagnostic,severe_mental_illness
+Eu32313,Read,[X]Single episode of psychotic depression,diagnostic,severe_mental_illness
+Eu32314,Read,[X]Single episode of reactive depressive psychosis,diagnostic,severe_mental_illness
+Eu32900,Read,[X]Single major depr ep; severe with psych; psych in remiss,diagnostic,severe_mental_illness
+Eu32A00,Read,[X]Recurr major depr ep; severe with psych; psych in remiss,diagnostic,severe_mental_illness
+Eu33300,Read,[X]Recurrent depress disorder cur epi severe with psyc symp,diagnostic,severe_mental_illness
+Eu33311,Read,[X]Endogenous depression with psychotic symptoms,diagnostic,severe_mental_illness
+Eu33313,Read,[X]Recurr severe episodes/major depression+psychotic symptom,diagnostic,severe_mental_illness
+Eu33314,Read,[X]Recurr severe episodes/psychogenic depressive psychosis,diagnostic,severe_mental_illness
+Eu33315,Read,[X]Recurrent severe episodes of psychotic depression,diagnostic,severe_mental_illness
+Eu33316,Read,[X]Recurrent severe episodes/reactive depressive psychosis,diagnostic,severe_mental_illness
+Eu44.14,Read,[X]Hysterical psychosis,diagnostic,severe_mental_illness
+Eu84312,Read,[X]Disintegrative psychosis,diagnostic,severe_mental_illness
+Eu84314,Read,[X]Symbiotic psychosis,diagnostic,severe_mental_illness
+R001.00,Read,[D]Hallucinations,diagnostic,severe_mental_illness
+R001000,Read,[D]Hallucinations; auditory,diagnostic,severe_mental_illness
+R001100,Read,[D]Hallucinations; gustatory,diagnostic,severe_mental_illness
+R001200,Read,[D]Hallucinations; olfactory,diagnostic,severe_mental_illness
+R001300,Read,[D]Hallucinations; tactile,diagnostic,severe_mental_illness
+R001400,Read,[D]Visual hallucinations,diagnostic,severe_mental_illness
+R001z00,Read,[D]Hallucinations NOS,diagnostic,severe_mental_illness
+Ryu5300,Read,[X]Other hallucinations,diagnostic,severe_mental_illness
+ZS7C611,Read,Schizophrenic language,diagnostic,severe_mental_illness
+ZV11000,Read,[V]Personal history of schizophrenia,diagnostic,severe_mental_illness

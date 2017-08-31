@@ -71,6 +71,7 @@ all_dementia = [
 ]
 
 vascular = [
+    #note that dementia subtypes were not used in final study
 	'E004000',	#	Uncomplicated arteriosclerotic dementia
 	'Eu01100',	#	[X]Multi-infarct dementia
 	'Eu01.00',	#	[X]Vascular dementia
@@ -89,6 +90,7 @@ vascular = [
 ]
 
 alzheimers = [
+    #note that dementia subtypes were not used in final study
 	'Eu00012',	#	[X]Primary degen dementia, Alzheimer's type, p...
 	'Eu00013',	#	[X]Alzheimer's disease type 2
 	'Eu00011',	#	[X]Presenile dementia,Alzheimer's type
@@ -106,6 +108,7 @@ alzheimers = [
 ]
 
 dlb_and_pdd = [
+    #note that dementia subtypes were not used in final study
 	'Eu02500',	#	[X]Lewy body dementia
 	'F116.00',	#	Lewy body disease
 	'Eu02300'	#	[X]Dementia in Parkinson's disease
@@ -135,7 +138,6 @@ insomnia = {
         'E274.12', # Insomnia due to nonorganic sleep disorder
         'E274E00', # 'Short-sleeper'
         '1BX9.00', # Light sleep
-        # '1B1Q.00', # Poor sleep pattern
         '1BX3.00' #early morning waking
     ]
 }
@@ -360,7 +362,7 @@ mental_illness_non_smi = {
     'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes':[
-        #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
+        #adapted from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
         # anxiety disorder
     	# '2258',		#O/E - anxious
@@ -823,7 +825,6 @@ mental_illness_non_smi = {
     	'E118.00',		#Seasonal affective disorder
     	'E11y200',		#Atypical depressive disorder
     	'E11z200',		#Masked depression
-    	'E135.00',		#Agitated depression
     	'E200300',		#Anxiety with depression
     	'E204.00',		#Neurotic depression reactive type
     	'E204.11',		#Postnatal depression
@@ -833,20 +834,16 @@ mental_illness_non_smi = {
     	'E2B..00',		#Depressive disorder NEC
     	'E2B0.00',		#Postviral depression
     	'E2B1.00',		#Chronic depression
-    	'Eu20400',		#[X]Post-schizophrenic depression
     	'Eu32.00',		#[X]Depressive episode
     	'Eu32000',		#[X]Mild depressive episode
     	'Eu32100',		#[X]Moderate depressive episode
     	'Eu32.11',		#[X]Single episode of depressive reaction
     	'Eu32.12',		#[X]Single episode of psychogenic depression
     	'Eu32.13',		#[X]Single episode of reactive depression
-    	'Eu32200',		#[X]Severe depressive episode without psychotic symptoms
-    	'Eu32211',		#[X]Single episode agitated depressn w'out psychotic symptoms
     	'Eu32212',		#[X]Single episode major depression w'out psychotic symptoms
     	'Eu32213',		#[X]Single episode vital depression w'out psychotic symptoms
     	'Eu32400',		#[X]Mild depression
     	'Eu32500',		#[X]Major depression; mild
-    	'Eu32600',		#[X]Major depression; moderately severe
     	'Eu32y00',		#[X]Other depressive episodes
     	'Eu32y11',		#[X]Atypical depression
     	'Eu32y12',		#[X]Single episode of masked depression NOS
@@ -866,7 +863,7 @@ mental_illness_non_smi = {
     	'Eu33211',		#[X]Endogenous depression without psychotic symptoms
     	'Eu33212',		#[X]Major depression; recurrent without psychotic symptoms
     	'Eu33214',		#[X]Vital depression; recurrent without psychotic symptoms
-
+    	'Eu32312',		#[X]Single episode of psychogenic depressive psychosis
     	'Eu33400',		#[X]Recurrent depressive disorder; currently in remission
     	'Eu33y00',		#[X]Other recurrent depressive disorders
     	'Eu33z00',		#[X]Recurrent depressive disorder; unspecified
@@ -889,7 +886,7 @@ mental_illness_smi = {
     'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes': [
-        #taken from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
+        #adapted from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
 
         #SEVERE OR PSYCHOTIC DEPRESSION
     	'Eu33300',		#[X]Recurrent depress disorder cur epi severe with psyc symp
@@ -905,7 +902,6 @@ mental_illness_smi = {
     	'E112400',		#Single major depressive episode; severe; with psychosis
     	'Eu32300',		#[X]Severe depressive episode with psychotic symptoms
     	'Eu32311',		#[X]Single episode of major depression and psychotic symptoms
-    	'Eu32312',		#[X]Single episode of psychogenic depressive psychosis
     	'Eu32313',		#[X]Single episode of psychotic depression
     	'Eu32314',		#[X]Single episode of reactive depressive psychosis
     	'Eu32800',		#[X]Major depression; severe with psychotic symptoms
@@ -913,6 +909,11 @@ mental_illness_smi = {
     	'Eu32A00',		#[X]Recurr major depr ep; severe with psych; psych in remiss
     	'E113300',		#Recurrent major depressive episodes; severe; no psychosis
     	'E113400',		#Recurrent major depressive episodes; severe; with psychosis
+     	'E135.00',		#Agitated depression
+     	'Eu20400',		#[X]Post-schizophrenic depression
+     	'Eu32200',		#[X]Severe depressive episode without psychotic symptoms
+     	'Eu32211',		#[X]Single episode agitated depressn w'out psychotic symptoms
+     	'Eu32600',		#[X]Major depression; moderately severe
 
         # BIPOLAR DISORDER
     	'146D.00',		#H/O: manic depressive disorder
@@ -1825,106 +1826,90 @@ epilepsy = {
     'name':'epilepsy',
     'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
-    'codes': [
-        # https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/55/codelist/res55-epilepsy/
-        '1473',		#H/O: epilepsy
-        '1B1W.00',		#Transient epileptic amnesia
-        '1O30.00',		#Epilepsy confirmed
-        '2823',		#O/E - petit mal fit
-        '2824',		#O/E - focal (Jacksonian) fit
-        '2824.11',		#O/E - Jacksonian fit
-        '2825',		#O/E - psychomotor fit
-        '2828',		#Absence seizure
-        '667B.00',		#Nocturnal epilepsy
-        '667N.00',		#Epilepsy severity
-        'Eu05212',		#[X]Schizophrenia-like psychosis in epilepsy
-        'Eu05y11',		#[X]Epileptic psychosis NOS
-        'Eu06013',		#[X]Limbic epilepsy personality
-        #  'Eu80300',		#[X]Acquired aphasia with epilepsy [Landau - Kleffner]
-         'F132100',		#Progressive myoclonic epilepsy
-        'F132200',		#Myoclonic encephalopathy
-        'F25..00',		#Epilepsy
-        'F250.00',		#Generalised nonconvulsive epilepsy
-        'F250000',		#Petit mal (minor) epilepsy
-        'F250011',		#Epileptic absences
-        'F250100',		#pykno-epilepsy
-        'F250200',		#Epileptic seizures - atonic
-        'F250300',		#Epileptic seizures - akinetic
-        # 'F250400',		#Juvenile absence epilepsy
-        # 'F250500',		#Lennox-Gastaut syndrome
-         'F250y00',		#Other specified generalised nonconvulsive epilepsy
-         'F250z00',		#Generalised nonconvulsive epilepsy NOS
-         'F251.00',		#Generalised convulsive epilepsy
-        'F251000',		#Grand mal (major) epilepsy
-         'F251011',		#Tonic-clonic epilepsy
-        #  'F251100',		#Neonatal myoclonic epilepsy
-        # 'F251111',		#Otohara syndrome
-        'F251200',		#Epileptic seizures - clonic
-        'F251300',		#Epileptic seizures - myoclonic
-        'F251400',		#Epileptic seizures - tonic
-        'F251500',		#Tonic-clonic epilepsy
-        'F251600',		#Grand mal seizure
-         'F251y00',		#Other specified generalised convulsive epilepsy
-         'F251z00',		#Generalised convulsive epilepsy NOS
-        'F252.00',		#Petit mal status
-        'F253.00',		#Grand mal status
-        'F253.11',		#Status epilepticus
-         'F254.00',		#Partial epilepsy with impairment of consciousness
-        'F254000',		#Temporal lobe epilepsy
-         'F254100',		#Psychomotor epilepsy
-         'F254200',		#Psychosensory epilepsy
-         'F254300',		#Limbic system epilepsy
-        'F254400',		#Epileptic automatism
-        'F254500',		#Complex partial epileptic seizure
-         'F254z00',		#Partial epilepsy with impairment of consciousness NOS
-         'F255.00',		#Partial epilepsy without impairment of consciousness
-        'F255000',		#Jacksonian; focal or motor epilepsy
-        'F255011',		#Focal epilepsy
-        'F255012',		#Motor epilepsy
-         'F255100',		#Sensory induced epilepsy
-         'F255200',		#Somatosensory epilepsy
-        'F255300',		#Visceral reflex epilepsy
-        'F255311',		#Partial epilepsy with autonomic symptoms
-         'F255400',		#Visual reflex epilepsy
-        'F255500',		#Unilateral epilepsy
-        'F255600',		#Simple partial epileptic seizure
-         'F255y00',		#Partial epilepsy without impairment of consciousness OS
-        'F255z00',		#Partial epilepsy without impairment of consciousness NOS
-        # 'F256.00',		#Infantile Spasms
-        # 'F256000',		#Hypsarrhthymia
-        'F256100',		#Salaam attacks
-        'F256.11',		#Lightning spasms
-        # 'F256.12',		#West Syndrome
-        # 'F256z00',		#Infantile Spasms NOS
-        'F257.00',		#Kojevnikov's epilepsy
-        # 'F259.00',		#Early infant epileptic encephalopathy with suppression bursts
-        'F259.11',		#Ohtahara syndrome
-        #  'F25A.00',		#Juvenile myoclonic epilepsy
-         'F25B.00',		#Alcohol-induced epilepsy
-         'F25C.00',		#Drug-induced epilepsy
-         'F25D.00',		#Menstrual epilepsy
-         'F25E.00',		#Stress-induced epilepsy
-        'F25F.00',		#Photosensitive epilepsy
-        # 'F25G.00',		#Severe myoclonic epilepsy in infancy
-        'F25X.00',		#Status epilepticus; unspecified
-         'F25y.00',		#Other forms of epilepsy
-        'F25y000',		#Cursive (running) epilepsy
-        'F25y100',		#Gelastic epilepsy
-        'F25y200',		#Locl-rlt(foc)(part)idiop epilep&epilptic syn seiz locl onset
-        'F25y300',		#Complex partial status epilepticus
-        # 'F25y400',		#Benign Rolandic epilepsy
-        # 'F25y500',		#Panayiotopoulos syndrome
-        'F25yz00',		#Other forms of epilepsy NOS
-        'F25z.00',		#Epilepsy NOS
-        'F25.z.11',		#Fit (in known epileptic) NOS
-        'Fyu5000',		#[X]Other generalized epilepsy and epileptic syndromes
-        'Fyu5100',		#[X]Other epilepsy
-        'Fyu5200',		#[X]Other status epilepticus
-        'Fyu5900',		#[X]Status epilepticus; unspecified
-        'SC20000',		#Traumatic epilepsy
-        'ZS82.00',		#Acquired epileptic aphasia
-        # 'ZS82.11'		#Landau-Kleffner syndrome
-    ]
+    'codes': {
+        '1473':'H/O: epilepsy',
+        '1B1W.00':'Transient epileptic amnesia',
+        '1O30.00':'Epilepsy confirmed',
+        '2823':'O/E - petit mal fit',
+        '2824':'O/E - focal (Jacksonian) fit',
+        '2824.11':'O/E - Jacksonian fit',
+        '2825':'O/E - psychomotor fit',
+        '2828':'Absence seizure',
+        '667B.00':'Nocturnal epilepsy',
+        '667N.00':'Epilepsy severity',
+        'Eu05212':'[X]Schizophrenia-like psychosis in epilepsy',
+        'Eu05y11':'[X]Epileptic psychosis NOS',
+        'Eu06013':'[X]Limbic epilepsy personality',
+         'F132100':'Progressive myoclonic epilepsy',
+        'F132200':'Myoclonic encephalopathy',
+        'F25..00':'Epilepsy',
+        'F250.00':'Generalised nonconvulsive epilepsy',
+        'F250000':'Petit mal (minor) epilepsy',
+        'F250011':'Epileptic absences',
+        'F250100':'pykno-epilepsy',
+        'F250200':'Epileptic seizures - atonic',
+        'F250300':'Epileptic seizures - akinetic',
+         'F250y00':'Other specified generalised nonconvulsive epilepsy',
+         'F250z00':'Generalised nonconvulsive epilepsy NOS',
+         'F251.00':'Generalised convulsive epilepsy',
+        'F251000':'Grand mal (major) epilepsy',
+         'F251011':'Tonic-clonic epilepsy',
+        'F251200':'Epileptic seizures - clonic',
+        'F251300':'Epileptic seizures - myoclonic',
+        'F251400':'Epileptic seizures - tonic',
+        'F251500':'Tonic-clonic epilepsy',
+        'F251600':'Grand mal seizure',
+         'F251y00':'Other specified generalised convulsive epilepsy',
+         'F251z00':'Generalised convulsive epilepsy NOS',
+        'F252.00':'Petit mal status',
+        'F253.00':'Grand mal status',
+        'F253.11':'Status epilepticus',
+         'F254.00':'Partial epilepsy with impairment of consciousness',
+        'F254000':'Temporal lobe epilepsy',
+         'F254100':'Psychomotor epilepsy',
+         'F254200':'Psychosensory epilepsy',
+         'F254300':'Limbic system epilepsy',
+        'F254400':'Epileptic automatism',
+        'F254500':'Complex partial epileptic seizure',
+         'F254z00':'Partial epilepsy with impairment of consciousness NOS',
+         'F255.00':'Partial epilepsy without impairment of consciousness',
+        'F255000':'Jacksonian; focal or motor epilepsy',
+        'F255011':'Focal epilepsy',
+        'F255012':'Motor epilepsy',
+         'F255100':'Sensory induced epilepsy',
+         'F255200':'Somatosensory epilepsy',
+        'F255300':'Visceral reflex epilepsy',
+        'F255311':'Partial epilepsy with autonomic symptoms',
+         'F255400':'Visual reflex epilepsy',
+        'F255500':'Unilateral epilepsy',
+        'F255600':'Simple partial epileptic seizure',
+         'F255y00':'Partial epilepsy without impairment of consciousness OS',
+        'F255z00':'Partial epilepsy without impairment of consciousness NOS',
+        'F256100':'Salaam attacks',
+        'F256.11':'Lightning spasms',
+        'F257.00':'Kojevnikov's epilepsy',
+        'F259.11':'Ohtahara syndrome',
+         'F25B.00':'Alcohol-induced epilepsy',
+         'F25C.00':'Drug-induced epilepsy',
+         'F25D.00':'Menstrual epilepsy',
+         'F25E.00':'Stress-induced epilepsy',
+        'F25F.00':'Photosensitive epilepsy',
+        'F25X.00':'Status epilepticus; unspecified',
+         'F25y.00':'Other forms of epilepsy',
+        'F25y000':'Cursive (running) epilepsy',
+        'F25y100':'Gelastic epilepsy',
+        'F25y200':'Locl-rlt(foc)(part)idiop epilep&epilptic syn seiz locl onset',
+        'F25y300':'Complex partial status epilepticus',
+        'F25yz00':'Other forms of epilepsy NOS',
+        'F25z.00':'Epilepsy NOS',
+        'F25.z.11':'Fit (in known epileptic) NOS',
+        'Fyu5000':'[X]Other generalized epilepsy and epileptic syndromes',
+        'Fyu5100':'[X]Other epilepsy',
+        'Fyu5200':'[X]Other status epilepticus',
+        'Fyu5900':'[X]Status epilepticus; unspecified',
+        'SC20000':'Traumatic epilepsy',
+        'ZS82.00':'Acquired epileptic aphasia'
+    }
 }
 
 all_codelists = [

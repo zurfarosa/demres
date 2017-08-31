@@ -1,0 +1,70 @@
+code,coding_system,description,entity,list_name
+E001000,Read,Uncomplicated presenile dementia,diagnostic,dementia
+E001z00,Read,Presenile dementia NOS,diagnostic,dementia
+E002.00,Read,Senile dementia with depressive or paranoid fe...,diagnostic,dementia
+Eu00012,Read,[X]Primary degen dementia,diagnostic,dementia
+Eu00013,Read,[X]Alzheimer's disease type 2,diagnostic,dementia
+Eu00011,Read,[X]Presenile dementia,diagnostic,dementia
+Eu02400,Read,[X]Dementia in human immunodef virus [HIV] dis...,diagnostic,dementia
+Eu02z00,Read,[X] Unspecified dementia,diagnostic,dementia
+E004000,Read,Uncomplicated arteriosclerotic dementia,diagnostic,dementia
+Eu10711,Read,[X]Alcoholic dementia NOS,diagnostic,dementia
+Eu01100,Read,[X]Multi-infarct dementia,diagnostic,dementia
+E001.00,Read,Presenile dementia,diagnostic,dementia
+E001100,Read,Presenile dementia with delirium,diagnostic,dementia
+Eu01.00,Read,[X]Vascular dementia,diagnostic,dementia
+E002z00,Read,Senile dementia with depressive or paranoid fe...,diagnostic,dementia
+E004100,Read,Arteriosclerotic dementia with delirium,diagnostic,dementia
+E02y100,Read,Drug-induced dementia,diagnostic,dementia
+Eu00000,Read,[X]Dementia in Alzheimer's disease with early ...,diagnostic,dementia
+E004300,Read,Arteriosclerotic dementia with depression,diagnostic,dementia
+E003.00,Read,Senile dementia with delirium,diagnostic,dementia
+Eu00112,Read,[X]Senile dementia,diagnostic,dementia
+E004.00,Read,Arteriosclerotic dementia,diagnostic,dementia
+E004200,Read,Arteriosclerotic dementia with paranoia,diagnostic,dementia
+E000.00,Read,Uncomplicated senile dementia,diagnostic,dementia
+Eu00100,Read,[X]Dementia in Alzheimer's disease with late o...,diagnostic,dementia
+E004z00,Read,Arteriosclerotic dementia NOS,diagnostic,dementia
+Eu01.11,Read,[X]Arteriosclerotic dementia,diagnostic,dementia
+Eu02300,Read,[X]Dementia in Parkinson's disease,diagnostic,dementia
+Eu01000,Read,[X]Vascular dementia of acute onset,diagnostic,dementia
+Eu02500,Read,[X]Lewy body dementia,diagnostic,dementia
+F116.00,Read,Lewy body disease,diagnostic,dementia
+Eu00.00,Read,[X]Dementia in Alzheimer's disease,diagnostic,dementia
+E004.11,Read,Multi infarct dementia,diagnostic,dementia
+Eu02000,Read,[X]Dementia in Pick's disease,diagnostic,dementia
+Eu00113,Read,[X]Primary degen dementia of Alzheimer's type,diagnostic,dementia
+Eu00111,Read,[X]Alzheimer's disease type 1,diagnostic,dementia
+E00..11,Read,Senile dementia,diagnostic,dementia
+Eu01300,Read,[X]Mixed cortical and subcortical vascular dem...,diagnostic,dementia
+Eu01y00,Read,[X]Other vascular dementia,diagnostic,dementia
+Eu04100,Read,[X]Delirium superimposed on dementia,diagnostic,dementia
+Eu02z11,Read,[X] Presenile dementia NOS,diagnostic,dementia
+Eu02z16,Read,[X] Senile dementia,diagnostic,dementia
+Eu02z14,Read,[X] Senile dementia NOS,diagnostic,dementia
+E002100,Read,Senile dementia with depression,diagnostic,dementia
+Eu02100,Read,[X]Dementia in Creutzfeldt-Jakob disease,diagnostic,dementia
+1461,Read,H/O: dementia,diagnostic,dementia
+Eu01111,Read,[X]Predominantly cortical dementia,diagnostic,dementia
+E001200,Read,Presenile dementia with paranoia,diagnostic,dementia
+Eu02z13,Read,[X] Primary degenerative dementia NOS,diagnostic,dementia
+F110000,Read,Alzheimer's disease with early onset,diagnostic,dementia
+F111.00,Read,Pick's disease,diagnostic,dementia
+Eu02.00,Read,[X]Dementia in other diseases classified elsew...,diagnostic,dementia
+Eu01200,Read,[X]Subcortical vascular dementia,diagnostic,dementia
+ZS7C500,Read,Language disorder of dementia,diagnostic,dementia
+E00..12,Read,Senile/presenile dementia,diagnostic,dementia
+E002000,Read,Senile dementia with paranoia,diagnostic,dementia
+Eu00z11,Read,[X]Alzheimer's dementia unspec,diagnostic,dementia
+E012.11,Read,Alcoholic dementia NOS,diagnostic,dementia
+Eu02200,Read,[X]Dementia in Huntington's disease,diagnostic,dementia
+E012.00,Read,Other alcoholic dementia,diagnostic,dementia
+E001300,Read,Presenile dementia with depression,diagnostic,dementia
+F110100,Read,Alzheimer's disease with late onset,diagnostic,dementia
+F112.00,Read,Senile degeneration of brain,diagnostic,dementia
+F110.00,Read,Alzheimer's disease,diagnostic,dementia
+Eu02y00,Read,[X]Dementia in other specified diseases classi...,diagnostic,dementia
+Eu00200,Read,[X]Dementia in Alzheimer's dis,diagnostic,dementia
+Fyu3000,Read,[X]Other Alzheimer's disease,diagnostic,dementia
+Eu00z00,Read,[X]Dementia in Alzheimer's disease,diagnostic,dementia
+Eu01z00,Read,[X]Vascular dementia,diagnostic,dementia

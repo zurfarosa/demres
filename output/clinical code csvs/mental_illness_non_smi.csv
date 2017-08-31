@@ -1,0 +1,501 @@
+code,coding_system,description,entity,list_name
+8G52.00,Read,Antiphobic therapy,diagnostic,mental_illness_non_smi
+8G94.00,Read,Anxiety management training,diagnostic,mental_illness_non_smi
+8HHp.00,Read,Referral for guided self-help for anxiety,diagnostic,mental_illness_non_smi
+E2...00,Read,Neurotic; personality and other nonpsychotic disorders,diagnostic,mental_illness_non_smi
+E20..00,Read,Neurotic disorders,diagnostic,mental_illness_non_smi
+E200.00,Read,Anxiety states,diagnostic,mental_illness_non_smi
+E200000,Read,Anxiety state unspecified,diagnostic,mental_illness_non_smi
+E200100,Read,Panic disorder,diagnostic,mental_illness_non_smi
+E200111,Read,Panic attack,diagnostic,mental_illness_non_smi
+E200200,Read,Generalised anxiety disorder,diagnostic,mental_illness_non_smi
+E200300,Read,Anxiety with depression,diagnostic,mental_illness_non_smi
+E200400,Read,Chronic anxiety,diagnostic,mental_illness_non_smi
+E200500,Read,Recurrent anxiety,diagnostic,mental_illness_non_smi
+E200z00,Read,Anxiety state NOS,diagnostic,mental_illness_non_smi
+E201.00,Read,Hysteria,diagnostic,mental_illness_non_smi
+E201000,Read,Hysteria unspecified,diagnostic,mental_illness_non_smi
+E201100,Read,Hysterical blindness,diagnostic,mental_illness_non_smi
+E201200,Read,Hysterical deafness,diagnostic,mental_illness_non_smi
+E201300,Read,Hysterical tremor,diagnostic,mental_illness_non_smi
+E201400,Read,Hysterical paralysis,diagnostic,mental_illness_non_smi
+E201500,Read,Hysterical seizures,diagnostic,mental_illness_non_smi
+E201511,Read,Fit - hysterical,diagnostic,mental_illness_non_smi
+E201600,Read,Other conversion disorder,diagnostic,mental_illness_non_smi
+E201611,Read,Astasia - abasia; hysterical,diagnostic,mental_illness_non_smi
+E201612,Read,Globus hystericus,diagnostic,mental_illness_non_smi
+E201700,Read,Hysterical amnesia,diagnostic,mental_illness_non_smi
+E201800,Read,Hysterical fugue,diagnostic,mental_illness_non_smi
+E201900,Read,Multiple personality,diagnostic,mental_illness_non_smi
+E201A00,Read,Dissociative reaction unspecified,diagnostic,mental_illness_non_smi
+E201B00,Read,Compensation neurosis,diagnostic,mental_illness_non_smi
+E201C00,Read,Phantom pregnancy,diagnostic,mental_illness_non_smi
+E201z00,Read,Hysteria NOS,diagnostic,mental_illness_non_smi
+E201z11,Read,Aphonia - hysterical,diagnostic,mental_illness_non_smi
+E201z12,Read,Ataxia - hysterical,diagnostic,mental_illness_non_smi
+E201z13,Read,Ganser's syndrome - hysterical,diagnostic,mental_illness_non_smi
+E202.00,Read,Phobic disorders,diagnostic,mental_illness_non_smi
+E202000,Read,Phobia unspecified,diagnostic,mental_illness_non_smi
+E202100,Read,Agoraphobia with panic attacks,diagnostic,mental_illness_non_smi
+E202.11,Read,Social phobic disorders,diagnostic,mental_illness_non_smi
+E202.12,Read,Phobic anxiety,diagnostic,mental_illness_non_smi
+E202200,Read,Agoraphobia without mention of panic attacks,diagnostic,mental_illness_non_smi
+E202300,Read,Social phobia; fear of eating in public,diagnostic,mental_illness_non_smi
+E202400,Read,Social phobia; fear of public speaking,diagnostic,mental_illness_non_smi
+E202500,Read,Social phobia; fear of public washing,diagnostic,mental_illness_non_smi
+E202600,Read,Acrophobia,diagnostic,mental_illness_non_smi
+E202700,Read,Animal phobia,diagnostic,mental_illness_non_smi
+E202800,Read,Claustrophobia,diagnostic,mental_illness_non_smi
+E202900,Read,Fear of crowds,diagnostic,mental_illness_non_smi
+E202A00,Read,Fear of flying,diagnostic,mental_illness_non_smi
+E202B00,Read,Cancer phobia,diagnostic,mental_illness_non_smi
+E202C00,Read,Dental phobia,diagnostic,mental_illness_non_smi
+E202D00,Read,Fear of death,diagnostic,mental_illness_non_smi
+E202E00,Read,Fear of pregnancy,diagnostic,mental_illness_non_smi
+E202z00,Read,Phobic disorder NOS,diagnostic,mental_illness_non_smi
+E202z11,Read,Weight fixation,diagnostic,mental_illness_non_smi
+E203.00,Read,Obsessive-compulsive disorders,diagnostic,mental_illness_non_smi
+E203000,Read,Compulsive neurosis,diagnostic,mental_illness_non_smi
+E203100,Read,Obsessional neurosis,diagnostic,mental_illness_non_smi
+E203.11,Read,Anancastic neurosis,diagnostic,mental_illness_non_smi
+E203z00,Read,Obsessive-compulsive disorder NOS,diagnostic,mental_illness_non_smi
+E205.00,Read,Neurasthenia - nervous debility,diagnostic,mental_illness_non_smi
+E205.11,Read,Nervous exhaustion,diagnostic,mental_illness_non_smi
+E206.00,Read,Depersonalisation syndrome,diagnostic,mental_illness_non_smi
+E207.00,Read,Hypochondriasis,diagnostic,mental_illness_non_smi
+E20y.00,Read,Other neurotic disorders,diagnostic,mental_illness_non_smi
+E20y000,Read,Somatization disorder,diagnostic,mental_illness_non_smi
+E20y011,Read,Briquet's disorder,diagnostic,mental_illness_non_smi
+E20y100,Read,Writer's cramp neurosis,diagnostic,mental_illness_non_smi
+E20y200,Read,Other occupational neurosis,diagnostic,mental_illness_non_smi
+E20y300,Read,Psychasthenic neurosis,diagnostic,mental_illness_non_smi
+E20yz00,Read,Other neurotic disorder NOS,diagnostic,mental_illness_non_smi
+E20z.00,Read,Neurotic disorder NOS,diagnostic,mental_illness_non_smi
+E20z.11,Read,Nervous breakdown,diagnostic,mental_illness_non_smi
+E26..00,Read,Physiological malfunction arising from mental factors,diagnostic,mental_illness_non_smi
+E260.00,Read,Psychogenic musculoskeletal symptoms,diagnostic,mental_illness_non_smi
+E260000,Read,Psychogenic paralysis,diagnostic,mental_illness_non_smi
+E260100,Read,Psychogenic torticollis,diagnostic,mental_illness_non_smi
+E260z00,Read,Psychogenic musculoskeletal symptoms NOS,diagnostic,mental_illness_non_smi
+E261.00,Read,Psychogenic respiratory symptoms,diagnostic,mental_illness_non_smi
+E261000,Read,Psychogenic air hunger,diagnostic,mental_illness_non_smi
+E261100,Read,Psychogenic cough,diagnostic,mental_illness_non_smi
+E261200,Read,Psychogenic hiccough,diagnostic,mental_illness_non_smi
+E261300,Read,Psychogenic hyperventilation,diagnostic,mental_illness_non_smi
+E261400,Read,Psychogenic yawning,diagnostic,mental_illness_non_smi
+E261500,Read,Psychogenic aphonia,diagnostic,mental_illness_non_smi
+E261z00,Read,Psychogenic respiratory symptom NOS,diagnostic,mental_illness_non_smi
+E262.00,Read,Psychogenic cardiovascular symptoms,diagnostic,mental_illness_non_smi
+E262000,Read,Cardiac neurosis,diagnostic,mental_illness_non_smi
+E262200,Read,Neurocirculatory asthenia,diagnostic,mental_illness_non_smi
+E262300,Read,Psychogenic cardiovascular disorder,diagnostic,mental_illness_non_smi
+E262z00,Read,Psychogenic cardiovascular symptom NOS,diagnostic,mental_illness_non_smi
+E263.00,Read,Psychogenic skin symptoms,diagnostic,mental_illness_non_smi
+E263000,Read,Psychogenic pruritus,diagnostic,mental_illness_non_smi
+E263z00,Read,Psychogenic skin symptoms NOS,diagnostic,mental_illness_non_smi
+E264.00,Read,Psychogenic gastrointestinal tract symptoms,diagnostic,mental_illness_non_smi
+E264000,Read,Psychogenic aerophagy,diagnostic,mental_illness_non_smi
+E264011,Read,Air swallowing - excessive,diagnostic,mental_illness_non_smi
+E264.11,Read,Globus abdominalis,diagnostic,mental_illness_non_smi
+E264200,Read,Cyclical vomiting - psychogenic,diagnostic,mental_illness_non_smi
+E264300,Read,Psychogenic diarrhoea,diagnostic,mental_illness_non_smi
+E264311,Read,Spurious diarrhoea,diagnostic,mental_illness_non_smi
+E264400,Read,Psychogenic dyspepsia,diagnostic,mental_illness_non_smi
+E264500,Read,Psychogenic constipation,diagnostic,mental_illness_non_smi
+E264z00,Read,Psychogenic gastrointestinal tract symptom NOS,diagnostic,mental_illness_non_smi
+E265.00,Read,Psychogenic genitourinary tract symptoms,diagnostic,mental_illness_non_smi
+E265100,Read,Psychogenic vaginismus,diagnostic,mental_illness_non_smi
+E265200,Read,Psychogenic dysmenorrhea,diagnostic,mental_illness_non_smi
+E265300,Read,Psychogenic dysuria,diagnostic,mental_illness_non_smi
+E265z00,Read,Psychogenic genitourinary tract symptom NOS,diagnostic,mental_illness_non_smi
+E267.00,Read,Psychogenic symptom of special sense organ,diagnostic,mental_illness_non_smi
+E26y.00,Read,Other psychogenic malfunction,diagnostic,mental_illness_non_smi
+E26y000,Read,Bruxism (teeth grinding),diagnostic,mental_illness_non_smi
+E26yz00,Read,Other psychogenic malfunction NOS,diagnostic,mental_illness_non_smi
+E26z.00,Read,Psychosomatic disorder NOS,diagnostic,mental_illness_non_smi
+E278.00,Read,Psychalgia,diagnostic,mental_illness_non_smi
+E278000,Read,Psychogenic pain unspecified,diagnostic,mental_illness_non_smi
+E278200,Read,Psychogenic backache,diagnostic,mental_illness_non_smi
+E278z00,Read,Psychalgia NOS,diagnostic,mental_illness_non_smi
+E280.00,Read,Acute panic state due to acute stress reaction,diagnostic,mental_illness_non_smi
+E281.00,Read,Acute fugue state due to acute stress reaction,diagnostic,mental_illness_non_smi
+E28..11,Read,Combat fatigue,diagnostic,mental_illness_non_smi
+E282.00,Read,Acute stupor state due to acute stress reaction,diagnostic,mental_illness_non_smi
+E283000,Read,Acute situational disturbance,diagnostic,mental_illness_non_smi
+E283100,Read,Acute posttrauma stress state,diagnostic,mental_illness_non_smi
+E284.00,Read,Stress reaction causing mixed disturbance of emotion/conduct,diagnostic,mental_illness_non_smi
+E28z.11,Read,Examination fear,diagnostic,mental_illness_non_smi
+E28z.12,Read,Flying phobia,diagnostic,mental_illness_non_smi
+E28z.13,Read,Stage fright,diagnostic,mental_illness_non_smi
+E29..00,Read,Adjustment reaction,diagnostic,mental_illness_non_smi
+E290000,Read,Grief reaction,diagnostic,mental_illness_non_smi
+E290011,Read,Bereavement reaction,diagnostic,mental_illness_non_smi
+E292.00,Read,Adjustment reaction; predominant disturbance other emotions,diagnostic,mental_illness_non_smi
+E292000,Read,Separation anxiety disorder,diagnostic,mental_illness_non_smi
+E292100,Read,Adolescent emancipation disorder,diagnostic,mental_illness_non_smi
+E292200,Read,Early adult emancipation disorder,diagnostic,mental_illness_non_smi
+E292300,Read,Specific academic or work inhibition,diagnostic,mental_illness_non_smi
+E292311,Read,Specific academic or work inhibition,diagnostic,mental_illness_non_smi
+E292312,Read,Specific work inhibition,diagnostic,mental_illness_non_smi
+E292400,Read,Adjustment reaction with anxious mood,diagnostic,mental_illness_non_smi
+E292500,Read,Culture shock,diagnostic,mental_illness_non_smi
+E292y00,Read,Adjustment reaction with mixed disturbance of emotion,diagnostic,mental_illness_non_smi
+E292z00,Read,Adjustment reaction with disturbance of other emotion NOS,diagnostic,mental_illness_non_smi
+E293.00,Read,Adjustment reaction with predominant disturbance of conduct,diagnostic,mental_illness_non_smi
+E293000,Read,Adjustment reaction with aggression,diagnostic,mental_illness_non_smi
+E293100,Read,Adjustment reaction with antisocial behaviour,diagnostic,mental_illness_non_smi
+E293200,Read,Adjustment reaction with destructiveness,diagnostic,mental_illness_non_smi
+E294.00,Read,Adjustment reaction with disturbance emotion and conduct,diagnostic,mental_illness_non_smi
+E29y.00,Read,Other adjustment reactions,diagnostic,mental_illness_non_smi
+E29y000,Read,Concentration camp syndrome,diagnostic,mental_illness_non_smi
+E29y100,Read,Other post-traumatic stress disorder,diagnostic,mental_illness_non_smi
+E29y200,Read,Adjustment reaction with physical symptoms,diagnostic,mental_illness_non_smi
+E29y300,Read,Elective mutism due to an adjustment reaction,diagnostic,mental_illness_non_smi
+E29y400,Read,Adjustment reaction due to hospitalisation,diagnostic,mental_illness_non_smi
+E29y500,Read,Other adjustment reaction with withdrawal,diagnostic,mental_illness_non_smi
+E29yz00,Read,Other adjustment reactions NOS,diagnostic,mental_illness_non_smi
+E29z.00,Read,Adjustment reaction NOS,diagnostic,mental_illness_non_smi
+E2y..00,Read,Other specified neuroses or other mental disorders,diagnostic,mental_illness_non_smi
+E2z..00,Read,Neuroses or other mental disorder NOS,diagnostic,mental_illness_non_smi
+Eu05400,Read,[X]Organic anxiety disorder,diagnostic,mental_illness_non_smi
+Eu34114,Read,[X]Persistant anxiety depression,diagnostic,mental_illness_non_smi
+Eu4..00,Read,[X]Neurotic; stress - related and somoform disorders,diagnostic,mental_illness_non_smi
+Eu40.00,Read,[X]Phobic anxiety disorders,diagnostic,mental_illness_non_smi
+Eu40000,Read,[X]Agoraphobia,diagnostic,mental_illness_non_smi
+Eu40011,Read,[X]Agoraphobia without history of panic disorder,diagnostic,mental_illness_non_smi
+Eu40012,Read,[X]Panic disorder with agoraphobia,diagnostic,mental_illness_non_smi
+Eu40100,Read,[X]Social phobias,diagnostic,mental_illness_non_smi
+Eu40112,Read,[X]Social neurosis,diagnostic,mental_illness_non_smi
+Eu40200,Read,[X]Specific (isolated) phobias,diagnostic,mental_illness_non_smi
+Eu40211,Read,[X]Acrophobia,diagnostic,mental_illness_non_smi
+Eu40212,Read,[X]Animal phobias,diagnostic,mental_illness_non_smi
+Eu40213,Read,[X]Claustrophobia,diagnostic,mental_illness_non_smi
+Eu40214,Read,[X]Simple phobia,diagnostic,mental_illness_non_smi
+Eu40300,Read,[X]Needle phobia,diagnostic,mental_illness_non_smi
+Eu40y00,Read,[X]Other phobic anxiety disorders,diagnostic,mental_illness_non_smi
+Eu40z00,Read,[X]Phobic anxiety disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu40z11,Read,[X]Phobia NOS,diagnostic,mental_illness_non_smi
+Eu40z12,Read,[X]Phobic state NOS,diagnostic,mental_illness_non_smi
+Eu41.00,Read,[X]Other anxiety disorders,diagnostic,mental_illness_non_smi
+Eu41000,Read,[X]Panic disorder [episodic paroxysmal anxiety],diagnostic,mental_illness_non_smi
+Eu41011,Read,[X]Panic attack,diagnostic,mental_illness_non_smi
+Eu41012,Read,[X]Panic state,diagnostic,mental_illness_non_smi
+Eu41100,Read,[X]Generalized anxiety disorder,diagnostic,mental_illness_non_smi
+Eu41111,Read,[X]Anxiety neurosis,diagnostic,mental_illness_non_smi
+Eu41112,Read,[X]Anxiety reaction,diagnostic,mental_illness_non_smi
+Eu41113,Read,[X]Anxiety state,diagnostic,mental_illness_non_smi
+Eu41200,Read,[X]Mixed anxiety and depressive disorder,diagnostic,mental_illness_non_smi
+Eu41211,Read,[X]Mild anxiety depression,diagnostic,mental_illness_non_smi
+Eu41300,Read,[X]Other mixed anxiety disorders,diagnostic,mental_illness_non_smi
+Eu41y00,Read,[X]Other specified anxiety disorders,diagnostic,mental_illness_non_smi
+Eu41y11,Read,[X]Anxiety hysteria,diagnostic,mental_illness_non_smi
+Eu41z00,Read,[X]Anxiety disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu41z11,Read,[X]Anxiety NOS,diagnostic,mental_illness_non_smi
+Eu42.00,Read,[X]Obsessive - compulsive disorder,diagnostic,mental_illness_non_smi
+Eu42000,Read,[X]Predominantly obsessional thoughts or ruminations,diagnostic,mental_illness_non_smi
+Eu42100,Read,[X]Predominantly compulsive acts [obsessional rituals],diagnostic,mental_illness_non_smi
+Eu42.11,Read,[X]Anankastic neurosis,diagnostic,mental_illness_non_smi
+Eu42.12,Read,[X]Obsessive-compulsive neurosis,diagnostic,mental_illness_non_smi
+Eu42200,Read,[X]Mixed obsessional thoughts and acts,diagnostic,mental_illness_non_smi
+Eu42y00,Read,[X]Other obsessive-compulsive disorders,diagnostic,mental_illness_non_smi
+Eu42z00,Read,[X]Obsessive-compulsive disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu43.00,Read,[X]Reaction to severe stress; and adjustment disorders,diagnostic,mental_illness_non_smi
+Eu43000,Read,[X]Acute stress reaction,diagnostic,mental_illness_non_smi
+Eu43011,Read,[X]Acute crisis reaction,diagnostic,mental_illness_non_smi
+Eu43012,Read,[X]Acute reaction to stress,diagnostic,mental_illness_non_smi
+Eu43013,Read,[X]Combat fatigue,diagnostic,mental_illness_non_smi
+Eu43014,Read,[X]Crisis state,diagnostic,mental_illness_non_smi
+Eu43015,Read,[X]Psychic shock,diagnostic,mental_illness_non_smi
+Eu43100,Read,[X]Post - traumatic stress disorder,diagnostic,mental_illness_non_smi
+Eu43111,Read,[X]Traumatic neurosis,diagnostic,mental_illness_non_smi
+Eu43200,Read,[X]Adjustment disorders,diagnostic,mental_illness_non_smi
+Eu43211,Read,[X]Culture shock,diagnostic,mental_illness_non_smi
+Eu43212,Read,[X]Grief reaction,diagnostic,mental_illness_non_smi
+Eu43213,Read,[X]Hospitalism in children,diagnostic,mental_illness_non_smi
+Eu43300,Read,[X]Acute post-traumatic stress disorder follow military comb,diagnostic,mental_illness_non_smi
+Eu43400,Read,[X]Chron post-traumatic stress disorder follow military comb,diagnostic,mental_illness_non_smi
+Eu43y00,Read,[X]Other reactions to severe stress,diagnostic,mental_illness_non_smi
+Eu43z00,Read,[X]Reaction to severe stress; unspecified,diagnostic,mental_illness_non_smi
+Eu44.00,Read,[X]Dissociative [conversion] disorders,diagnostic,mental_illness_non_smi
+Eu44000,Read,[X]Dissociative amnesia,diagnostic,mental_illness_non_smi
+Eu44100,Read,[X]Dissociative fugue,diagnostic,mental_illness_non_smi
+Eu44.11,Read,[X]Conversion hysteria,diagnostic,mental_illness_non_smi
+Eu44.12,Read,[X]Conversion reaction,diagnostic,mental_illness_non_smi
+Eu44.13,Read,[X]Hysteria,diagnostic,mental_illness_non_smi
+Eu44200,Read,[X]Dissociative stupor,diagnostic,mental_illness_non_smi
+Eu44300,Read,[X]Trance and possession disorders,diagnostic,mental_illness_non_smi
+Eu44400,Read,[X]Dissociative motor disorders,diagnostic,mental_illness_non_smi
+Eu44411,Read,[X]Psychogenic aphonia,diagnostic,mental_illness_non_smi
+Eu44412,Read,[X]Psychogenic dysphonia,diagnostic,mental_illness_non_smi
+Eu44500,Read,[X]Dissociative convulsions,diagnostic,mental_illness_non_smi
+Eu44511,Read,[X]Pseudoseizures,diagnostic,mental_illness_non_smi
+Eu44600,Read,[X]Dissociative anaesthesia and sensory loss,diagnostic,mental_illness_non_smi
+Eu44611,Read,[X]Psychogenic deafness,diagnostic,mental_illness_non_smi
+Eu44700,Read,[X]Mixed dissociative [conversion] disorders,diagnostic,mental_illness_non_smi
+Eu44y00,Read,[X]Other dissociative [conversion] disorders,diagnostic,mental_illness_non_smi
+Eu44y11,Read,[X]Ganser's syndrome,diagnostic,mental_illness_non_smi
+Eu44y12,Read,[X]Multiple personality,diagnostic,mental_illness_non_smi
+Eu44y13,Read,[X]Psychogenic confusion,diagnostic,mental_illness_non_smi
+Eu44y14,Read,[X]Psychogenic twilight state,diagnostic,mental_illness_non_smi
+Eu44z00,Read,[X]Dissociative [conversion] disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu45.00,Read,[X]Somatoform disorders,diagnostic,mental_illness_non_smi
+Eu45000,Read,[X]Somatization disorder,diagnostic,mental_illness_non_smi
+Eu45011,Read,[X]Multiple psychosomatic disorder,diagnostic,mental_illness_non_smi
+Eu45012,Read,[X]Briquet's syndrome,diagnostic,mental_illness_non_smi
+Eu45100,Read,[X]Undifferentiated somatoform disorder,diagnostic,mental_illness_non_smi
+Eu45111,Read,[X]Undifferentiated psychosomatic disorder,diagnostic,mental_illness_non_smi
+Eu45200,Read,[X]Hypochondriacal disorder,diagnostic,mental_illness_non_smi
+Eu45211,Read,[X]Body dysmorphic disorder,diagnostic,mental_illness_non_smi
+Eu45212,Read,[X]Dysmorphophobia nondelusional,diagnostic,mental_illness_non_smi
+Eu45213,Read,[X]Hypochondriacal neurosis,diagnostic,mental_illness_non_smi
+Eu45214,Read,[X]Hypochondriasis,diagnostic,mental_illness_non_smi
+Eu45215,Read,[X]Nosophobia,diagnostic,mental_illness_non_smi
+Eu45300,Read,[X]Somatoform autonomic dysfunction,diagnostic,mental_illness_non_smi
+Eu45311,Read,[X]Cardiac neurosis,diagnostic,mental_illness_non_smi
+Eu45312,Read,[X]Da Costa's syndrome,diagnostic,mental_illness_non_smi
+Eu45313,Read,[X]Gastric neurosis,diagnostic,mental_illness_non_smi
+Eu45314,Read,[X]Neurocirculatory asthenia,diagnostic,mental_illness_non_smi
+Eu45316,Read,[X]Psychogenic cough,diagnostic,mental_illness_non_smi
+Eu45317,Read,[X]Psychogenic diarrhoea,diagnostic,mental_illness_non_smi
+Eu45318,Read,[X]Psychogenic dyspepsia,diagnostic,mental_illness_non_smi
+Eu45319,Read,[X]Psychogenic dysuria,diagnostic,mental_illness_non_smi
+Eu45320,Read,[X]Psychogenic flatulence,diagnostic,mental_illness_non_smi
+Eu45321,Read,[X]Psychogenic hiccough,diagnostic,mental_illness_non_smi
+Eu45322,Read,[X]Psychogenic hyperventilat,diagnostic,mental_illness_non_smi
+Eu45323,Read,[X]Psychogenic freq micturit,diagnostic,mental_illness_non_smi
+Eu45324,Read,[X]Psychogenic IBS,diagnostic,mental_illness_non_smi
+Eu45325,Read,[X]Psychogenic pylorospasm,diagnostic,mental_illness_non_smi
+Eu45400,Read,[X]Persistent somatoform pain disorder,diagnostic,mental_illness_non_smi
+Eu45411,Read,[X]Psychalgia,diagnostic,mental_illness_non_smi
+Eu45412,Read,[X]Psychogenic backache,diagnostic,mental_illness_non_smi
+Eu45413,Read,[X]Psychogenic headache,diagnostic,mental_illness_non_smi
+Eu45414,Read,[X]Somatoform pain disorder,diagnostic,mental_illness_non_smi
+Eu45500,Read,[X]Globus pharyngeus,diagnostic,mental_illness_non_smi
+Eu45511,Read,[X]Globus hystericus,diagnostic,mental_illness_non_smi
+Eu45y00,Read,[X]Other somatoform disorders,diagnostic,mental_illness_non_smi
+Eu45y11,Read,[X]Psychogenic dysmenorrhoea,diagnostic,mental_illness_non_smi
+Eu45y12,Read,[X]Globus hystericus,diagnostic,mental_illness_non_smi
+Eu45y13,Read,[X]Psychogenic pruritis,diagnostic,mental_illness_non_smi
+Eu45y14,Read,[X]Psychogenic torticollis,diagnostic,mental_illness_non_smi
+# Eu45y15,Read,[X]Teeth-grinding,diagnostic,mental_illness_non_smi
+Eu45z00,Read,[X]Somatoform disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu45z11,Read,[X]Psychosomatic disorder NOS,diagnostic,mental_illness_non_smi
+Eu46.00,Read,[X]Other neurotic disorders,diagnostic,mental_illness_non_smi
+Eu46000,Read,[X]Neurasthenia,diagnostic,mental_illness_non_smi
+Eu46011,Read,[X]Fatigue syndrome,diagnostic,mental_illness_non_smi
+Eu46100,Read,[X]Depersonalization - derealization syndrome,diagnostic,mental_illness_non_smi
+Eu46y00,Read,[X]Other specified neurotic disorders,diagnostic,mental_illness_non_smi
+Eu46y11,Read,[X]Briquet's disorder,diagnostic,mental_illness_non_smi
+Eu46y12,Read,[X]Dhat syndrome,diagnostic,mental_illness_non_smi
+Eu46y13,Read,[X]Occupational neurosis; including writer's cramp,diagnostic,mental_illness_non_smi
+Eu46y14,Read,[X]Psychasthenia,diagnostic,mental_illness_non_smi
+Eu46y15,Read,[X]Psychasthenia neurosis,diagnostic,mental_illness_non_smi
+Eu46y16,Read,[X]Psychogenic syncope,diagnostic,mental_illness_non_smi
+Eu46z00,Read,[X]Neurotic disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu46z11,Read,[X]Neurosis NOS,diagnostic,mental_illness_non_smi
+Eu51511,Read,[X]Dream anxiety disorder,diagnostic,mental_illness_non_smi
+Eu93000,Read,[X]Separation anxiety disorder of childhood,diagnostic,mental_illness_non_smi
+Eu93100,Read,[X]Phobic anxiety disorder of childhood,diagnostic,mental_illness_non_smi
+Eu93200,Read,[X]Social anxiety disorder of childhood,diagnostic,mental_illness_non_smi
+Eu93y12,Read,[X]Childhood overanxious disorder,diagnostic,mental_illness_non_smi
+Z4L1.00,Read,Anxiety counselling,diagnostic,mental_illness_non_smi
+ZS7C700,Read,Post-traumatic mutism,diagnostic,mental_illness_non_smi
+1612,Read,Appetite loss - anorexia,diagnostic,mental_illness_non_smi
+1612.11,Read,Anorexia symptom,diagnostic,mental_illness_non_smi
+1614,Read,Excessive eating - polyphagia,diagnostic,mental_illness_non_smi
+1614.11,Read,Hyperalimentation - symptom,diagnostic,mental_illness_non_smi
+1614.12,Read,Polyphagia symptom,diagnostic,mental_illness_non_smi
+8HTN.00,Read,Referral to eating disorders clinic,diagnostic,mental_illness_non_smi
+9Nk9.00,Read,Seen in eating disorder clinic,diagnostic,mental_illness_non_smi
+E271.00,Read,Anorexia nervosa,diagnostic,mental_illness_non_smi
+E275.00,Read,Other and unspecified non-organic eating disorders,diagnostic,mental_illness_non_smi
+E275000,Read,Unspecified non-organic eating disorder,diagnostic,mental_illness_non_smi
+E275100,Read,Bulimia (non-organic overeating),diagnostic,mental_illness_non_smi
+E275111,Read,Compulsive eating disorder,diagnostic,mental_illness_non_smi
+E275y00,Read,Other specified non-organic eating disorder,diagnostic,mental_illness_non_smi
+E275z00,Read,Non-organic eating disorder NOS,diagnostic,mental_illness_non_smi
+Eu50.00,Read,[X]Eating disorders,diagnostic,mental_illness_non_smi
+Eu50000,Read,[X]Anorexia nervosa,diagnostic,mental_illness_non_smi
+Eu50100,Read,[X]Atypical anorexia nervosa,diagnostic,mental_illness_non_smi
+Eu50200,Read,[X]Bulimia nervosa,diagnostic,mental_illness_non_smi
+Eu50211,Read,[X]Bulimia NOS,diagnostic,mental_illness_non_smi
+Eu50212,Read,[X]Hyperorexia nervosa,diagnostic,mental_illness_non_smi
+Eu50300,Read,[X]Atypical bulimia nervosa,diagnostic,mental_illness_non_smi
+Eu50400,Read,[X]Overeating associated with other psychological disturbncs,diagnostic,mental_illness_non_smi
+Eu50411,Read,[X]Psychogenic overeating,diagnostic,mental_illness_non_smi
+Eu50y00,Read,[X]Other eating disorders,diagnostic,mental_illness_non_smi
+Eu50y11,Read,[X]Pica in adults,diagnostic,mental_illness_non_smi
+Eu50z00,Read,[X]Eating disorder; unspecified,diagnostic,mental_illness_non_smi
+Fy05.00,Read,Nocturnal sleep-related eating disorder,diagnostic,mental_illness_non_smi
+R030.00,Read,[D]Anorexia,diagnostic,mental_illness_non_smi
+R030z00,Read,[D]Anorexia NOS,diagnostic,mental_illness_non_smi
+R036.00,Read,[D]Polyphagia,diagnostic,mental_illness_non_smi
+R036000,Read,[D]Excessive eating,diagnostic,mental_illness_non_smi
+R036011,Read,[D]Bulimia NOS,diagnostic,mental_illness_non_smi
+R036100,Read,[D]Hyperalimentation,diagnostic,mental_illness_non_smi
+R036z00,Read,[D]Polyphagia NOS,diagnostic,mental_illness_non_smi
+SN42100,Read,Starvation,diagnostic,mental_illness_non_smi
+U1B3.11,Read,[X]Starvation,diagnostic,mental_illness_non_smi
+Z4B5.00,Read,Eating disorder counselling,diagnostic,mental_illness_non_smi
+ZC2CD00,Read,Dietary advice for eating disorder,diagnostic,mental_illness_non_smi
+E21..00,Read,Personality disorders,diagnostic,mental_illness_non_smi
+E210.00,Read,Paranoid personality disorder,diagnostic,mental_illness_non_smi
+E211.00,Read,Affective personality disorder,diagnostic,mental_illness_non_smi
+E211000,Read,Unspecified affective personality disorder,diagnostic,mental_illness_non_smi
+E21..11,Read,Neurotic personality disorder,diagnostic,mental_illness_non_smi
+E211100,Read,Hypomanic personality disorder,diagnostic,mental_illness_non_smi
+E211200,Read,Depressive personality disorder,diagnostic,mental_illness_non_smi
+E211300,Read,Cyclothymic personality disorder,diagnostic,mental_illness_non_smi
+E211z00,Read,Affective personality disorder NOS,diagnostic,mental_illness_non_smi
+E212.00,Read,Schizoid personality disorder,diagnostic,mental_illness_non_smi
+E212000,Read,Unspecified schizoid personality disorder,diagnostic,mental_illness_non_smi
+E212z00,Read,Schizoid personality disorder NOS,diagnostic,mental_illness_non_smi
+E213.00,Read,Explosive personality disorder,diagnostic,mental_illness_non_smi
+E214.00,Read,Compulsive personality disorders,diagnostic,mental_illness_non_smi
+E214000,Read,Anankastic personality,diagnostic,mental_illness_non_smi
+E214.11,Read,Anancastic personality,diagnostic,mental_illness_non_smi
+E214z00,Read,Compulsive personality disorder NOS,diagnostic,mental_illness_non_smi
+E215.00,Read,Histrionic personality disorders,diagnostic,mental_illness_non_smi
+E215000,Read,Unspecified histrionic personality disorder,diagnostic,mental_illness_non_smi
+E215.11,Read,Hysterical personality disorders,diagnostic,mental_illness_non_smi
+E215z00,Read,Histrionic personality disorder NOS,diagnostic,mental_illness_non_smi
+E216.00,Read,Inadequate personality disorder,diagnostic,mental_illness_non_smi
+E217.00,Read,Antisocial or sociopathic personality disorder,diagnostic,mental_illness_non_smi
+E21y.00,Read,Other personality disorders,diagnostic,mental_illness_non_smi
+E21y000,Read,Narcissistic personality disorder,diagnostic,mental_illness_non_smi
+E21y100,Read,Avoidant personality disorder,diagnostic,mental_illness_non_smi
+E21y200,Read,Borderline personality disorder,diagnostic,mental_illness_non_smi
+E21y300,Read,Passive-aggressive personality disorder,diagnostic,mental_illness_non_smi
+E21y400,Read,Eccentric personality disorder,diagnostic,mental_illness_non_smi
+E21y500,Read,Immature personality disorder,diagnostic,mental_illness_non_smi
+E21y600,Read,Masochistic personality disorder,diagnostic,mental_illness_non_smi
+E21y700,Read,Psychoneurotic personality disorder,diagnostic,mental_illness_non_smi
+E21yz00,Read,Other personality disorder NOS,diagnostic,mental_illness_non_smi
+E21z.00,Read,Personality disorder NOS,diagnostic,mental_illness_non_smi
+E21z.11,Read,Psychopathic personality,diagnostic,mental_illness_non_smi
+Eu06000,Read,[X]Organic personality disorder,diagnostic,mental_illness_non_smi
+Eu06011,Read,[X]Organic pseudopsychopathic personality,diagnostic,mental_illness_non_smi
+Eu21.17,Read,[X]Pseudopsychopathic schizophrenia,diagnostic,mental_illness_non_smi
+Eu21.18,Read,[X]Schizotypal personality disorder,diagnostic,mental_illness_non_smi
+Eu34011,Read,[X]Affective personality disorder,diagnostic,mental_illness_non_smi
+Eu34112,Read,[X]Depressive personality disorder,diagnostic,mental_illness_non_smi
+Eu60.00,Read,[X]Specific personality disorders,diagnostic,mental_illness_non_smi
+Eu60000,Read,[X]Paranoid personality disorder,diagnostic,mental_illness_non_smi
+Eu60013,Read,[X]Querulant personality disorder,diagnostic,mental_illness_non_smi
+Eu60014,Read,[X]Sensitive paranoid personality disorder,diagnostic,mental_illness_non_smi
+Eu60100,Read,[X]Schizoid personality disorder,diagnostic,mental_illness_non_smi
+Eu60200,Read,[X]Dissocial personality disorder,diagnostic,mental_illness_non_smi
+Eu60212,Read,[X]Antisocial personality disorder,diagnostic,mental_illness_non_smi
+Eu60213,Read,[X]Asocial personality disorder,diagnostic,mental_illness_non_smi
+Eu60214,Read,[X]Psychopathic personality disorder,diagnostic,mental_illness_non_smi
+Eu60215,Read,[X]Sociopathic personality disorder,diagnostic,mental_illness_non_smi
+Eu60300,Read,[X]Emotionally unstable personality disorder,diagnostic,mental_illness_non_smi
+Eu60311,Read,[X]Aggressive personality disorder,diagnostic,mental_illness_non_smi
+Eu60312,Read,[X]Borderline personality disorder,diagnostic,mental_illness_non_smi
+Eu60313,Read,[X]Explosive personality disorder,diagnostic,mental_illness_non_smi
+Eu60400,Read,[X]Histrionic personality disorder,diagnostic,mental_illness_non_smi
+Eu60411,Read,[X]Hysterical personality disorder,diagnostic,mental_illness_non_smi
+Eu60412,Read,[X]Psychoinfantile personality disorder,diagnostic,mental_illness_non_smi
+Eu60500,Read,[X]Anankastic personality disorder,diagnostic,mental_illness_non_smi
+Eu60511,Read,[X]Compulsive personality disorder,diagnostic,mental_illness_non_smi
+Eu60512,Read,[X]Obsessional personality disorder,diagnostic,mental_illness_non_smi
+Eu60513,Read,[X]Obsessive-compulsive personality disorder,diagnostic,mental_illness_non_smi
+Eu60600,Read,[X]Anxious [avoidant] personality disorder,diagnostic,mental_illness_non_smi
+Eu60700,Read,[X]Dependent personality disorder,diagnostic,mental_illness_non_smi
+Eu60711,Read,[X]Asthenic personality disorder,diagnostic,mental_illness_non_smi
+Eu60712,Read,[X]Inadequate personality disorder,diagnostic,mental_illness_non_smi
+Eu60713,Read,[X]Passive personality disorder,diagnostic,mental_illness_non_smi
+Eu60714,Read,[X]Self defeating personality disorder,diagnostic,mental_illness_non_smi
+Eu60y00,Read,[X]Other specific personality disorders,diagnostic,mental_illness_non_smi
+Eu60y11,Read,[X]Eccentric personality disorder,diagnostic,mental_illness_non_smi
+Eu60y12,Read,[X]Haltlose type personality disorder,diagnostic,mental_illness_non_smi
+Eu60y13,Read,[X]Immature personality disorder,diagnostic,mental_illness_non_smi
+Eu60y14,Read,[X]Narcissistic personality disorder,diagnostic,mental_illness_non_smi
+Eu60y16,Read,[X]Psychoneurotic personality disorder,diagnostic,mental_illness_non_smi
+Eu60z00,Read,[X]Personality disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu61.00,Read,[X]Mixed and other personality disorders,diagnostic,mental_illness_non_smi
+Eu84511,Read,[X]Autistic psychopathy,diagnostic,mental_illness_non_smi
+Eu94211,Read,[X]Affectionless psychopathy,diagnostic,mental_illness_non_smi
+1B17.00,Read,Depressed,diagnostic,mental_illness_non_smi
+62T1.00,Read,Puerperal depression,diagnostic,mental_illness_non_smi
+9kQ..00,Read,On full dose long term treatment depression - enh serv admin,diagnostic,mental_illness_non_smi
+E001300,Read,Presenile dementia with depression,diagnostic,mental_illness_non_smi
+E002100,Read,Senile dementia with depression,diagnostic,mental_illness_non_smi
+E004300,Read,Arteriosclerotic dementia with depression,diagnostic,mental_illness_non_smi
+E11..12,Read,Depressive psychoses,diagnostic,mental_illness_non_smi
+E112.00,Read,Single major depressive episode,diagnostic,mental_illness_non_smi
+E112000,Read,Single major depressive episode; unspecified,diagnostic,mental_illness_non_smi
+E112100,Read,Single major depressive episode; mild,diagnostic,mental_illness_non_smi
+E112.11,Read,Agitated depression,diagnostic,mental_illness_non_smi
+E112.12,Read,Endogenous depression first episode,diagnostic,mental_illness_non_smi
+E112.13,Read,Endogenous depression first episode,diagnostic,mental_illness_non_smi
+E112.14,Read,Endogenous depression,diagnostic,mental_illness_non_smi
+E112200,Read,Single major depressive episode; moderate,diagnostic,mental_illness_non_smi
+E112z00,Read,Single major depressive episode NOS,diagnostic,mental_illness_non_smi
+E113.00,Read,Recurrent major depressive episode,diagnostic,mental_illness_non_smi
+E113000,Read,Recurrent major depressive episodes; unspecified,diagnostic,mental_illness_non_smi
+E113100,Read,Recurrent major depressive episodes; mild,diagnostic,mental_illness_non_smi
+E113.11,Read,Endogenous depression - recurrent,diagnostic,mental_illness_non_smi
+E113200,Read,Recurrent major depressive episodes; moderate,diagnostic,mental_illness_non_smi
+E113700,Read,Recurrent depression,diagnostic,mental_illness_non_smi
+E113z00,Read,Recurrent major depressive episode NOS,diagnostic,mental_illness_non_smi
+E118.00,Read,Seasonal affective disorder,diagnostic,mental_illness_non_smi
+E11y200,Read,Atypical depressive disorder,diagnostic,mental_illness_non_smi
+E11z200,Read,Masked depression,diagnostic,mental_illness_non_smi
+E135.00,Read,Agitated depression,diagnostic,mental_illness_non_smi
+E200300,Read,Anxiety with depression,diagnostic,mental_illness_non_smi
+E204.00,Read,Neurotic depression reactive type,diagnostic,mental_illness_non_smi
+E204.11,Read,Postnatal depression,diagnostic,mental_illness_non_smi
+E290.00,Read,Brief depressive reaction,diagnostic,mental_illness_non_smi
+E290z00,Read,Brief depressive reaction NOS,diagnostic,mental_illness_non_smi
+E291.00,Read,Prolonged depressive reaction,diagnostic,mental_illness_non_smi
+E2B..00,Read,Depressive disorder NEC,diagnostic,mental_illness_non_smi
+E2B0.00,Read,Postviral depression,diagnostic,mental_illness_non_smi
+E2B1.00,Read,Chronic depression,diagnostic,mental_illness_non_smi
+Eu20400,Read,[X]Post-schizophrenic depression,diagnostic,mental_illness_non_smi
+Eu32.00,Read,[X]Depressive episode,diagnostic,mental_illness_non_smi
+Eu32000,Read,[X]Mild depressive episode,diagnostic,mental_illness_non_smi
+Eu32100,Read,[X]Moderate depressive episode,diagnostic,mental_illness_non_smi
+Eu32.11,Read,[X]Single episode of depressive reaction,diagnostic,mental_illness_non_smi
+Eu32.12,Read,[X]Single episode of psychogenic depression,diagnostic,mental_illness_non_smi
+Eu32.13,Read,[X]Single episode of reactive depression,diagnostic,mental_illness_non_smi
+Eu32200,Read,[X]Severe depressive episode without psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu32211,Read,[X]Single episode agitated depressn w'out psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu32212,Read,[X]Single episode major depression w'out psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu32213,Read,[X]Single episode vital depression w'out psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu32400,Read,[X]Mild depression,diagnostic,mental_illness_non_smi
+Eu32500,Read,[X]Major depression; mild,diagnostic,mental_illness_non_smi
+Eu32600,Read,[X]Major depression; moderately severe,diagnostic,mental_illness_non_smi
+Eu32y00,Read,[X]Other depressive episodes,diagnostic,mental_illness_non_smi
+Eu32y11,Read,[X]Atypical depression,diagnostic,mental_illness_non_smi
+Eu32y12,Read,[X]Single episode of masked depression NOS,diagnostic,mental_illness_non_smi
+Eu32z00,Read,[X]Depressive episode; unspecified,diagnostic,mental_illness_non_smi
+Eu32z11,Read,[X]Depression NOS,diagnostic,mental_illness_non_smi
+Eu32z12,Read,[X]Depressive disorder NOS,diagnostic,mental_illness_non_smi
+Eu32z13,Read,[X]Prolonged single episode of reactive depression,diagnostic,mental_illness_non_smi
+Eu32z14,Read,[X] Reactive depression NOS,diagnostic,mental_illness_non_smi
+Eu33.00,Read,[X]Recurrent depressive disorder,diagnostic,mental_illness_non_smi
+Eu33000,Read,[X]Recurrent depressive disorder; current episode mild,diagnostic,mental_illness_non_smi
+Eu33100,Read,[X]Recurrent depressive disorder; current episode moderate,diagnostic,mental_illness_non_smi
+Eu33.11,Read,[X]Recurrent episodes of depressive reaction,diagnostic,mental_illness_non_smi
+Eu33.12,Read,[X]Recurrent episodes of psychogenic depression,diagnostic,mental_illness_non_smi
+Eu33.13,Read,[X]Recurrent episodes of reactive depression,diagnostic,mental_illness_non_smi
+Eu33.14,Read,[X]Seasonal depressive disorder,diagnostic,mental_illness_non_smi
+Eu33.15,Read,[X]SAD - Seasonal affective disorder,diagnostic,mental_illness_non_smi
+Eu33211,Read,[X]Endogenous depression without psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu33212,Read,[X]Major depression; recurrent without psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu33214,Read,[X]Vital depression; recurrent without psychotic symptoms,diagnostic,mental_illness_non_smi
+Eu33400,Read,[X]Recurrent depressive disorder; currently in remission,diagnostic,mental_illness_non_smi
+Eu33y00,Read,[X]Other recurrent depressive disorders,diagnostic,mental_illness_non_smi
+Eu33z00,Read,[X]Recurrent depressive disorder; unspecified,diagnostic,mental_illness_non_smi
+Eu33z11,Read,[X]Monopolar depression NOS,diagnostic,mental_illness_non_smi
+Eu34100,Read,[X]Dysthymia,diagnostic,mental_illness_non_smi
+Eu34111,Read,[X]Depressive neurosis,diagnostic,mental_illness_non_smi
+Eu34113,Read,[X]Neurotic depression,diagnostic,mental_illness_non_smi
+Eu34114,Read,[X]Persistant anxiety depression,diagnostic,mental_illness_non_smi
+Eu3y111,Read,[X]Recurrent brief depressive episodes,diagnostic,mental_illness_non_smi
+Eu41200,Read,[X]Mixed anxiety and depressive disorder,diagnostic,mental_illness_non_smi
+Eu41211,Read,[X]Mild anxiety depression,diagnostic,mental_illness_non_smi
+Eu53011,Read,[X]Postnatal depression NOS,diagnostic,mental_illness_non_smi
+Eu53012,Read,[X]Postpartum depression NOS,diagnostic,mental_illness_non_smi
+Eu92000,Read,[X]Depressive conduct disorder,diagnostic,mental_illness_non_smi

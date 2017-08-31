@@ -1,0 +1,19 @@
+code,coding_system,description,entity,list_name
+R005200,Read,[D]Insomnia NOS,diagnostic,insomnia
+1B1B.11,Read,C/O - insomnia,diagnostic,insomnia
+E274111,Read,Insomnia NOS,diagnostic,insomnia
+Fy00.00,Read,Disorders of maintaining and initiating sleep,diagnostic,insomnia
+1B1B.00,Read,Cannot sleep - insomnia,diagnostic,insomnia
+R005.11,Read,[D]Insomnia - symptom,diagnostic,insomnia
+E274100,Read,Transient insomnia,diagnostic,insomnia
+1B1B200,Read,Late insomnia,diagnostic,insomnia
+1B1B000,Read,Initial insomnia,diagnostic,insomnia
+Eu51000,Read,[X]Nonorganic insomnia,diagnostic,insomnia
+1BX0.00,Read,Delayed onset of sleep,diagnostic,insomnia
+E274200,Read,Persistent insomnia,diagnostic,insomnia
+1B1B100,Read,Middle insomnia,diagnostic,insomnia
+E274D11,Read,Restless sleep,diagnostic,insomnia
+E274.12,Read,Insomnia due to nonorganic sleep disorder,diagnostic,insomnia
+E274E00,Read,'Short-sleeper',diagnostic,insomnia
+1BX9.00,Read,Light sleep,diagnostic,insomnia
+1BX3.00,Read,early morning waking,diagnostic,insomnia
