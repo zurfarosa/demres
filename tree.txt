@@ -11,8 +11,6 @@
 │   ├── import_file.cpython-35.pyc
 │   ├── matching_functions.cpython-35.pyc
 │   └── my_functions.cpython-35.pyc
-├── backup
-│   └── pt_features_dempred.csv.backup_20170327
 ├── common
 │   ├── __init__.py
 │   ├── __pycache__
@@ -47,6 +45,14 @@
 │       │   │   └── pt_features_demins_all_dementia_8_to_3.csv
 │       │   ├── backup\ 20170517.zip
 │       │   ├── backup20170702.zip
+│       │   ├── hdf
+│       │   │   ├── clinicals.hdf
+│       │   │   ├── consultations.hdf
+│       │   │   ├── immunisations.hdf
+│       │   │   ├── medcoded_entries.hdf
+│       │   │   ├── prescriptions.hdf
+│       │   │   ├── referrals.hdf
+│       │   │   └── tests.hdf
 │       │   ├── pt_features_demins_all_dementia.csv
 │       │   ├── pt_features_demins_all_dementia_10_to_5.csv
 │       │   ├── pt_features_demins_all_dementia_10_to_5_non_dlb_and_pdd.csv
@@ -9020,14 +9026,6 @@
 │       └── man
 │           └── man1
 │               └── ipython.1.gz
-├── hdf
-│   ├── clinicals.hdf
-│   ├── consultations.hdf
-│   ├── immunisations.hdf
-│   ├── medcoded_entries.hdf
-│   ├── prescriptions.hdf
-│   ├── referrals.hdf
-│   └── tests.hdf
 ├── notebooks
 │   ├── demins
 │   │   ├── Baseline\ characteristics.ipynb
@@ -9035,12 +9033,15 @@
 │   │   ├── Overview\ of\ raw\ data.ipynb
 │   │   ├── calculate\ VIF.ipynb
 │   │   ├── create_pt_features.ipynb
-│   │   └── logistic_regression.ipynb
+│   │   ├── logistic_regression.ipynb
+│   │   └── publish_clinical_codes.ipynb
 │   ├── dempred
 │   │   ├── dempred_ML_sandbox.ipynb
+│   │   ├── dempred_ML_sandbox_2.ipynb
 │   │   ├── dempred_add_pdds.ipynb
 │   │   ├── dempred_calculate_total_prescriptions.ipynb
-│   │   └── dempred_create_files.ipynb
+│   │   ├── dempred_create_files.ipynb
+│   │   └── dempred_matplotlib_sandbox.ipynb
 │   └── trash
 │       ├── Exploring\ cases\ and\ controls.ipynb
 │       ├── Exploring\ sedative\ use\ and\ insomnia.ipynb
@@ -9056,6 +9057,7 @@
 │       ├── sandbox.ipynb
 │       └── sandbox2.ipynb
 ├── output
+│   ├── codes_to_upload_to_clinicalcodes.rss.mhs.man.ac.uk.csv
 │   ├── drug_pdds.csv
 │   ├── models
 │   ├── mylog.log
@@ -9064,7 +9066,6 @@
 │       ├── tree.dot
 │       └── tree.gif
 ├── requirements.txt
-├── thing.txt
 └── tree.txt
 
-1219 directories, 7848 files
+1218 directories, 7850 files
