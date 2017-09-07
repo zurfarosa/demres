@@ -70,50 +70,6 @@ all_dementia = [
 	'Eu01z00'	#	[X]Vascular dementia, unspecified
 ]
 
-vascular = [
-    #note that dementia subtypes were not used in final study
-	'E004000',	#	Uncomplicated arteriosclerotic dementia
-	'Eu01100',	#	[X]Multi-infarct dementia
-	'Eu01.00',	#	[X]Vascular dementia
-	'E004100',	#	Arteriosclerotic dementia with delirium
-	'E004300',	#	Arteriosclerotic dementia with depression
-	'E004.00',	#	Arteriosclerotic dementia
-	'E004200',	#	Arteriosclerotic dementia with paranoia
-	'E004z00',	#	Arteriosclerotic dementia NOS
-	'Eu01.11',	#	[X]Arteriosclerotic dementia
-	'Eu01000',	#	[X]Vascular dementia of acute onset
-	'E004.11',	#	Multi infarct dementia
-	'Eu01300',	#	[X]Mixed cortical and subcortical vascular dem...
-	'Eu01y00',	#	[X]Other vascular dementia
-	'Eu01200',	#	[X]Subcortical vascular dementia
-	'Eu01z00'	#	[X]Vascular dementia, unspecified
-]
-
-alzheimers = [
-    #note that dementia subtypes were not used in final study
-	'Eu00012',	#	[X]Primary degen dementia, Alzheimer's type, p...
-	'Eu00013',	#	[X]Alzheimer's disease type 2
-	'Eu00011',	#	[X]Presenile dementia,Alzheimer's type
-	'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
-	'Eu00112',	#	[X]Senile dementia,Alzheimer's type
-	'Eu00100',	#	[X]Dementia in Alzheimer's disease with late o...
-	'Eu00113',	#	[X]Primary degen dementia of Alzheimer's type,...
-	'Eu00111',	#	[X]Alzheimer's disease type 1
-	'F110000',	#	Alzheimer's disease with early onset
-	'Eu00z11',	#	[X]Alzheimer's dementia unspec
-	'F110100',	#	Alzheimer's disease with late onset
-	'F110.00',	#	Alzheimer's disease
-	'Fyu3000',	#	[X]Other Alzheimer's disease
-	'Eu00z00',	#	[X]Dementia in Alzheimer's disease, unspecified
-]
-
-dlb_and_pdd = [
-    #note that dementia subtypes were not used in final study
-	'Eu02500',	#	[X]Lewy body dementia
-	'F116.00',	#	Lewy body disease
-	'Eu02300'	#	[X]Dementia in Parkinson's disease
-]
-
 insomnia = {
     'name':'insomnia',
     'int_or_boolean':'both',    #i.e. we want to get both a count variable (number of insomnia consultations)
@@ -1697,220 +1653,99 @@ stroke = {
 		'Gyu6G00',		#[X]Cereb infarct due unsp occlus/stenos precerebr arteries
 		'ZV12D00'		#[V]Personal history of transient ischaemic attack
     ]
-}
 
-current_smoker = {
-    'name':'current_smoker',
-    'int_or_boolean':'boolean',
-	'record_exposure_in_window_period_only':True,
-    'codes': [
-        #from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/25/
-		# '137..11',		#Smoker - amount smoked - REMOVED AS PEGMED DICTIONARY SAYS THIS READCODE ACTUALLY MEANS NON-SMOKER!
-		# '1372',		#Trivial smoker - < 1 cig/day
-		'1372.11',		#Occasional smoker
-		'1373',		#Light smoker - 1-9 cigs/day
-		'1374',		#Moderate smoker - 10-19 cigs/d
-		'1375',		#Heavy smoker - 20-39 cigs/day
-		'1376',		#Very heavy smoker - 40+cigs/d
-		'137b.00',		#Ready to stop smoking
-		'137c.00',		#Thinking about stopping smoking
-		'137C.00',		#Keeps trying to stop smoking
-		'137D.00',		#Admitted tobacco cons untrue ?
-		'137e.00',		#Smoking restarted
-		'137G.00',		#Trying to give up smoking
-		'137h.00',		#Minutes from waking to first tobacco consumption
-		'137H.00',		#Pipe smoker
-		'137J.00',		#Cigar smoker
-		'137m.00',		#Failed attempt to stop smoking
-		'137M.00',		#Rolls own cigarettes
-		'137P.00',		#Cigarette smoker
-		'137P.11',		#Smoker
-		'137Q.00',		#Smoking started
-		'137Q.11',		#Smoking restarted
-		'137R.00',		#Current smoker
-		'137V.00',		#Smoking reduced
-		'137X.00',		#Cigarette consumption
-		'137Y.00',		#Cigar consumption
-		'137Z.00'		#Tobacco consumption NOS
-    ]
-}
-
-CKD = {
-    'name':'CKD',
-    'int_or_boolean':'boolean',
-	'record_exposure_in_window_period_only':False,
-    'codes': [
-        #From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-renal-disease/
-        '14D1.00',		#H/O: nephritis
-        '1Z10.00',		#Chronic kidney disease stage 1
-        '1Z11.00',		#Chronic kidney disease stage 2
-        '1Z12.00',		#Chronic kidney disease stage 3
-        '1Z13.00',		#Chronic kidney disease stage 4
-        '1Z14.00',		#Chronic kidney disease stage 5
-        '582 N',		#CHRONIC NEPHRITIS
-        '583 A',		#NEPHRITIS
-        '583 GC',		#GLOMERULONEPHRITIS CHRONIC
-        '583 MA',		#MESANGIOCAPILLARY GLOMERULONEPHRITIS
-        '583 MN',		#NEPHROPATHY MEMBRANOUS
-        '583 MP',		#MEMBRANOPROLIFERATIVE GLOMERULONEPHRITIS
-        '5930A',		#OSTEODYSTROPHY AZOTAEMIC
-        '5930AR',		#OSTEODYSTROPHY URAEMIC
-        '5930R',		#OSTEODYSTROPHY RENAL
-        '5932A',		#RENAL DISEASE
-        '5932E',		#RENAL FAILURE
-        '5932EC',		#CHRONIC RENAL FAILURE
-        '5932KH',		#NEPHROPATHY HYPOKALAEMIC
-        '5932MN',		#RENAL MEDULLARY NECROSIS
-        '7598A',		#NEPHRITIS HEREDITARY
-        'K0...00',		#Nephritis; nephrosis and nephrotic syndrome
-        'K001.00',		#Acute nephritis with lesions of necrotising glomerulitis
-        'K012.00',		#Nephrotic syndrome??????? glomerulonephritis
-        'K019.00',		#Nephrotic syn;diffuse mesangiocapillary glomerulonephritis
-        'K02..00',		#Chronic glomerulonephritis
-        'K021.00',		#Chronic membranous glomerulonephritis
-        'K02..11',		#Nephritis - chronic
-        'K02..12',		#Nephropathy - chronic
-        'K022.00',		#Chronic membranoproliferative glomerulonephritis
-        'K023.00',		#Chronic rapidly progressive glomerulonephritis
-        'K02y000',		#Chronic glomerulonephritis  diseases EC
-        'K02y200',		#Chronic focal glomerulonephritis
-        'K02y300',		#Chronic diffuse glomerulonephritis
-        'K02yz00',		#Other chronic glomerulonephritis NOS
-        'K02z.00',		#Chronic glomerulonephritis NOS
-        'K03..00',		#Nephritis and nephropathy unspecified
-        'K03..11',		#Nephritis and nephropathy unspecified
-        'K032.00',		#Membranoproliferative nephritis unspecified
-        'K032000',		#Focal membranoproliferative glomerulonephritis
-        'K032y00',		#Nephritis unsp membranoprolif glomerulonephritis lesion
-        'K032y13',		#Mesangioproliferative glomerulonephritis NEC
-        'K032y14',		#Mesangiocapillary glomerulonephritis NEC
-        'K032z00',		#Nephritis unsp????? glomerulonephritis lesion NOS
-        'K034.00',		#Renal cortical necrosis unspecified
-        'K035.00',		#Renal medullary necrosis unspecified
-        'K041.00',		#Acute renal cortical necrosis
-        'K042.00',		#Acute renal medullary necrosis
-        'K04y.00',		#Other acute renal failure
-        'K04z.00',		#Acute renal failure NOS
-        'K05..00',		#Chronic renal failure
-        'K050.00',		#End stage renal failure
-        'K06..00',		#Renal failure unspecified
-        'K060.11',		#Impaired renal function
-        'K080.00',		#Renal osteodystrophy
-        'K080000',		#Phosphate-losing tubular disorders
-        'K080100',		#Renal dwarfism
-        'K080200',		#Renal infantilism
-        'K080300',		#Renal rickets
-        'K080z00',		#Renal osteodystrophy NOS
-        'K081.00',		#Nephrogenic diabetes insipidus
-        'K08y000',		#Hypokalaemic nephropathy
-        'K08yz00',		#Other impaired renal function disorder NOS
-        'K08z.00',		#Impaired renal function disorder NOS
-        'K0A3200',		#Chron nephritic syndrom difuse membranous glomerulonephritis
-        'K0A3300',		#Chron neph syn difus mesangial prolifrtiv glomerulonephritis
-        'K0A3400',		#Chron neph syn difuse endocap prolifrativ glomerulonephritis
-        'K0A3500',		#Chronic neph syn difus mesangiocapillary glomerulonephritis
-        'K0A3700',		#Chronic nephritic syn diffuse crescentic glomerulonephritis
-        'K0A5500',		#[X]Heredtry nephrpthy NEC difus mesangiocapilry glomneph
-        'K100000',		#Chronic pyelonephritis without medullary necrosis
-        'K100100',		#Chronic pyelonephritis with medullary necrosis
-        'K101000',		#Acute pyelonephritis without medullary necrosis
-        'K101100',		#Acute pyelonephritis with medullary necrosis
-        'Kyu2.00',		#[X]Renal failure
-        'Kyu2000',		#[X]Other acute renal failure
-        'Kyu2100'		#[X]Other chronic renal failure
-
-    ]
-}
 
 epilepsy = {
     'name':'epilepsy',
     'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
-    'codes': {
-        '1473':'H/O: epilepsy',
-        '1B1W.00':'Transient epileptic amnesia',
-        '1O30.00':'Epilepsy confirmed',
-        '2823':'O/E - petit mal fit',
-        '2824':'O/E - focal (Jacksonian) fit',
-        '2824.11':'O/E - Jacksonian fit',
-        '2825':'O/E - psychomotor fit',
-        '2828':'Absence seizure',
-        '667B.00':'Nocturnal epilepsy',
-        '667N.00':'Epilepsy severity',
-        'Eu05212':'[X]Schizophrenia-like psychosis in epilepsy',
-        'Eu05y11':'[X]Epileptic psychosis NOS',
-        'Eu06013':'[X]Limbic epilepsy personality',
-         'F132100':'Progressive myoclonic epilepsy',
-        'F132200':'Myoclonic encephalopathy',
-        'F25..00':'Epilepsy',
-        'F250.00':'Generalised nonconvulsive epilepsy',
-        'F250000':'Petit mal (minor) epilepsy',
-        'F250011':'Epileptic absences',
-        'F250100':'pykno-epilepsy',
-        'F250200':'Epileptic seizures - atonic',
-        'F250300':'Epileptic seizures - akinetic',
-         'F250y00':'Other specified generalised nonconvulsive epilepsy',
-         'F250z00':'Generalised nonconvulsive epilepsy NOS',
-         'F251.00':'Generalised convulsive epilepsy',
-        'F251000':'Grand mal (major) epilepsy',
-         'F251011':'Tonic-clonic epilepsy',
-        'F251200':'Epileptic seizures - clonic',
-        'F251300':'Epileptic seizures - myoclonic',
-        'F251400':'Epileptic seizures - tonic',
-        'F251500':'Tonic-clonic epilepsy',
-        'F251600':'Grand mal seizure',
-         'F251y00':'Other specified generalised convulsive epilepsy',
-         'F251z00':'Generalised convulsive epilepsy NOS',
-        'F252.00':'Petit mal status',
-        'F253.00':'Grand mal status',
-        'F253.11':'Status epilepticus',
-         'F254.00':'Partial epilepsy with impairment of consciousness',
-        'F254000':'Temporal lobe epilepsy',
-         'F254100':'Psychomotor epilepsy',
-         'F254200':'Psychosensory epilepsy',
-         'F254300':'Limbic system epilepsy',
-        'F254400':'Epileptic automatism',
-        'F254500':'Complex partial epileptic seizure',
-         'F254z00':'Partial epilepsy with impairment of consciousness NOS',
-         'F255.00':'Partial epilepsy without impairment of consciousness',
-        'F255000':'Jacksonian; focal or motor epilepsy',
-        'F255011':'Focal epilepsy',
-        'F255012':'Motor epilepsy',
-         'F255100':'Sensory induced epilepsy',
-         'F255200':'Somatosensory epilepsy',
-        'F255300':'Visceral reflex epilepsy',
-        'F255311':'Partial epilepsy with autonomic symptoms',
-         'F255400':'Visual reflex epilepsy',
-        'F255500':'Unilateral epilepsy',
-        'F255600':'Simple partial epileptic seizure',
-         'F255y00':'Partial epilepsy without impairment of consciousness OS',
-        'F255z00':'Partial epilepsy without impairment of consciousness NOS',
-        'F256100':'Salaam attacks',
-        'F256.11':'Lightning spasms',
-        'F257.00':'Kojevnikov's epilepsy',
-        'F259.11':'Ohtahara syndrome',
-         'F25B.00':'Alcohol-induced epilepsy',
-         'F25C.00':'Drug-induced epilepsy',
-         'F25D.00':'Menstrual epilepsy',
-         'F25E.00':'Stress-induced epilepsy',
-        'F25F.00':'Photosensitive epilepsy',
-        'F25X.00':'Status epilepticus; unspecified',
-         'F25y.00':'Other forms of epilepsy',
-        'F25y000':'Cursive (running) epilepsy',
-        'F25y100':'Gelastic epilepsy',
-        'F25y200':'Locl-rlt(foc)(part)idiop epilep&epilptic syn seiz locl onset',
-        'F25y300':'Complex partial status epilepticus',
-        'F25yz00':'Other forms of epilepsy NOS',
-        'F25z.00':'Epilepsy NOS',
-        'F25.z.11':'Fit (in known epileptic) NOS',
-        'Fyu5000':'[X]Other generalized epilepsy and epileptic syndromes',
-        'Fyu5100':'[X]Other epilepsy',
-        'Fyu5200':'[X]Other status epilepticus',
-        'Fyu5900':'[X]Status epilepticus; unspecified',
-        'SC20000':'Traumatic epilepsy',
-        'ZS82.00':'Acquired epileptic aphasia'
-    }
+    'codes': [
+        # https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/55/codelist/res55-epilepsy/
+        '1473',		#H/O: epilepsy
+        '1B1W.00',		#Transient epileptic amnesia
+        '1O30.00',		#Epilepsy confirmed
+        '2823',		#O/E - petit mal fit
+        '2824',		#O/E - focal (Jacksonian) fit
+        '2824.11',		#O/E - Jacksonian fit
+        '2825',		#O/E - psychomotor fit
+        '2828',		#Absence seizure
+        '667B.00',		#Nocturnal epilepsy
+        '667N.00',		#Epilepsy severity
+        'Eu05212',		#[X]Schizophrenia-like psychosis in epilepsy
+        'Eu05y11',		#[X]Epileptic psychosis NOS
+        'Eu06013',		#[X]Limbic epilepsy personality
+         'F132100',		#Progressive myoclonic epilepsy
+        'F132200',		#Myoclonic encephalopathy
+        'F25..00',		#Epilepsy
+        'F250.00',		#Generalised nonconvulsive epilepsy
+        'F250000',		#Petit mal (minor) epilepsy
+        'F250011',		#Epileptic absences
+        'F250100',		#pykno-epilepsy
+        'F250200',		#Epileptic seizures - atonic
+        'F250300',		#Epileptic seizures - akinetic
+         'F250y00',		#Other specified generalised nonconvulsive epilepsy
+         'F250z00',		#Generalised nonconvulsive epilepsy NOS
+         'F251.00',		#Generalised convulsive epilepsy
+        'F251000',		#Grand mal (major) epilepsy
+         'F251011',		#Tonic-clonic epilepsy
+        'F251200',		#Epileptic seizures - clonic
+        'F251300',		#Epileptic seizures - myoclonic
+        'F251400',		#Epileptic seizures - tonic
+        'F251500',		#Tonic-clonic epilepsy
+        'F251600',		#Grand mal seizure
+         'F251y00',		#Other specified generalised convulsive epilepsy
+         'F251z00',		#Generalised convulsive epilepsy NOS
+        'F252.00',		#Petit mal status
+        'F253.00',		#Grand mal status
+        'F253.11',		#Status epilepticus
+         'F254.00',		#Partial epilepsy with impairment of consciousness
+        'F254000',		#Temporal lobe epilepsy
+         'F254100',		#Psychomotor epilepsy
+         'F254200',		#Psychosensory epilepsy
+         'F254300',		#Limbic system epilepsy
+        'F254400',		#Epileptic automatism
+        'F254500',		#Complex partial epileptic seizure
+         'F254z00',		#Partial epilepsy with impairment of consciousness NOS
+         'F255.00',		#Partial epilepsy without impairment of consciousness
+        'F255000',		#Jacksonian; focal or motor epilepsy
+        'F255011',		#Focal epilepsy
+        'F255012',		#Motor epilepsy
+         'F255100',		#Sensory induced epilepsy
+         'F255200',		#Somatosensory epilepsy
+        'F255300',		#Visceral reflex epilepsy
+        'F255311',		#Partial epilepsy with autonomic symptoms
+         'F255400',		#Visual reflex epilepsy
+        'F255500',		#Unilateral epilepsy
+        'F255600',		#Simple partial epileptic seizure
+         'F255y00',		#Partial epilepsy without impairment of consciousness OS
+        'F255z00',		#Partial epilepsy without impairment of consciousness NOS
+        'F256100',		#Salaam attacks
+        'F256.11',		#Lightning spasms
+        'F257.00',		#Kojevnikov's epilepsy
+        'F259.11',		#Ohtahara syndrome
+         'F25B.00',		#Alcohol-induced epilepsy
+         'F25C.00',		#Drug-induced epilepsy
+         'F25D.00',		#Menstrual epilepsy
+         'F25E.00',		#Stress-induced epilepsy
+        'F25F.00',		#Photosensitive epilepsy
+        'F25X.00',		#Status epilepticus; unspecified
+         'F25y.00',		#Other forms of epilepsy
+        'F25y000',		#Cursive (running) epilepsy
+        'F25y100',		#Gelastic epilepsy
+        'F25y200',		#Locl-rlt(foc)(part)idiop epilep&epilptic syn seiz locl onset
+        'F25y300',		#Complex partial status epilepticus
+        'F25yz00',		#Other forms of epilepsy NOS
+        'F25z.00',		#Epilepsy NOS
+        'F25.z.11',		#Fit (in known epileptic) NOS
+        'Fyu5000',		#[X]Other generalized epilepsy and epileptic syndromes
+        'Fyu5100',		#[X]Other epilepsy
+        'Fyu5200',		#[X]Other status epilepticus
+        'Fyu5900',		#[X]Status epilepticus; unspecified
+        'SC20000',		#Traumatic epilepsy
+        'ZS82.00',		#Acquired epileptic aphasia
+    ]
 }
+
 
 all_codelists = [
     insomnia,
