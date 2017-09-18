@@ -1653,7 +1653,7 @@ stroke = {
 		'Gyu6G00',		#[X]Cereb infarct due unsp occlus/stenos precerebr arteries
 		'ZV12D00'		#[V]Personal history of transient ischaemic attack
     ]
-
+}
 
 epilepsy = {
     'name':'epilepsy',
