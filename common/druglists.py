@@ -135,27 +135,6 @@ antipsychotics = {
     'name':'antipsychotics'
 }
 
-depot_antipsychotics = {
-    'drugs':[
-    #first-generation depots from BNF 2017:
-    'FLUPENTIXOL DECANOATE',
-    'FLUPHENAZINE DECANOATE',
-    'HALOPERIDOL DECANOATE',
-    'ZUCLOPENTHIXOL DECANOATE',
-    #My own additions:
-    'pipotiazine palmitate',
-
-    #from BNF 2017:
-    'ARIPIPRAZOLE',
-    'OLANZAPINE EMBONATE',
-    'PALIPERIDONE',
-    'RISPERIDONE',
-    #My own additions:
-    'Olanzapine embonate monohydrate'
-    ],
-    'route':'intramuscular',
-    'name':'depot_antipsychotics'
-}
 
 antidepressants = {
     'drugs':[

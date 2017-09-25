@@ -125,9 +125,9 @@ def add_data_start_and_end_dates(all_encounters,pt_features,subtype):
     print('removing patients without any events')
     no_event_mask = pd.isnull(pt_features['earliest_sysdate'])
     print('There are {0} patients without any events'.format(len(pt_features[no_event_mask])))
-    if len(pt_features[no_event_mask])>0:
-        pts_without_any_events.loc[:,'reason_for_removal']='Pt did not have any events'
-        pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
+    # if len(pt_features[no_event_mask])>0:
+    #     pts_without_any_events.loc[:,'reason_for_removal']='Pt did not have any events'
+    #     pts_without_any_events.to_csv('data/pt_data/removed_patients/pts_without_any_events.csv',index=False)
     pt_features = pt_features.loc[~no_event_mask].copy()
 
     pt_features.drop(['earliest_sysdate','sysdate_of_final_converted_code','estimated_data_start'],inplace=True,axis=1)
@@ -339,7 +339,7 @@ def create_quantiles_and_booleans(pt_features):
     pt_features.loc[above_99_mask,'age_at_index_date:above_99']=1
     pt_features.loc[~above_99_mask,'age_at_index_date:above_99']=0
 
-    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds','depot_antipsychotics_100_pdds','other_sedatives_100_pdds','benzo_and_z_drugs_100_pdds','mood_stabilisers_100_pdds']:
+    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds','other_sedatives_100_pdds','benzo_and_z_drugs_100_pdds','mood_stabilisers_100_pdds']:
         drug_pdds = pt_features[drug] * 100 #convert unit from '100 pdds' to 'pdds'
         drug_0_mask = drug_pdds==0
         drug_1_10_mask = (drug_pdds>0) & (drug_pdds<=10)
@@ -428,7 +428,7 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
 
     for druglist in druglists:
         capitalised_drugs = [drug.upper() for drug in druglist['drugs']]
-        druglist_prescs = prescs.loc[prescs['drug substance name'].isin(capitalised_drugs)]
+        druglist_prescs = prescs.loc[prescs['drug substance name'].str.upper().isin(capitalised_drugs)]
 
         # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
         druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
