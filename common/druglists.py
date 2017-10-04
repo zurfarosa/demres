@@ -1,4 +1,4 @@
-mood_stabilisers = {
+mood_stabilisers_and_AEDs = {
     #my own list:
     'drugs':[
         'carbamazepine',
@@ -6,19 +6,40 @@ mood_stabilisers = {
         'LAMOTRIGINE',
         'PREGABALIN',
         'SODIUM VALPROATE',
-        'VALPROIC ACID',
-        'lithium citrate',
-        'lithium carbonate',
         'Valproate semisodium',
-        'oxcarbazepine'
+        'oxcarbazepine',
+        'BRIVARACETAM',
+        'ETHOSUXIMIDE',
+        'LEVETIRACETAM',
+        'OXCARBAZEPINE',
+        'TOPIRAMATE',
+        'VIGABATRIN',
         ],
     'route':'oral',
-    'name':'mood_stabilisers'
+    'name':'mood_stabilisers_and_AEDs'
+}
+
+lithium = {
+    'drugs':[
+        'lithium citrate',
+        'lithium carbonate'
+    ],
+    'route':'oral',
+    'name':'lithium'
 }
 
 
-
-benzo_and_z_drugs = {
+z_drugs = {
+    'drugs':[
+        'ZALEPLON',
+        'zopiclone',
+        'zolpidem tartrate',
+        'ZOLPIDEM'
+        ],
+    'route':'oral',
+    'name':'z_drugs'
+}
+benzodiazepines = {
     'drugs':[
         # BNF benzodiazepines:
     	'ALPRAZOLAM',
@@ -37,10 +58,6 @@ benzo_and_z_drugs = {
     	'NITRAZEPAM',
     	'OXAZEPAM',
     	'TEMAZEPAM',
-        'ZALEPLON',
-        'zopiclone',
-        'zolpidem tartrate',
-        'ZOLPIDEM',
         #BNF 2000 edition
     	'CHLORDIAZEPOXIDE',
         'bromazepam',
@@ -49,7 +66,7 @@ benzo_and_z_drugs = {
         'Loprazolam mesilate'
         ],
     'route':'oral',
-    'name':'benzo_and_z_drugs'
+    'name':'benzodiazepines'
 }
 
 other_sedatives = {
@@ -206,8 +223,10 @@ antidementia_drugs = [
 
 
 all_druglists = [
-    mood_stabilisers,
-    benzo_and_z_drugs,
+    mood_stabilisers_and_AEDs,
+    lithium,
+    benzodiazepines,
+    z_drugs,
     other_sedatives,
     antipsychotics,
     antidepressants

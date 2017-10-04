@@ -275,10 +275,10 @@ def create_quantiles_and_booleans(pt_features):
     and converts others (insomnia, benzodiazepine_pdd) into booleans
     '''
 
-    benzo_mask = pt_features['benzo_and_z_drugs_100_pdds']>0
-    pt_features['benzo_and_z_drugs_any']=np.nan
-    pt_features.loc[benzo_mask,'benzo_and_z_drugs_any']=1
-    pt_features.loc[~benzo_mask,'benzo_and_z_drugs_any']=0
+    # benzo_mask = pt_features['benzo_and_z_drugs_100_pdds']>0
+    # pt_features['benzo_and_z_drugs_any']=np.nan
+    # pt_features.loc[benzo_mask,'benzo_and_z_drugs_any']=1
+    # pt_features.loc[~benzo_mask,'benzo_and_z_drugs_any']=0
 
     #for the insomnia variable, create an additional dichotomous yes/no variable ('insomnia_any')
     pt_features['insomnia_any']= np.nan
@@ -339,7 +339,9 @@ def create_quantiles_and_booleans(pt_features):
     pt_features.loc[above_99_mask,'age_at_index_date:above_99']=1
     pt_features.loc[~above_99_mask,'age_at_index_date:above_99']=0
 
-    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds','other_sedatives_100_pdds','benzo_and_z_drugs_100_pdds','mood_stabilisers_100_pdds']:
+    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds','other_sedatives_100_pdds',
+                'benzodiazepines_100_pdds','z_drugs_100_pdds','lithium_100_pdds',
+                'mood_stabilisers_and_AEDs_100_pdds']:
         drug_pdds = pt_features[drug] * 100 #convert unit from '100 pdds' to 'pdds'
         drug_0_mask = drug_pdds==0
         drug_1_10_mask = (drug_pdds>0) & (drug_pdds<=10)
@@ -347,7 +349,10 @@ def create_quantiles_and_booleans(pt_features):
         drug_101_1000_mask = (drug_pdds>100) & (drug_pdds<=1000)
         drug_1001_10000_mask = (drug_pdds>1000) & (drug_pdds<=10000)
         drug_above_10000_mask = drug_pdds>10000
-        drug_name_with_100_pdds_removed = drug.replace('s_100','')
+        if drug=='lithium_100_pdds':
+            drug_name_with_100_pdds_removed = drug.replace('_100','')
+        else:
+            drug_name_with_100_pdds_removed = drug.replace('s_100','')
 
         pt_features.loc[drug_0_mask,drug_name_with_100_pdds_removed+':00000']=1
         pt_features.loc[~drug_0_mask,drug_name_with_100_pdds_removed+':00000']=0
