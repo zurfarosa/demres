@@ -72,7 +72,7 @@ benzodiazepines = {
 other_sedatives = {
     'drugs':[
         # BNF Non-benzodiazepine hypnotics and sedatives
-    	'CHLORAL HYDRATE',
+    	# 'CHLORAL HYDRATE',
     	'CLOMETHIAZOLE',
     	'DEXMEDETOMIDINE',
     	'MELATONIN',
@@ -80,24 +80,23 @@ other_sedatives = {
 
         #BNF sedating antihistamines
     	'ALIMEMAZINE TARTRATE',
-    	'ANTAZOLINE WITH XYLOMETAZOLINE',
-    	'CHLORPHENAMINE MALEATE',
-    	'CINNARIZINE',
-    	'CINNARIZINE WITH DIMENHYDRINATE',
-    	'CLEMASTINE',
-    	'CYPROHEPTADINE HYDROCHLORIDE',
-    	'ERGOTAMINE TARTRATE WITH CAFFEINE HYDRATE AND CYCLIZINE HYDROCHLORIDE',
+    	# 'ANTAZOLINE WITH XYLOMETAZOLINE',
+    	# 'CHLORPHENAMINE MALEATE',
+    	# 'CINNARIZINE',
+    	# 'CINNARIZINE WITH DIMENHYDRINATE',
+    	# 'CLEMASTINE',
+    	# 'CYPROHEPTADINE HYDROCHLORIDE',
+    	# 'ERGOTAMINE TARTRATE WITH CAFFEINE HYDRATE AND CYCLIZINE HYDROCHLORIDE',
     	'HYDROXYZINE HYDROCHLORIDE',
-    	'KETOTIFEN',
-    	'MORPHINE WITH CYCLIZINE',
-    	# 'PARACETAMOL WITH BUCLIZINE HYDROCHLORIDE AND CODEINE PHOSPHATE',
-        'Buclizine hydrochloride/Paracetamol/Codeine phosphate',
-    	'PIZOTIFEN',
+    	# 'KETOTIFEN',
+    	# 'MORPHINE WITH CYCLIZINE',
+        # 'Buclizine hydrochloride/Paracetamol/Codeine phosphate',
+    	# 'PIZOTIFEN',
     	'PROMETHAZINE TEOCLATE',
         'PROMETHAZINE hydrochloride',
 
         #BNF 2000 edition
-        'triclofos sodium'
+        # 'triclofos sodium'
     ],
     'route':'oral',
     'name':'other_sedatives'
@@ -227,7 +226,7 @@ all_druglists = [
     lithium,
     benzodiazepines,
     z_drugs,
-    other_sedatives,
+    # other_sedatives,
     antipsychotics,
     antidepressants
 ]
