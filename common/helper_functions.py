@@ -8,14 +8,14 @@ from demres.demins.constants import Study_Design as sd
 from demres.common.constants import entry_type
 
 def get_prodcodes_from_drug_name(codelist):
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
-    prodcodes = [pegprod.loc[pegprod['drug substance name'].str.lower()==med.lower()].loc[:,'prodcode'].tolist() for med in codelist]
+    pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv')
+    prodcodes = [pegprod.loc[pegprod['drugsubstance'].str.lower()==med.lower()].loc[:,'prodcode'].tolist() for med in codelist]
     # now flatten the list (which contains lists within lists):
     prodcodes = [prodcode for list in prodcodes for prodcode in list]
     return prodcodes
 
 def get_medcodes_from_readcodes(readcodes):
-    pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv')
+    pegmed = pd.read_csv('dicts/proc_pegasus_medical.csv')
     medcodelists = []
     for readcode in readcodes:
         medcodelists.append(pegmed.loc[pegmed['readcode'].str.contains('^'+readcode,case=True,regex=True),'medcode'].values.tolist())  #regex required because Read codes contain dot characters as wild cards.
@@ -33,15 +33,15 @@ def backup_file(path,file,additional_suffix=None):
 def get_patient_history(all_entries,patid):
     '''
     Returns a dataframe containing all patient entries (prescriptions, consultations, immunisations etc) for a specific patient,
-    annotated with read terms, drug substance names etc.
+    annotated with read terms, drugsubstances etc.
     '''
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
-    pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
+    pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv',delimiter=',')
+    pegmed = pd.read_csv('dicts/proc_pegasus_medical.csv',delimiter=',')
 
     pt_history = all_entries[all_entries['patid']==patid]
     pt_history_elaborated = pd.merge(pt_history,pegmed[['medcode','read term']],how='left')
-    pt_history_elaborated = pd.merge(pt_history_elaborated,pegprod[['prodcode','drug substance name']],how='left')
-    pt_history_elaborated['description']=pt_history_elaborated['drug substance name'].fillna(pt_history_elaborated['read term'])
+    pt_history_elaborated = pd.merge(pt_history_elaborated,pegprod[['prodcode','drugsubstance']],how='left')
+    pt_history_elaborated['description']=pt_history_elaborated['drugsubstance'].fillna(pt_history_elaborated['read term'])
     inv_entry_type = {v: k for k, v in entry_type.items()}
     pt_history_elaborated['type']=pt_history_elaborated['type'].map(inv_entry_type)
     pt_history_elaborated = pt_history_elaborated[['patid','medcode','prodcode','eventdate','sysdate','type','description']]
@@ -71,14 +71,14 @@ def explore_similar_drug_names(druglists,pt_features):
     end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))
     timely_presc_mask = (prescriptions['eventdate']>=(prescriptions['index_date']-start_year)) & (prescriptions['eventdate']<=(prescriptions['index_date']-end_year))
     timely_prescs = prescriptions[timely_presc_mask]
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
-    timely_prescs = pd.merge(timely_prescs,pegprod[['prodcode','substance strength','drug substance name']],how='left')
+    pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv')
+    timely_prescs = pd.merge(timely_prescs,pegprod[['prodcode','strength','drugsubstance']],how='left')
 
     for druglist in druglists:
         print('\n\n',druglist)
         drug_lists = [drug.split(' ') for drug in druglist['drugs']]
         drug_string = '|'.join([word for list in drug_lists for word in list if word.upper() not in ['WITH','ACID','SODIUM','CITRATE','CARBONATE','DISODIUM','HYDROCHLORIDE','MALEATE','ACETATE']])
-        prescs = timely_prescs.loc[timely_prescs['drug substance name'].str.contains(drug_string,na=False,case=False)]
-        prescs_group = prescs['prodcode'].groupby(prescs['drug substance name']).count().reset_index()
-        prescs_group.columns=['drug substance name','count']
+        prescs = timely_prescs.loc[timely_prescs['drugsubstance'].str.contains(drug_string,na=False,case=False)]
+        prescs_group = prescs['prodcode'].groupby(prescs['drugsubstance']).count().reset_index()
+        prescs_group.columns=['drugsubstance','count']
         print(prescs_group)

@@ -7,28 +7,29 @@ from demres.common.process_pt_features import *
 from demres.demins.constants import Study_Design
 from demres.common.logger import logging
 
+
+
 def create_pegmed():
     """
     Creates a cleaned up version of Pegasus Medical dictionary in csv form
     """
-    pegmed = pd.read_csv('data/dicts/raw_pegasus_medical.txt',delimiter='\t',skiprows=[0,1,2],header=None)
-    pegmed.columns=['medcode','readcode','clinical events','immunisation events','referral events','test events','read term','database build']
-    pegmed.to_csv('data/dicts/proc_pegasus_medical.csv',index=False)
+    pegmed = pd.read_csv('dicts/medical.txt',delimiter='\t',skiprows=[1])
+    pegmed.to_csv('dicts/proc_pegasus_medical.csv',index=False)
 
 def create_pegprod():
     """
     Creates a cleaned up version of Pegasus Products dictionary in csv form
     """
-    pegprod = pd.read_csv('data/dicts/raw_pegasus_product.txt',delimiter='\t',encoding='latin-1', skiprows=[0,1],header=None)
-    pegprod.columns=['prodcode','XXX code','therapy events','product name','drug substance name','substance strength','formulation','route','BNF code','BNF header','database build','unknown column']
-    pegprod.to_csv('data/dicts/proc_pegasus_prod.csv',index=False)
+    pegprod = pd.read_csv('dicts/product.txt',delimiter='\t',skiprows=[1,2],encoding='latin-1', header=0)
+
+    pegprod.to_csv('dicts/proc_pegasus_prod.csv',index=False)
 
 def create_specific_prescriptions(all_prescriptions,medlist,csv_name):
     #First get the drug product info from Pegasus
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv', delimiter=',')
-    pegprod['drug substance name'].fillna('',inplace=True)
-    specific_pegprod = pegprod[pegprod['drug substance name'].str.contains('|'.join(medlist), case=False)]
-    specific_pegprod=specific_pegprod[['prodcode', 'product name','drug substance name','substance strength', 'formulation','route']]
+    pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv', delimiter=',')
+    pegprod['drugsubstance'].fillna('',inplace=True)
+    specific_pegprod = pegprod[pegprod['drugsubstance'].str.contains('|'.join(medlist), case=False)]
+    specific_pegprod=specific_pegprod[['prodcode', 'productname','drugsubstance','strength', 'formulation','route']]
 
     #Select only relevant drugs from the list of all our sample's prescriptions
     relevant_prescriptions=all_prescriptions[all_prescriptions['prodcode'].isin(specific_pegprod['prodcode'])]

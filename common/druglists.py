@@ -80,23 +80,11 @@ other_sedatives = {
 
         #BNF sedating antihistamines
     	'ALIMEMAZINE TARTRATE',
-    	# 'ANTAZOLINE WITH XYLOMETAZOLINE',
-    	# 'CHLORPHENAMINE MALEATE',
-    	# 'CINNARIZINE',
-    	# 'CINNARIZINE WITH DIMENHYDRINATE',
-    	# 'CLEMASTINE',
-    	# 'CYPROHEPTADINE HYDROCHLORIDE',
-    	# 'ERGOTAMINE TARTRATE WITH CAFFEINE HYDRATE AND CYCLIZINE HYDROCHLORIDE',
     	'HYDROXYZINE HYDROCHLORIDE',
-    	# 'KETOTIFEN',
-    	# 'MORPHINE WITH CYCLIZINE',
-        # 'Buclizine hydrochloride/Paracetamol/Codeine phosphate',
-    	# 'PIZOTIFEN',
     	'PROMETHAZINE TEOCLATE',
         'PROMETHAZINE hydrochloride',
 
         #BNF 2000 edition
-        # 'triclofos sodium'
     ],
     'route':'oral',
     'name':'other_sedatives'

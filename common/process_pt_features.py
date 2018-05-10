@@ -7,15 +7,14 @@ from common.helper_functions import *
 from demres.demins.constants import Study_Design as sd
 from demres.common.logger import logging
 
+
 def create_pt_features():
     '''
     Creates csv file containing all patients (cases and controls on separate rows)
     with a column for all variables to be analysed
     '''
     pt_features = pd.read_csv('data/pt_data/raw_data/Extract_Patient_001.txt', usecols=['patid','yob','gender','reggap'], delimiter='\t')
-    # Remove patients with registration gaps of more than one day
-    pts_with_registration_gaps = pt_features.loc[pt_features['reggap']>sd.acceptable_number_of_registration_gap_days]
-    pts_with_registration_gaps.to_csv('data/pt_data/removed_patients/pts_with_registration_gaps.csv',index=False)
+
     pt_features = pt_features.loc[pt_features['reggap']==sd.acceptable_number_of_registration_gap_days]
     pt_features.drop('reggap',axis=1,inplace=True)
 
@@ -33,8 +32,8 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
     Also looks for final dementia diagnosis (e.g. 'vascular dementia'), as this is likely to be our best guess as to the dementia subtype
     '''
 
-    pegmed = pd.read_csv('data/dicts/proc_pegasus_medical.csv',delimiter=',')
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv',delimiter=',')
+    pegmed = pd.read_csv('dicts/proc_pegasus_medical.csv',delimiter=',')
+    pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv',delimiter=',')
     medcodes = get_medcodes_from_readcodes(codelists.all_dementia)
     prodcodes = get_prodcodes_from_drug_name(druglists.antidementia_drugs)
 
@@ -43,7 +42,7 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
     # for clarity, look up the Read terms
     all_dem_labelled = pd.merge(all_dementia_entries,pegmed,how='left')[['patid','prodcode','medcode','sysdate','eventdate','type']]
     # for clarity, look up the drug names
-    all_dem_labelled = pd.merge(all_dem_labelled,pegprod,how='left')[['patid','medcode','prodcode','sysdate','eventdate','type','drug substance name']]
+    all_dem_labelled = pd.merge(all_dem_labelled,pegprod,how='left')[['patid','medcode','prodcode','sysdate','eventdate','type','drugsubstance']]
     all_dem_labelled.loc[:,'eventdate']=pd.to_datetime(all_dem_labelled.loc[:,'eventdate'])
     #Get the date of earliest dementia diagnosis / antidementia drug prescription - this will be the revised index date, and will also determine revised caseness
     earliest_dementia_dates = all_dem_labelled.groupby('patid')['eventdate'].min().reset_index()
@@ -184,7 +183,7 @@ def match_cases_and_controls(pt_features,window):
     to_remove_mask = pd.isnull(pt_features['matchid'])
     pt_features.loc[to_remove_mask,'reason_for_removal']='Unmatchable'
     print(len(pt_features[to_remove_mask]),' patients being removed as unmatchable')
-    pt_features[to_remove_mask].to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
+    # pt_features[to_remove_mask].to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
     pt_features = pt_features.loc[~to_remove_mask].copy()
 
     #Now that we have an index date for both cases and controls, finally calculate age at index date
@@ -339,7 +338,7 @@ def create_quantiles_and_booleans(pt_features):
     pt_features.loc[above_99_mask,'age_at_index_date:above_99']=1
     pt_features.loc[~above_99_mask,'age_at_index_date:above_99']=0
 
-    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds','other_sedatives_100_pdds',
+    for drug in ['antidepressants_100_pdds','antipsychotics_100_pdds',
                 'benzodiazepines_100_pdds','z_drugs_100_pdds','lithium_100_pdds',
                 'mood_stabilisers_and_AEDs_100_pdds']:
         drug_pdds = pt_features[drug] * 100 #convert unit from '100 pdds' to 'pdds'
@@ -382,8 +381,8 @@ def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,wind
     prescs = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
     prescs = prescs.loc[pd.notnull(prescs['qty'])].copy() #remove the relatively small number of prescriptions where the quantity is NaN
 
-    pegprod = pd.read_csv('data/dicts/proc_pegasus_prod.csv')
-    prescs = pd.merge(prescs,pegprod[['prodcode','substance strength','route','drug substance name']],how='left')
+    pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv')
+    prescs = pd.merge(prescs,pegprod[['prodcode','strength','route','drugsubstance']],how='left')
 
     #Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
     start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
@@ -397,7 +396,7 @@ def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,wind
     relev_prescs = timely_prescs.loc[timely_prescs['prodcode'].isin(prodcodes)].copy()
 
     # Create new columns ('amount' and 'unit', extracted from the 'substrance strength' string)
-    amount_and_unit = relev_prescs['substance strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
+    amount_and_unit = relev_prescs['strength'].str.extract('([\d\.]+)([\d\.\+ \w\/]*)',expand=True)
     amount_and_unit.columns=['amount','unit']
     amount_and_unit.amount = amount_and_unit.amount.astype('float')
     reformatted_prescs = pd.concat([relev_prescs,amount_and_unit],axis=1).drop(['numpacks','numdays','packtype','issueseq'],axis=1)
@@ -433,7 +432,7 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
 
     for druglist in druglists:
         capitalised_drugs = [drug.upper() for drug in druglist['drugs']]
-        druglist_prescs = prescs.loc[prescs['drug substance name'].str.upper().isin(capitalised_drugs)]
+        druglist_prescs = prescs.loc[prescs['drugsubstance'].str.upper().isin(capitalised_drugs)]
 
         # Remove prescriptions if they are not of the route (e.g. oral) specified on the druglist
         druglist_prescs = druglist_prescs.loc[prescs['route'].str.contains(druglist['route'],na=False,case=False)]
@@ -441,7 +440,7 @@ def create_pdd_for_each_drug(prescriptions,druglists,pt_features,window):
         #Calculate the prescribed daily dose (PDD) for each drug (e.g. 'citalopram') in the druglist (e.g. 'antidepressants')
         for drug in druglist['drugs']:
             drug = drug.upper()
-            temp_prescs = druglist_prescs[druglist_prescs['drug substance name'].str.upper()==drug].copy()
+            temp_prescs = druglist_prescs[druglist_prescs['drugsubstance'].str.upper()==drug].copy()
             if(len(temp_prescs))>0:
                 drug_amounts = np.array(temp_prescs['amount'])*np.array(temp_prescs['ndd'])
                 drug_weights = np.array(temp_prescs['qty'])/np.array(temp_prescs['ndd'])
@@ -462,23 +461,23 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     '''
     pdds = pd.read_csv('output/drug_pdds.csv', delimiter=',')
     prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
-    prescs['drug substance name'] = prescs['drug substance name'].str.upper()
-    prescs_grouped = prescs.groupby(by=['patid','drug substance name']).total_amount.sum().reset_index()
+    prescs['drugsubstance'] = prescs['drugsubstance'].str.upper()
+    prescs_grouped = prescs.groupby(by=['patid','drugsubstance']).total_amount.sum().reset_index()
     for druglist in druglists:
         print(druglist['name'])
         capitalised_drugs = [drug.upper() for drug in druglist['drugs']]
         new_colname = druglist['name']+'_100_pdds'
         # prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
-        relev_prescs = prescs_grouped.loc[prescs_grouped['drug substance name'].isin(capitalised_drugs)]
+        relev_prescs = prescs_grouped.loc[prescs_grouped['drugsubstance'].isin(capitalised_drugs)]
         print('There are {0} relevant prescription entries for {1}'.format(len(relev_prescs),druglist['name']))
 
         # Sum the total pdds of a particular drug type for each patients
         # (e.g. lorazepam AND zopiclone AND diazepam when calculating benzo/z-drug pdds).
         # Then divide by 100, because 100_PDDs is an easier-to-interpret unit for odds ratio than PDDs alone
 
-        # relev_prescs['drug substance name'] =  relev_prescs['drug substance name'].str.upper()
+        # relev_prescs['drugsubstance'] =  relev_prescs['drugsubstance'].str.upper()
 
-        relev_prescs = pd.merge(relev_prescs,pdds,left_on='drug substance name',right_on='drug_name',how='left')[['patid','drug substance name','total_amount','pdd(mg)']]
+        relev_prescs = pd.merge(relev_prescs,pdds,left_on='drugsubstance',right_on='drug_name',how='left')[['patid','drugsubstance','total_amount','pdd(mg)']]
         relev_prescs[new_colname] = (relev_prescs['total_amount'] / relev_prescs['pdd(mg)'])/100
         pt_pdds = relev_prescs.groupby(by='patid')[new_colname].sum().reset_index().copy()
         if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
