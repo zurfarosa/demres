@@ -20,7 +20,7 @@ def get_medcodes_from_readcodes(readcodes):
     for readcode in readcodes:
         medcodelists.append(pegmed.loc[pegmed['readcode'].str.contains('^'+readcode,case=True,regex=True),'medcode'].values.tolist())  #regex required because Read codes contain dot characters as wild cards.
     medcodes = [item for medcodelist in medcodelists for item in medcodelist]
-    medcodes_explained = pegmed.loc[pegmed['medcode'].isin(medcodes),['readcode','medcode','read term']].values.tolist() #Don't delete - useful for debugging, as Read code to medcode conversion can lead to surprises!
+    medcodes_explained = pegmed.loc[pegmed['medcode'].isin(medcodes),['readcode','medcode']].values.tolist() #Don't delete - useful for debugging, as Read code to medcode conversion can lead to surprises!
     return medcodes
 
 def backup_file(path,file,additional_suffix=None):
@@ -39,9 +39,9 @@ def get_patient_history(all_entries,patid):
     pegmed = pd.read_csv('dicts/proc_pegasus_medical.csv',delimiter=',')
 
     pt_history = all_entries[all_entries['patid']==patid]
-    pt_history_elaborated = pd.merge(pt_history,pegmed[['medcode','read term']],how='left')
+    pt_history_elaborated = pd.merge(pt_history,pegmed[['medcode','desc']],how='left')
     pt_history_elaborated = pd.merge(pt_history_elaborated,pegprod[['prodcode','drugsubstance']],how='left')
-    pt_history_elaborated['description']=pt_history_elaborated['drugsubstance'].fillna(pt_history_elaborated['read term'])
+    pt_history_elaborated['description']=pt_history_elaborated['drugsubstance'].fillna(pt_history_elaborated['desc'])
     inv_entry_type = {v: k for k, v in entry_type.items()}
     pt_history_elaborated['type']=pt_history_elaborated['type'].map(inv_entry_type)
     pt_history_elaborated = pt_history_elaborated[['patid','medcode','prodcode','eventdate','sysdate','type','description']]

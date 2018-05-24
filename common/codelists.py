@@ -1,80 +1,92 @@
-all_dementia = [
-	'E001000',	#	Uncomplicated presenile dementia
-	'E001z00',	#	Presenile dementia NOS
-	'E002.00',	#	Senile dementia with depressive or paranoid fe...
-	'Eu00012',	#	[X]Primary degen dementia, Alzheimer's type, p...
-	'Eu00013',	#	[X]Alzheimer's disease type 2
-	'Eu00011',	#	[X]Presenile dementia,Alzheimer's type
+alzheimer_vascular_and_non_specific_dementias = {
+    'codes':[
+		'E001000',	#	Uncomplicated presenile dementia
+		'E001z00',	#	Presenile dementia NOS
+		'E002.00',	#	Senile dementia with depressive or paranoid fe...
+		'Eu00012',	#	[X]Primary degen dementia, Alzheimer's type, p...
+		'Eu00013',	#	[X]Alzheimer's disease type 2
+		'Eu00011',	#	[X]Presenile dementia,Alzheimer's type
+		'Eu02z00',	#	[X] Unspecified dementia
+		'E004000',	#	Uncomplicated arteriosclerotic dementia
+		'Eu01100',	#	[X]Multi-infarct dementia
+		'E001.00',	#	Presenile dementia
+		'E001100',	#	Presenile dementia with delirium
+		'Eu01.00',	#	[X]Vascular dementia
+		'E002z00',	#	Senile dementia with depressive or paranoid fe...
+		'E004100',	#	Arteriosclerotic dementia with delirium
+		'E02y100',	#	Drug-induced dementia
+		'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
+		'E004300',	#	Arteriosclerotic dementia with depression
+		'E003.00',	#	Senile dementia with delirium
+		'Eu00112',	#	[X]Senile dementia,Alzheimer's type
+		'E004.00',	#	Arteriosclerotic dementia
+		'E004200',	#	Arteriosclerotic dementia with paranoia
+		'E000.00',	#	Uncomplicated senile dementia
+		'Eu00100',	#	[X]Dementia in Alzheimer's disease with late o...
+		'E004z00',	#	Arteriosclerotic dementia NOS
+		'Eu01.11',	#	[X]Arteriosclerotic dementia
+		'Eu01000',	#	[X]Vascular dementia of acute onset
+		'Eu00.00',	#	[X]Dementia in Alzheimer's disease
+		'E004.11',	#	Multi infarct dementia
+		'Eu00113',	#	[X]Primary degen dementia of Alzheimer's type,...
+		'Eu00111',	#	[X]Alzheimer's disease type 1
+		'E00..11',	#	Senile dementia
+		'Eu01300',	#	[X]Mixed cortical and subcortical vascular dem...
+		'Eu01y00',	#	[X]Other vascular dementia
+		'Eu04100',	#	[X]Delirium superimposed on dementia
+		'Eu02z11',	#	[X] Presenile dementia NOS
+		'Eu02z16',	#	[X] Senile dementia, depressed or paranoid type
+		'Eu02z14',	#	[X] Senile dementia NOS
+		'E002100',	#	Senile dementia with depression
+		'1461.00',	#	H/O: dementia
+		'Eu01111',	#	[X]Predominantly cortical dementia
+		'E001200',	#	Presenile dementia with paranoia
+		'Eu02z13',	#	[X] Primary degenerative dementia NOS
+		'F110000',	#	Alzheimer's disease with early onset
+		'Eu01200',	#	[X]Subcortical vascular dementia
+		'E00..12',	#	Senile/presenile dementia
+		'E002000',	#	Senile dementia with paranoia
+		'Eu00z11',	#	[X]Alzheimer's dementia unspec
+		'E001300',	#	Presenile dementia with depression
+		'F110100',	#	Alzheimer's disease with late onset
+		'F112.00',	#	Senile degeneration of brain
+		'F110.00',	#	Alzheimer's disease
+		'Eu02y00',	#	[X]Dementia in other specified diseases classi...
+		'Eu00200',	#	[X]Dementia in Alzheimer's dis, atypical or mi...
+		'Fyu3000',	#	[X]Other Alzheimer's disease
+		'Eu00z00',	#	[X]Dementia in Alzheimer's disease, unspecified
+		'Eu01z00'	#	[X]Vascular dementia, unspecified
+		],
+	'medications':[
+	    'DONEPEZIL HYDROCHLORIDE',
+	    'GALANTAMINE',
+	    'RIVASTIGMINE',
+	    'Memantine hydrochloride',
+	    'memantine',
+	    'donepezil'
+	]
+}
+
+specific_dementias = {
+    'codes':[
 	'Eu02400',	#	[X]Dementia in human immunodef virus [HIV] dis...
-	'Eu02z00',	#	[X] Unspecified dementia
-	'E004000',	#	Uncomplicated arteriosclerotic dementia
 	'Eu10711',	#	[X]Alcoholic dementia NOS
-	'Eu01100',	#	[X]Multi-infarct dementia
-	'E001.00',	#	Presenile dementia
-	'E001100',	#	Presenile dementia with delirium
-	'Eu01.00',	#	[X]Vascular dementia
-	'E002z00',	#	Senile dementia with depressive or paranoid fe...
-	'E004100',	#	Arteriosclerotic dementia with delirium
-	'E02y100',	#	Drug-induced dementia
-	'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
-	'E004300',	#	Arteriosclerotic dementia with depression
-	'E003.00',	#	Senile dementia with delirium
-	'Eu00112',	#	[X]Senile dementia,Alzheimer's type
-	'E004.00',	#	Arteriosclerotic dementia
-	'E004200',	#	Arteriosclerotic dementia with paranoia
-	'E000.00',	#	Uncomplicated senile dementia
-	'Eu00100',	#	[X]Dementia in Alzheimer's disease with late o...
-	'E004z00',	#	Arteriosclerotic dementia NOS
-	'Eu01.11',	#	[X]Arteriosclerotic dementia
 	'Eu02300',	#	[X]Dementia in Parkinson's disease
-	'Eu01000',	#	[X]Vascular dementia of acute onset
+	'E012.11',	#	Alcoholic dementia NOS
+	'E012.00',	#	Other alcoholic dementia
 	'Eu02500',	#	[X]Lewy body dementia
 	'F116.00',	#	Lewy body disease
-	'Eu00.00',	#	[X]Dementia in Alzheimer's disease
-	'E004.11',	#	Multi infarct dementia
 	'Eu02000',	#	[X]Dementia in Pick's disease
-	'Eu00113',	#	[X]Primary degen dementia of Alzheimer's type,...
-	'Eu00111',	#	[X]Alzheimer's disease type 1
-	'E00..11',	#	Senile dementia
-	'Eu01300',	#	[X]Mixed cortical and subcortical vascular dem...
-	'Eu01y00',	#	[X]Other vascular dementia
-	'Eu04100',	#	[X]Delirium superimposed on dementia
-	'Eu02z11',	#	[X] Presenile dementia NOS
-	'Eu02z16',	#	[X] Senile dementia, depressed or paranoid type
-	'Eu02z14',	#	[X] Senile dementia NOS
-	'E002100',	#	Senile dementia with depression
 	'Eu02100',	#	[X]Dementia in Creutzfeldt-Jakob disease
-	'1461.00',	#	H/O: dementia
-	'Eu01111',	#	[X]Predominantly cortical dementia
-	'E001200',	#	Presenile dementia with paranoia
-	'Eu02z13',	#	[X] Primary degenerative dementia NOS
-	'F110000',	#	Alzheimer's disease with early onset
 	'F111.00',	#	Pick's disease
 	'Eu02.00',	#	[X]Dementia in other diseases classified elsew...
-	'Eu01200',	#	[X]Subcortical vascular dementia
-	'ZS7C500',	#	Language disorder of dementia
-	'E00..12',	#	Senile/presenile dementia
-	'E002000',	#	Senile dementia with paranoia
-	'Eu00z11',	#	[X]Alzheimer's dementia unspec
-	'E012.11',	#	Alcoholic dementia NOS
+	# 'ZS7C500',	#	Language disorder of dementia
 	'Eu02200',	#	[X]Dementia in Huntington's disease
-	'E012.00',	#	Other alcoholic dementia
-	'E001300',	#	Presenile dementia with depression
-	'F110100',	#	Alzheimer's disease with late onset
-	'F112.00',	#	Senile degeneration of brain
-	'F110.00',	#	Alzheimer's disease
-	'Eu02y00',	#	[X]Dementia in other specified diseases classi...
-	'Eu00200',	#	[X]Dementia in Alzheimer's dis, atypical or mi...
-	'Fyu3000',	#	[X]Other Alzheimer's disease
-	'Eu00z00',	#	[X]Dementia in Alzheimer's disease, unspecified
-	'Eu01z00'	#	[X]Vascular dementia, unspecified
-]
+	]
+}
 
 insomnia = {
     'name':'insomnia',
-    'int_or_boolean':'both',    #i.e. we want to get both a count variable (number of insomnia consultations)
-                                # and a boolean variable (has the patient ever seen a GP about insomnia)
-                                # - and we'll decide which is more useful at the analysis stage
 	'record_exposure_in_window_period_only':True,
     'codes':[
         'R005200', # [D]Insomnia NOS
@@ -95,12 +107,36 @@ insomnia = {
         'E274E00', # 'Short-sleeper'
         '1BX9.00', # Light sleep
         '1BX3.00' #early morning waking
-    ]
+    ],
+	'medications':[
+		'clomethiazole',
+		'diazepam',
+		'flurazepam',
+        'Flurazepam hydrochloride',
+		'LOPRAZOLAM',
+        'Loprazolam mesilate'
+		'lorazepam',
+		'LORMETAZEPAM',
+		'melatonin',
+		'nitrazepam',
+		'oxazepam',
+		'TEMAZEPAM',
+		'zaleplon',
+		'zolpidem tartrate',
+		'zolpidem ',
+		'zopiclone'
+	]
+}
+
+insomnia_no_hypnotics = {
+	'name':'insomnia_no_hypnotics',
+	'record_exposure_in_window_period_only':True,
+	'codes':insomnia['codes'],
+	'medications':[]
 }
 
 stroke = {
     'name':'stroke',
-    'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes': [
         # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
@@ -181,12 +217,12 @@ stroke = {
 		'Gyu6F00',		#[X]Intracerebral haemorrhage in hemisphere; unspecified
 		'Gyu6G00',		#[X]Cereb infarct due unsp occlus/stenos precerebr arteries
 		'ZV12D00'		#[V]Personal history of transient ischaemic attack
-    ]
+    ],
+	'medications':[]
 }
 
 chronic_pulmonary_disease = {
     'name': 'chronic_pulmonary_disease',
-    'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes': [
     # From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-chronic-pulmonary-disease/
@@ -396,12 +432,12 @@ chronic_pulmonary_disease = {
         'L4930LO',	  #	LATE ONSET ASTHMA
         'L5161B',	  #	BIRD FANCIER'S LUNG
         'SK07.00'	  #	Subcutaneous emphysema
-    ]
+    ],
+	'medications':[]
 }
 
 mental_illness = {
     'name': 'mental_illness',
-    'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes':[
         #adapted from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/38/
@@ -1244,12 +1280,12 @@ mental_illness = {
     	'Ryu5300',		#[X]Other hallucinations
     	'ZS7C611',		#Schizophrenic language
     	'ZV11000'	#[V]Personal history of schizophrenia
-    ]
+    ],
+	'medications':[]
 }
 
 sleep_apnoea = {
     'name': 'sleep_apnoea',
-    'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes': [
     	'H5B0.00',		#Obstructive sleep apnoea
@@ -1261,13 +1297,13 @@ sleep_apnoea = {
     	'Fy03.11',		#Obstructive sleep apnoea
     	'H5B..00',		#Sleep apnoea
     	'Fy03.00'		#Sleep apnoea
-    ]
+    ],
+	'medications':[]
 }
 
 
 heart_failure = {
     'name':'heart_failure',
-    'int_or_boolean':'boolean',
 	'record_exposure_in_window_period_only':False,
     'codes': [
         # https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/43/
@@ -1339,7 +1375,8 @@ heart_failure = {
 		'7824AC',	#HEART FAILURE ACUTE
 		'7824FC',	#FAILURE CARDIAC
 		'7824FH'	#HEART FAILURE
-    ]
+    ],
+	'medications':[]
 }
 
 epilepsy = {
@@ -1430,13 +1467,14 @@ epilepsy = {
         'Fyu5900',		#[X]Status epilepticus; unspecified
         'SC20000',		#Traumatic epilepsy
         'ZS82.00'	#Acquired epileptic aphasia
-
-    ]
+    ],
+	'medications':[]
 }
 
 
 all_codelists = [
     insomnia,
+	insomnia_no_hypnotics,
     stroke,
     heart_failure,
     mental_illness,
