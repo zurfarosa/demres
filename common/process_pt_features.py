@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from datetime import date, timedelta,datetime
-from demres.common import codelists
+from demres.common import codelists,druglists
 from demres.common.process_entries import *
 from common.helper_functions import *
 from demres.demins.constants import Study_Design as sd
@@ -280,7 +280,7 @@ def get_condition_status(pt_features,entries,prescriptions,window,condition):
 
     return pt_features
 
-def get_relevant_and_reformatted_prescs(prescriptions,all_drugs,pt_features,window):
+def get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window):
     '''
     Filter prescriptions to only include ones which are for relevant drugs and within the exposure window,
     and create 'amount' and 'unit' columns (necessary for calculating PDD)
@@ -296,6 +296,8 @@ def get_relevant_and_reformatted_prescs(prescriptions,all_drugs,pt_features,wind
     end_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year']+sd.window_length_in_years)))
     timely_presc_mask = (prescs['eventdate']>=(prescs['index_date']-start_year)) & (prescs['eventdate']<=(prescs['index_date']-end_year))
     timely_prescs = prescs.loc[timely_presc_mask].copy()
+
+    all_drugs = [drug for druglist in druglists for drug in druglist['drugs'] ]
 
     prodcodes = get_prodcodes_from_drug_name(all_drugs)
     relev_prescs = timely_prescs.loc[timely_prescs['prodcode'].isin(prodcodes)].copy()
@@ -331,8 +333,6 @@ def create_pdd_for_each_drug(prescriptions,pt_features,window):
     '''
     Create a prescribed daily dose for each drug, based on average doses in the patient sample during the main exposure window
     '''
-    all_drugs = [drug.upper() for codelist in codelists.all_codelists for drug in codelist['medications']]
-    print(all_drugs)
 
     prescs = get_relevant_and_reformatted_prescs(prescriptions,all_drugs,pt_features,window)
 
@@ -359,30 +359,35 @@ def create_pdd_for_each_drug(prescriptions,pt_features,window):
     pdds.to_csv('output/drug_pdds.csv',index=False)
 
 
-def create_PDD_columns_for_each_pt(pt_features,window,prescriptions):
+def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
     '''
     Adds a prescribed daily doses (PDD) column for each drug in a druglist to the pt_features dataframe
     '''
-
     pdds = pd.read_csv('output/drug_pdds.csv', delimiter=',')
     prescs = get_relevant_and_reformatted_prescs(prescriptions,druglists,pt_features,window)
     prescs['drugsubstance'] = prescs['drugsubstance'].str.upper()
     prescs_grouped = prescs.groupby(by=['patid','drugsubstance']).total_amount.sum().reset_index()
-    all_drugs = [drug for codelist in codelists.all_codelists for drug in codelist['medications']]
+    for druglist in druglists:
+        print(druglist['name'])
+        capitalised_drugs = [drug.upper() for drug in druglist['drugs']]
+        new_colname = druglist['name']+'_100_pdds'
+        # prodcodes = get_prodcodes_from_drug_name(druglist['drugs'])
+        relev_prescs = prescs_grouped.loc[prescs_grouped['drugsubstance'].isin(capitalised_drugs)]
+        print('There are {0} relevant prescription entries for {1}'.format(len(relev_prescs),druglist['name']))
 
-    capitalized_drugs = [drug.upper() for codelist in codelists.all_codelists for drug in codelist['medications']]
+        # Sum the total pdds of a particular drug type for each patients
+        # (e.g. lorazepam AND zopiclone AND diazepam when calculating benzo/z-drug pdds).
+        # Then divide by 100, because 100_PDDs is an easier-to-interpret unit for odds ratio than PDDs alone
 
-    new_colname = druglist['name']+'_100_pdds'
+        # relev_prescs['drugsubstance'] =  relev_prescs['drugsubstance'].str.upper()
 
-    relev_prescs = prescs_grouped.loc[prescs_grouped['drugsubstance'].isin(capitalised_drugs)]
-
-    relev_prescs = pd.merge(relev_prescs,pdds,left_on='drugsubstance',right_on='drug_name',how='left')[['patid','drugsubstance','total_amount','pdd(mg)']]
-    relev_prescs[new_colname] = (relev_prescs['total_amount'] / relev_prescs['pdd(mg)'])/100
-    pt_pdds = relev_prescs.groupby(by='patid')[new_colname].sum().reset_index().copy()
-    if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
-        pt_features.drop(new_colname,axis=1,inplace=True)
-    pt_features = pd.merge(pt_features,pt_pdds,how='left')
-    pt_features[new_colname].fillna(value=0,inplace=True)
+        relev_prescs = pd.merge(relev_prescs,pdds,left_on='drugsubstance',right_on='drug_name',how='left')[['patid','drugsubstance','total_amount','pdd(mg)']]
+        relev_prescs[new_colname] = (relev_prescs['total_amount'] / relev_prescs['pdd(mg)'])/100
+        pt_pdds = relev_prescs.groupby(by='patid')[new_colname].sum().reset_index().copy()
+        if new_colname in pt_features.columns: #delete column if it already exists (otherwise this causes problems with the 'fillna' command below)
+            pt_features.drop(new_colname,axis=1,inplace=True)
+        pt_features = pd.merge(pt_features,pt_pdds,how='left')
+        pt_features[new_colname].fillna(value=0,inplace=True)
     return pt_features
 
 def create_quantiles_and_booleans(pt_features):

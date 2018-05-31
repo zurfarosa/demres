@@ -59,12 +59,12 @@ def get_windows():
         windows.append(window)
     return windows
 
-def explore_similar_drug_names(druglists,pt_features):
+def explore_similar_drug_names(drugs,pt_features,timely_prescs):
     '''
     Looks for drugs with similar names to those in the list of drugs passed to it. So if you pass it CINNARIZINE WITH DIMENHYDRINATE,
     it may bring drugs like cinnarizine or cinnarizine with X. If they sound sensible, these drugs can then be added manually to the relevant druglist.
     '''
-    #Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
+    # Only use prescriptions belonging to the main exposure window (not the ones used in sensitivity analysis)
     prescriptions = pd.read_hdf('data/pt_data/processed_data/hdf/prescriptions.hdf')
     prescriptions = pd.merge(prescriptions,pt_features[['patid','index_date']],how='left',on='patid')
     start_year = timedelta(days=(365*abs(sd.exposure_windows[1]['start_year'])))
@@ -74,11 +74,11 @@ def explore_similar_drug_names(druglists,pt_features):
     pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv')
     timely_prescs = pd.merge(timely_prescs,pegprod[['prodcode','strength','drugsubstance']],how='left')
 
-    for druglist in druglists:
-        print('\n\n',druglist)
-        drug_lists = [drug.split(' ') for drug in druglist['drugs']]
-        drug_string = '|'.join([word for list in drug_lists for word in list if word.upper() not in ['WITH','ACID','SODIUM','CITRATE','CARBONATE','DISODIUM','HYDROCHLORIDE','MALEATE','ACETATE']])
-        prescs = timely_prescs.loc[timely_prescs['drugsubstance'].str.contains(drug_string,na=False,case=False)]
-        prescs_group = prescs['prodcode'].groupby(prescs['drugsubstance']).count().reset_index()
-        prescs_group.columns=['drugsubstance','count']
-        print(prescs_group)
+    drug_lists = [drug.split(' ') for drug in drugs]
+    print(drug_lists)
+    drug_string = '|'.join([word for list in drug_lists for word in list if word.upper() not in ['WITH','ACID','HYDRATE','TARTRATE','SODIUM','CITRATE','CARBONATE','DISODIUM','HYDROCHLORIDE','MALEATE','ACETATE']])
+    print(drug_string)
+    prescs = timely_prescs.loc[timely_prescs['drugsubstance'].str.contains(drug_string,na=False,case=False)]
+    prescs_group = prescs['prodcode'].groupby(prescs['drugsubstance']).count().reset_index()
+    prescs_group.columns=['drugsubstance','count']
+    print(prescs_group)

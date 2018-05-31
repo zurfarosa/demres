@@ -1,3 +1,5 @@
+from demres.common import druglists
+
 alzheimer_vascular_and_non_specific_dementias = {
     'codes':[
 		'E001000',	#	Uncomplicated presenile dementia
@@ -108,24 +110,7 @@ insomnia = {
         '1BX9.00', # Light sleep
         '1BX3.00' #early morning waking
     ],
-	'medications':[
-		'clomethiazole',
-		'diazepam',
-		'flurazepam',
-        'Flurazepam hydrochloride',
-		'LOPRAZOLAM',
-        'Loprazolam mesilate'
-		'lorazepam',
-		'LORMETAZEPAM',
-		'melatonin',
-		'nitrazepam',
-		'oxazepam',
-		'TEMAZEPAM',
-		'zaleplon',
-		'zolpidem tartrate',
-		'zolpidem ',
-		'zopiclone'
-	]
+	'medications':druglists.hypnotics
 }
 
 insomnia_no_hypnotics = {
