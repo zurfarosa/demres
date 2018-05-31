@@ -131,7 +131,7 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
     pt_features.drop(['earliest_sysdate','sysdate_of_final_converted_code','estimated_data_start'],inplace=True,axis=1)
 
 
-    pt_features.to_csv('data/pt_data/processed_data/pt_features_demins.csv',index=False)
+    pt_features.to_csv('data/processed_data/pt_features_demins.csv',index=False)
 
     return pt_features
 
