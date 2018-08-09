@@ -14,7 +14,7 @@ def create_pt_features():
     Creates csv file containing all patients (cases and controls on separate rows)
     with a column for all variables to be analysed
     '''
-    pt_features = pd.read_csv('data/pt_data/raw_data/Extract_Patient_001.txt', usecols=['patid','yob','gender','reggap'], delimiter='\t')
+    pt_features = pd.read_csv('data/raw_data/Extract_Patient_001.txt', usecols=['patid','yob','gender','reggap'], delimiter='\t')
 
     pt_features = pt_features.loc[pt_features['reggap']==sd.acceptable_number_of_registration_gap_days]
     pt_features.drop('reggap',axis=1,inplace=True)
@@ -32,14 +32,24 @@ def get_index_date_and_caseness_and_add_final_dementia_subtype(all_entries,pt_fe
     Calculates  index date and establishes caseness by looking for first dementia diagnoses.
     Also looks for final dementia diagnosis (e.g. 'vascular dementia'), as this is likely to be our best guess as to the dementia subtype
     '''
-
     pegmed = pd.read_csv('dicts/proc_pegasus_medical.csv',delimiter=',')
     pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv',delimiter=',')
     medcodes = get_medcodes_from_readcodes(codelists.alzheimer_vascular_and_non_specific_dementias['codes'])
     prodcodes = get_prodcodes_from_drug_name(codelists.alzheimer_vascular_and_non_specific_dementias['medications'])
 
+
+    entries_with_antidementia_presc_mask = all_entries['prodcode'].isin(prodcodes)
+    entries_with_dementia_dx_mask = all_entries['medcode'].isin(medcodes)
+
+    #For the purpose of my paper's flow chart of patient selection,
+    #get number of cases where there is an antidementia prescription but not a dementia diagnosis
+    patids_prescribed_antidementia_drugs = set(all_entries.loc[entries_with_antidementia_presc_mask,'patid'])
+    patids_with_dementia_dx = set(all_entries.loc[entries_with_dementia_dx_mask,'patid'])
+    total_pts_prescribed_antidementia_drugs_but_no_dementia_dx = len(pt_features[(pt_features['patid'].isin(patids_prescribed_antidementia_drugs))&~(pt_features['patid'].isin(patids_with_dementia_dx))])
+    print('Number of patients prescribed antidementia drugs but not diagnosed with dementia:',total_pts_prescribed_antidementia_drugs_but_no_dementia_dx)
+
     # from the all_entries df, get just those which contain a dementia dx or an antidementia drug prescription
-    all_dementia_entries = all_entries[(all_entries['prodcode'].isin(prodcodes))|(all_entries['medcode'].isin(medcodes))]
+    all_dementia_entries = all_entries[entries_with_antidementia_presc_mask|entries_with_dementia_dx_mask]
     # for clarity, look up the Read terms
     all_dem_labelled = pd.merge(all_dementia_entries,pegmed,how='left')[['patid','prodcode','medcode','sysdate','eventdate','type']]
     # for clarity, look up the drug names
@@ -120,7 +130,6 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
     pt_features.loc[~dont_use_earliest_sysdate_mask,'data_start']=pt_features['earliest_sysdate'].copy()
     pt_features['data_start'] = pd.to_datetime(pt_features['data_start'])
 
-
     # Remove patients without any events
     print('removing patients without any events')
     no_event_mask = pd.isnull(pt_features['earliest_sysdate'])
@@ -139,26 +148,29 @@ def add_data_start_and_end_dates(all_encounters,pt_features):
 def match_cases_and_controls(pt_features,window):
     '''
     Matches cases to controls.
-    Controls are given an index date after being matched.
+    Controls are given an index date only after being matched.
     '''
     req_yrs_post_index=sd.req_yrs_post_index
     start_year=abs(window['start_year'])
     pt_features['matchid']=np.nan
 
-
     pt_features.loc[:,'total_available_data']= pt_features.loc[:,'data_end'] - pt_features.loc[:,'data_start']
     pt_features.sort_values(inplace=True,by='total_available_data',ascending=True) # To make matching more efficient, first try to match to controls the cases with with the LEAST amount of available data
 
+    enough_data_mask = pt_features['data_start'] <= (pt_features['index_date'] - timedelta(days=(365*start_year)))
+    cases_with_enough_data = pt_features.loc[(pt_features['isCase']==True) & enough_data_mask].copy()
+    cases_without_enough_data = pt_features.loc[(pt_features['isCase']==True) & ~enough_data_mask].copy()
 
-    cases_mask = (pt_features['isCase']==True) & \
-                (pt_features['data_start'] <= (pt_features['index_date'] - timedelta(days=(365*start_year))))
-    suitable_cases = pt_features.loc[cases_mask].copy()
-    print('All cases',len(pt_features['isCase']==True))
-    print('Number of suitable cases',len(suitable_cases))
+    print('All cases',len(pt_features[pt_features['isCase']==True]))
+    print('Number of cases with 10 years of data',len(cases_with_enough_data))
+
+    #The following information is for my paper's patient study flow chart only
+    print('Number of cases without 10 years of data (to be discarded):',len(cases_without_enough_data))
+
     controls = pt_features.loc[pt_features['isCase']==False].copy()
     print('Number of controls',len(controls))
 
-    for index,row in suitable_cases.iterrows():
+    for index,row in cases_with_enough_data.iterrows():
         if pd.isnull(row['matchid']):
             patid = row['patid']
             yob = row['yob']
@@ -184,7 +196,9 @@ def match_cases_and_controls(pt_features,window):
 
     #Remove patients without a matchid
     to_remove_mask = pd.isnull(pt_features['matchid'])
-    print(len(pt_features[to_remove_mask]),' patients being removed as unmatchable')
+    print(len(pt_features[to_remove_mask & (pt_features['isCase']==True)]),' cases being removed as unmatchable')
+    print(len(pt_features[to_remove_mask & (pt_features['isCase']==False)]),' controls being removed as unmatchable')
+    print(len(pt_features[to_remove_mask]),' total patients being removed as unmatchable')
     # pt_features[to_remove_mask].to_csv('data/pt_data/removed_patients/removed_unmatched_patients.csv',index=False)
     pt_features = pt_features.loc[~to_remove_mask].copy()
 

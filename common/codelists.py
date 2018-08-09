@@ -1459,11 +1459,9 @@ epilepsy = {
 
 all_codelists = [
     insomnia,
-	insomnia_no_hypnotics,
     stroke,
     heart_failure,
     mental_illness,
     sleep_apnoea,
     chronic_pulmonary_disease,
-    epilepsy
 ]

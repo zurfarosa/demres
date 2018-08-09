@@ -83,10 +83,8 @@ def remove_covariates_causing_maximum_likelihood_error(pt_features,training_cols
     filtered_training_cols = []
     for col in training_cols:
         if pt_features[col].mean()>0: #prevents singular matrix warning
-            print(col,' being retained as mean > 0')
+            # print(col,' being retained as mean > 0')
             filtered_training_cols.append(col)
-            # print(col, pt_features[col].mean())
         else:
             print(col, ' being removed as mean == 0')
-    print('\n')
     return filtered_training_cols
