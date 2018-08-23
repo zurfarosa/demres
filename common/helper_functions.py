@@ -3,9 +3,15 @@ from shutil import copy
 from pprint import pprint
 import os
 import pandas as pd
+from IPython.display import Markdown, display
+
 
 from demres.demins.constants import Study_Design as sd
 from demres.common.constants import entry_type
+
+
+def printbold(string):
+    display(Markdown('**' + string + '**'))
 
 def get_prodcodes_from_drug_name(codelist):
     pegprod = pd.read_csv('dicts/proc_pegasus_prod.csv')

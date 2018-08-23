@@ -1,0 +1,10 @@
+First remove all commasSearch
+
+Then search for
+'(.*)'\t#\t(.*)\n
+
+Replace with
+$1,$2,Read,,diagnostic,[name of codelist, e.g. dementia],\n
+
+Then at the top of the page, add the headings:
+code,description,coding_system,subtype,entity,list_name,upload_date
