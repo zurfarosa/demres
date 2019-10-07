@@ -19,8 +19,34 @@ import statsmodels.api as sm
 from pprint import pprint
 
 
+def convert_final_dementia_dx_from_medcode_to_readcode(pt_features):
+    pegmed = pd.read_csv('dicts/proc_pegasus_medical.csv')
+    just_dementia_diagnoses = pt_features[pd.notnull(pt_features['final dementia medcode'])].copy()
+    just_dementia_diagnoses['final dementia Readcode'] = (just_dementia_diagnoses['final dementia medcode'].map(lambda x: pegmed.loc[pegmed['medcode']==x,'readcode'].item()))
+    pt_features = pd.merge(pt_features,just_dementia_diagnoses,how='left')
+    return pt_features
+
+def add_final_dementia_medcode_dummies(pt_features):
+    '''
+    Adds dummy columns for final_dementia_medcode (i.e. our best guess at the dementia subtype) to be used as baseline characteristics
+    '''
+    just_dementia_diagnoses = pt_features[pd.notnull(pt_features['final dementia Readcode'])].copy()
+
+    just_dementia_diagnoses['final dementia group'] = just_dementia_diagnoses['final dementia Readcode'].map(lambda x: codelists.alzheimer_vascular_and_non_specific_dementias['subtype_groupings'][x])
+    pt_features = pd.merge(pt_features,just_dementia_diagnoses,how='left')
+
+    # if isCase is True but there is no final dementia Readcode, classify them as Alzheimers (because these are the patients who were diagnosed with dementia based on antidementia medication)
+    pt_features.loc[(pd.isnull(pt_features['final dementia Readcode']))&(pt_features['isCase']==True),'final dementia group'] = 'Alzheimers'
+    # pts_diagnosed_on_basis_of_antidementia_meds_only['final dementia group'] = 'Alzheimers'
+    # display(pts_diagnosed_on_basis_of_antidementia_meds_only)
+    # pt_features = pd.merge(pt_features,pts_diagnosed_on_basis_of_antidementia_meds_only,how='left')
+
+    pt_features = pd.get_dummies(pt_features,columns=['final dementia group'],prefix='dx')
+    return pt_features
+
+
 def add_baseline_characteristics(variables,pt_features):
-    baseline_dichot = pd.DataFrame(columns=['Cases','Controls','P value'])
+    baseline_dichot = pd.DataFrame(columns=['Cases','Controls'])
     all_cases = pt_features.loc[pt_features['isCase']==True]
     all_controls = pt_features.loc[pt_features['isCase']==False]
     for variable in variables:
@@ -31,12 +57,12 @@ def add_baseline_characteristics(variables,pt_features):
             negative_controls = pt_features.loc[(pt_features[variable]==0)&(pt_features['isCase']==0)]
             baseline_dichot.loc[variable,'Cases'] = "{0:.0f} ({1:.1%})".format(len(positive_cases),len(positive_cases)/len(all_cases))
             baseline_dichot.loc[variable,'Controls'] = "{0:.0f} ({1:.1%})".format(len(positive_controls),len(positive_controls)/len(all_controls))
-            if (len(positive_cases)>0) & (len(negative_cases)>0):
-                obs = np.array([[len(positive_cases),len(negative_cases)],[len(positive_controls),len(negative_controls)]])
-                chi2, p, dof, ex = chi2_contingency(obs, correction=False)
-                baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
-            else:
-                baseline_dichot.loc[variable,'P value'] =  '-'
+            # if (len(positive_cases)>0) & (len(negative_cases)>0):
+            #     obs = np.array([[len(positive_cases),len(negative_cases)],[len(positive_controls),len(negative_controls)]])
+            #     chi2, p, dof, ex = chi2_contingency(obs, correction=False)
+            #     # baseline_dichot.loc[variable,'P value'] =  "{0:.3f}".format(p)
+            # else:
+            #     # baseline_dichot.loc[variable,'P value'] =  '-'
     return baseline_dichot
 
 def calculate_univariate_and_multivariate_ORs(pt_features,covariates,main_variables):

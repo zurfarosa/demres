@@ -404,6 +404,8 @@ def create_PDD_columns_for_each_pt(pt_features,window,druglists,prescriptions):
         pt_features[new_colname].fillna(value=0,inplace=True)
     return pt_features
 
+
+
 def create_quantiles_and_booleans(pt_features):
     '''
     Converts various continuous variables (e.g. age, insomnia) into quantiles,

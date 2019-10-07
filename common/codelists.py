@@ -16,7 +16,6 @@ alzheimer_vascular_and_non_specific_dementias = {
 		'Eu01.00',	#	[X]Vascular dementia
 		'E002z00',	#	Senile dementia with depressive or paranoid fe...
 		'E004100',	#	Arteriosclerotic dementia with delirium
-		'E02y100',	#	Drug-induced dementia
 		'Eu00000',	#	[X]Dementia in Alzheimer's disease with early ...
 		'E004300',	#	Arteriosclerotic dementia with depression
 		'E003.00',	#	Senile dementia with delirium
@@ -66,7 +65,65 @@ alzheimer_vascular_and_non_specific_dementias = {
 	    'Memantine hydrochloride',
 	    'memantine',
 	    'donepezil'
-	]
+	],
+    'subtype_groupings':{
+		'E001000':'non-specific',	#	Uncomplicated presenile dementia
+		'E001z00':'non-specific',	#	Presenile dementia NOS
+		'E002.00':'non-specific',	#	Senile dementia with depressive or paranoid fe...
+		'Eu00012':'Alzheimers',	#	[X]Primary degen dementia, Alzheimer's type, p...
+		'Eu00013':'Alzheimers',	#	[X]Alzheimer's disease type 2
+		'Eu00011':'Alzheimers',	#	[X]Presenile dementia,Alzheimer's type
+		'Eu02z00':'non-specific',	#	[X] Unspecified dementia
+		'E004000':'vascular',	#	Uncomplicated arteriosclerotic dementia
+		'Eu01100':'vascular',	#	[X]Multi-infarct dementia
+		'E001.00':'non-specific',	#	Presenile dementia
+		'E001100':'non-specific',	#	Presenile dementia with delirium
+		'Eu01.00':'vascular',	#	[X]Vascular dementia
+		'E002z00':'non-specific',	#	Senile dementia with depressive or paranoid fe...
+		'E004100':'vascular',	#	Arteriosclerotic dementia with delirium
+		'E02y100':'non-specific',	#	Drug-induced dementia
+		'Eu00000':'Alzheimers',	#	[X]Dementia in Alzheimer's disease with early ...
+		'E004300':'vascular',	#	Arteriosclerotic dementia with depression
+		'E003.00':'non-specific',	#	Senile dementia with delirium
+		'Eu00112':'Alzheimers',	#	[X]Senile dementia,Alzheimer's type
+		'E004.00':'vascular',	#	Arteriosclerotic dementia
+		'E004200':'vascular',	#	Arteriosclerotic dementia with paranoia
+		'E000.00':'non-specific',	#	Uncomplicated senile dementia
+		'Eu00100':'Alzheimers',	#	[X]Dementia in Alzheimer's disease with late o...
+		'E004z00':'vascular',	#	Arteriosclerotic dementia NOS
+		'Eu01.11':'vascular',	#	[X]Arteriosclerotic dementia
+		'Eu01000':'vascular',	#	[X]Vascular dementia of acute onset
+		'Eu00.00':'Alzheimers',	#	[X]Dementia in Alzheimer's disease
+		'E004.11':'vascular',	#	Multi infarct dementia
+		'Eu00113':'Alzheimers',	#	[X]Primary degen dementia of Alzheimer's type,...
+		'Eu00111':'Alzheimers',	#	[X]Alzheimer's disease type 1
+		'E00..11':'non-specific',	#	Senile dementia
+		'Eu01300':'vascular',	#	[X]Mixed cortical and subcortical vascular dem...
+		'Eu01y00':'vascular',	#	[X]Other vascular dementia
+		'Eu04100':'non-specific',	#	[X]Delirium superimposed on dementia
+		'Eu02z11':'non-specific',	#	[X] Presenile dementia NOS
+		'Eu02z16':'non-specific',	#	[X] Senile dementia, depressed or paranoid type
+		'Eu02z14':'non-specific',	#	[X] Senile dementia NOS
+		'E002100':'non-specific',	#	Senile dementia with depression
+		'1461.00':'non-specific',	#	H/O: dementia
+		'Eu01111':'non-specific',	#	[X]Predominantly cortical dementia
+		'E001200':'non-specific',	#	Presenile dementia with paranoia
+		'Eu02z13':'non-specific',	#	[X] Primary degenerative dementia NOS
+		'F110000':'Alzheimers',	#	Alzheimer's disease with early onset
+		'Eu01200':'vascular',	#	[X]Subcortical vascular dementia
+		'E00..12':'non-specific',	#	Senile/presenile dementia
+		'E002000':'Alzheimers',	#	Senile dementia with paranoia
+		'Eu00z11':'Alzheimers',	#	[X]Alzheimer's dementia unspec
+		'E001300':'non-specific',	#	Presenile dementia with depression
+		'F110100':'Alzheimers',	#	Alzheimer's disease with late onset
+		'F112.00':'non-specific',	#	Senile degeneration of brain
+		'F110.00':'Alzheimers',	#	Alzheimer's disease
+		'Eu02y00':'non-specific',	#	[X]Dementia in other specified diseases classi...
+		'Eu00200':'mixed',	#	[X]Dementia in Alzheimer's dis, atypical or mi...
+		'Fyu3000':'Alzheimers',	#	[X]Other Alzheimer's disease
+		'Eu00z00':'Alzheimers',	#	[X]Dementia in Alzheimer's disease, unspecified
+		'Eu01z00':'vascular'	#	[X]Vascular dementia, unspecified
+    }
 }
 
 specific_dementias = {
@@ -74,6 +131,7 @@ specific_dementias = {
 	'Eu02400',	#	[X]Dementia in human immunodef virus [HIV] dis...
 	'Eu10711',	#	[X]Alcoholic dementia NOS
 	'Eu02300',	#	[X]Dementia in Parkinson's disease
+	'E02y100',	#	Drug-induced dementia
 	'E012.11',	#	Alcoholic dementia NOS
 	'E012.00',	#	Other alcoholic dementia
 	'Eu02500',	#	[X]Lewy body dementia
@@ -82,7 +140,7 @@ specific_dementias = {
 	'Eu02100',	#	[X]Dementia in Creutzfeldt-Jakob disease
 	'F111.00',	#	Pick's disease
 	'Eu02.00',	#	[X]Dementia in other diseases classified elsew...
-	# 'ZS7C500',	#	Language disorder of dementia
+	'ZS7C500',	#	Language disorder of dementia
 	'Eu02200',	#	[X]Dementia in Huntington's disease
 	]
 }
@@ -124,7 +182,6 @@ stroke = {
     'name':'stroke',
 	'record_exposure_in_window_period_only':False,
     'codes': [
-        # from https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/1/
 		'G61..00',		#Intracerebral haemorrhage
 		'G610.00',		#Cortical haemorrhage
 		'G611.00',		#Internal capsule haemorrhage
@@ -210,7 +267,6 @@ chronic_pulmonary_disease = {
     'name': 'chronic_pulmonary_disease',
 	'record_exposure_in_window_period_only':False,
     'codes': [
-    # From https://clinicalcodes.rss.mhs.man.ac.uk/medcodes/article/27/codelist/res27-chronic-pulmonary-disease/
         '114 PF',	  #	PIGEON FANCIER'S LUNG
         '14B4.00',	  #	H/O: asthma
         '173A.00',	  #	Exercise induced asthma
