@@ -8,7 +8,7 @@ jedi==0.12.1
 jupyter-client==5.2.3
 jupyter-core==4.4.0
 numexpr==2.6.8
-numpy==1.15.1
+numpy==1.22.0
 pandas==0.23.4
 parso==0.3.1
 patsy==0.5.0
